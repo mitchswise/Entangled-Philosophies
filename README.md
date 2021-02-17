@@ -1,5 +1,5 @@
 # Entangled-Philosophies
-UCF Senior Design (Web App)
+UCF Senior Design Project (Web App)
 
 # Product Vision
 
