@@ -28,10 +28,10 @@ Entangled Philosophies
 
 # Sprint 1
 
-- [Product Backlog](...)
-- [Sprint Backlog](...) 
-- [Requirements](...)
-- [Trello Board](...)
+- [Product Backlog](https://trello.com/b/vhSOo823/entangled-philosophies)
+- [Sprint Backlog](https://trello.com/b/vhSOo823/entangled-philosophies) 
+- [Requirements](https://trello.com/b/vhSOo823/entangled-philosophies)
+- [Trello Board](https://trello.com/b/vhSOo823/entangled-philosophies)
 - [Burndown Chart](...)
 - [Velocity Chart](...)
 - System Architecture
