@@ -7,8 +7,7 @@ UCF Senior Design Project (Web App)
 
 2. Who/That ... (describe what need your product solves)
 
-3. The product ... (product name,or product category)
-Entangled Philosophies
+3. The product is called Entangled Philosophies and is a webapp for finding and viewing philosophical articles.
 
 4. Is a ...
 
