@@ -12,7 +12,7 @@ Entangled Philosophies
 
 4. Is a ...
 
-6. That leads to ... (main advantage, appealing reason for purchase)
+5. That leads to ... (main advantage, appealing reason for purchase)
 
 6. Unlike the ... (principal competing alternatives)
 
