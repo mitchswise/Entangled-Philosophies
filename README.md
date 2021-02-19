@@ -14,7 +14,7 @@ Entangled Philosophies
 
 5. That leads to ... (main advantage, appealing reason for purchase)
 
-6. Unlike the ... (principal competing alternatives)
+6. Unlike the ... (principal competing alternatives) Unlike other libraries/catalogues for philosophical works, our website application will feature a robust tagging system that will streamline the searching experience, making it possible to search for specific works in a simple and effective manner. The expansive philosophical data stored in our website covers the global perspective, with works spanning different languages and global regions.
 
 7. Our product offers ... (describe main differentiation)
 
