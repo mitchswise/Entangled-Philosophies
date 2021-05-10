@@ -1,4 +1,4 @@
-var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/entangled/src/api';
+var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/entangled/src/api';
 
 export function testConnect() {
     var url = urlBase + '/testconnect.php';
