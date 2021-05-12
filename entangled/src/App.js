@@ -7,6 +7,7 @@ import Sidebar from './components/Sidebar.js';
 import APITest from './components/APITest.js';
 import Register from './components/Register.js';
 import Login from './components/Login.js';
+import AddUser from './components/AddUser.js';
 import Logo from './components/logo.JPG';
 import Logo2 from './components/mag_glass.JPG';
 
@@ -27,7 +28,7 @@ function App() {
     </div>
     </div>
 
-      <Router basename={'/~entangledPhilosophy/build'}>
+      <Router basename={'/~entangledPhilosophy/Entangled-Philosophies/entangled/build'}>
         <Sidebar outerContainerId={'outer-container'} />
         <Switch>
           <Route exact path="/" component={Home}/>
@@ -35,6 +36,7 @@ function App() {
           <Route exact path="/apitest" component={APITest}/>
           <Route exact path="/register" component={Register}/>
           <Route exact path="/login" component={Login}/>
+		  <Route exact path="/adduser" component={AddUser}/>
         </Switch>
       </Router>
     </div>
