@@ -14,9 +14,9 @@ export default props => {
       </a>
       <a className="menu-item">
         <Link to="/apitest">API Test Page</Link>
-	  </a>
+      </a>
       <a className="menu-item">
-        <Link to="/adduser">Add User</Link>
+        <Link to="/register">Register</Link>
       </a>
     </Menu>
   );
