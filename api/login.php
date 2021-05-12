@@ -19,8 +19,7 @@
 	$error = false;
 	$user_id = -1;
 	
-	#if($result->num_rows > 0) {
-	if(true) {
+	if($result->num_rows > 0) {
 		$row = $result->fetch_assoc();
 		
 		#if(password_verify($_password, $row["password"])) {
