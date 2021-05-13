@@ -50,9 +50,9 @@ export function login() {
 	var password = document.getElementById("loginpassword").value;
 
 	var jsonPayload = '{"username":"' + username + '", "password":"' + password + '"}';
-	var url = urlBase + '/login.php';	
+	var url = urlBase + '/login.php';
 
-	console.log(username + password);
+	console.log(jsonPayload);
 
 	connect("POST", url);
 
