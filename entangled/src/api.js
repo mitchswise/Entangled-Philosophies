@@ -50,15 +50,16 @@ export function login() {
 	var password = document.getElementById("loginpassword").value;
 
 	var jsonPayload = '{"username":"' + username + '", "password":"' + password + '"}';
-	var url = urlBase + '/login.php';	
+	var url = urlBase + '/login.php';
 
-	console.log(username + password);
+	console.log(jsonPayload);
 
 	connect("POST", url);
 
 	try {
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);
+		console.log("HMM " + JSON.stringify(jsonObject));
 		return jsonObject;
 	} catch (err) {
 		return null;

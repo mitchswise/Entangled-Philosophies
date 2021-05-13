@@ -40,7 +40,7 @@
 		$user_id = 1;
 	}
 	
-	$ret_value = '{"UserID": ' . $user_id . '}';
+	$ret_value = '{"UserID": ' . $user_id . ', "username": ' . $_username . '}';
 	echo $ret_value;
 	
 ?>
