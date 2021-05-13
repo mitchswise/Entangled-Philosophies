@@ -1,7 +1,5 @@
 url/login | Logs in an existing user
---- | --- 
 HTTP Request | POST
---- | ---
 Required Inputs | username and unhashed password
 --- | ---
 Optional Inputs | n/a
