@@ -59,7 +59,6 @@ export function login() {
 	try {
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);
-		console.log("HMM " + JSON.stringify(jsonObject));
 		return jsonObject;
 	} catch (err) {
 		return null;
