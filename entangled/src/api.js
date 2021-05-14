@@ -11,8 +11,6 @@ function connect(type, url) {
 export function testConnect() {
     var url = urlBase + '/testconnect.php';
 
-    console.log("Starting " + url);
-
     connect("POST", url);
 
     var jsonPayload = "";
@@ -26,12 +24,8 @@ export function testConnect() {
     }
 }
 
-export function addUser() {
-	var username = document.getElementById("username").value;
-	var email = document.getElementById("email").value;
-	var password = document.getElementById("password").value;
-
-	var jsonPayload = '{"username":"' + username + '", "email":"' + email + '", "password":"' + password + '"}';
+export function addUser(username, email, password, language) {
+	var jsonPayload = '{"username":"' + username + '", "email":"' + email + '", "password":"' + password + '", "language": "' + language + '"}';
 	var url = urlBase + '/addUser.php';
 
 	connect("POST", url);
@@ -45,14 +39,9 @@ export function addUser() {
 	}
 }
 
-export function login() {
-	var username = document.getElementById("loginusername").value;
-	var password = document.getElementById("loginpassword").value;
-
+export function login(username, password) {
 	var jsonPayload = '{"username":"' + username + '", "password":"' + password + '"}';
 	var url = urlBase + '/login.php';
-
-	console.log(jsonPayload);
 
 	connect("POST", url);
 
