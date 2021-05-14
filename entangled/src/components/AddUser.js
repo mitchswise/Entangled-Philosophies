@@ -4,12 +4,20 @@ import {addUser} from '../api.js';
 import {login} from '../api.js';
 
 function testFunc() {
-    var data = addUser();
+    var username = document.getElementById("username").value;
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("password").value;
+    var language = "eng";
+
+    var data = addUser(username, email, password, language);
     document.getElementById("ansField").innerHTML = ("Status: " + data.status);
 }
 
 function testLogin() {
-	var data = login();
+    var username = document.getElementById("loginusername").value;
+    var password = document.getElementById("loginpassword").value;
+
+	var data = login(username, password);
 	document.getElementById("ansField").innerHTML = ("Status: " + data.UserID);
 }
 
