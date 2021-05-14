@@ -16,9 +16,8 @@ export default class Home extends React.Component {
         <h1 id="title">Login</h1>
         </div>
             <div id="ansField">Status: </div><br/>
-
-			<input type="text" id="loginusername"/><br/>
-			<input type="text" id="loginpassword"/><br/>
+			<input type="text" id="loginusername" placeholder="Username"/><br/>
+			<input type="text" id="loginpassword" placeholder="Password"/><br/>
 			<button type="button" id="login" onClick={testLogin}>Login</button>
         </div>
         );
