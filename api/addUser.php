@@ -21,7 +21,7 @@
 	else {
 		$sql = 'INSERT INTO users (username, email, password, language, activation_code) VALUES ("' .
 			$inData["username"] . '", "' . $inData["email"] . '", "' . $hashed_password . '", "' 
-			. $preferred_language . '", ' . $activation_code . ')';
+			. $preferred_language . '", "' . $activation_code . '")';
 		$result = $conn->query($sql);
 	
 		if ($result) {
