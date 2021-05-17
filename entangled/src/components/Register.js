@@ -83,14 +83,13 @@ export default class Register extends React.Component {
                         </div>
                         <button type="button" className="inputBoxes" id="login" onClick={doAddUser}><div id="loginBtnTxt">Create</div></button>
 
-                    </div>
-                    <br /><div id="addUserStatus"></div>
 
+                        <hr id="hr"></hr>
+
+                        <h4 id="alreadyRegisteredLoginText">Already Registered? Login</h4>
+                    </div>
                 </div>
-                <hr id="hr"></hr>
-                <div id="alreadyRegisteredLoginText">
-                    <h4>Already Registered? Login</h4>
-                </div>
+                <br /><div id="addUserStatus"></div>
 
             </div>
 
