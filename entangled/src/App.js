@@ -24,7 +24,6 @@ function App() {
    <div class="dropdown-content">
     <a href="#">English</a>
     <a href="#">German</a>
-    <a href="#">Spanish</a>
     </div>
     </div>
 
