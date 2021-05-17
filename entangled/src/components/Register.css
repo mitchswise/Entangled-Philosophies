@@ -1,0 +1,134 @@
+.RegisterBox {
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+    border-color: black;
+    width: 1100px;
+    Height: 600px;
+    top: -140px;
+    left: 400px;
+    position: relative;
+    text-align: center;
+}
+
+#password{
+    top: -24px;
+}
+
+#password2{
+    top:-46px;
+}
+
+#email{
+    top:-70px;
+}
+
+.RegisterFields {
+
+  
+    top: -20px;
+    position: relative;
+}
+
+.inputBoxes {
+
+    position: relative;
+    width: 350px;
+    height:28px;
+
+}
+
+#loginBtnTxt {
+    vertical-align:middle;
+    bottom:0px;
+    position: relative;
+    color: white;
+    text-decoration: bold;
+    font-size: 14px;
+}
+
+#login {
+    background-color: #f74135;
+    border: none;
+    top:30px;
+    height:36px;
+    width: 110px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+}
+
+
+#login:hover {
+    background-color: #f75449;
+
+}
+
+#alreadyRegisteredLoginText {
+    left:878px;
+    top: -197px;
+    position: relative;
+    text-decoration: thin;
+    font-weight:lighter;
+    color:blue;
+    font-size: 12px;
+}
+
+#leftUsername
+{
+    position: relative;
+    top: 50px;
+    left: -280px;
+
+}
+
+#hr{
+    width:893px;
+    padding-left: 204px;
+    padding-right:1px;
+    left:-9px;
+    right:-1px;
+    top:-194px;
+    color: lightgray;
+    position: relative;
+
+}
+
+#leftPassword
+{
+    position: relative;
+    left: -280px;
+    top: 28px;
+
+}
+
+#leftConfirmPassword
+{
+    position: relative;
+    left: -329px;
+    top: 6px;
+
+}
+
+#leftEmail
+{
+    position: relative;
+    left: -260px;
+    top: -18px;
+}
+
+#dropDownContainer
+{
+   position: relative;
+   left:-1750px;
+   top:40px;
+
+}
+
+
+
+

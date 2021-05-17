@@ -5,9 +5,8 @@ import Home from './components/Home.js';
 import About from './components/About.js';
 import Sidebar from './components/Sidebar.js';
 import APITest from './components/APITest.js';
-import Register from './components/Register.js';
 import Login from './components/Login.js';
-import AddUser from './components/AddUser.js';
+import Register from './components/Register.js';
 import Logo from './components/logo.JPG';
 import Logo2 from './components/mag_glass.JPG';
 
@@ -36,7 +35,6 @@ function App() {
           <Route exact path="/apitest" component={APITest}/>
           <Route exact path="/register" component={Register}/>
           <Route exact path="/login" component={Login}/>
-		  <Route exact path="/adduser" component={AddUser}/>
         </Switch>
       </Router>
     </div>
