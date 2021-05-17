@@ -1,7 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 import {addUser} from '../api.js';
 import {login} from '../api.js';
+import {sendActivation} from '../api.js';
 
 function testFunc() {
     var username = document.getElementById("username").value;
@@ -10,7 +11,8 @@ function testFunc() {
     var language = "eng";
 
     var data = addUser(username, email, password, language);
-    document.getElementById("ansField").innerHTML = ("Status: " + data.status);
+	var data2 = sendActivation(username);
+    document.getElementById("ansField").innerHTML = ("Status: " + data.status + "\tStatus2: " + data2.status);
 }
 
 function testLogin() {
