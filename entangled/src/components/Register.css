@@ -8,10 +8,11 @@
     width: 1100px;
     Height: 600px;
     top: -140px;
-    left: 400px;
     position: relative;
     text-align: center;
+    margin:auto;
 }
+
 
 #password{
     top: -24px;
@@ -26,10 +27,18 @@
 }
 
 .RegisterFields {
-
-  
     top: -20px;
     position: relative;
+}
+
+#addUserStatus {
+    color: red;
+    text-align: center;
+    text-decoration: bold;
+    font-size: 18px;
+    top: -150px;
+    position: relative;
+    margin: auto;
 }
 
 .inputBoxes {
@@ -69,8 +78,7 @@
 }
 
 #alreadyRegisteredLoginText {
-    left:878px;
-    top: -197px;
+    top: 60px;
     position: relative;
     text-decoration: thin;
     font-weight:lighter;
@@ -87,12 +95,8 @@
 }
 
 #hr{
-    width:893px;
-    padding-left: 204px;
-    padding-right:1px;
-    left:-9px;
-    right:-1px;
-    top:-194px;
+    width:100%;
+    top:54px;
     color: lightgray;
     position: relative;
 
@@ -129,6 +133,7 @@
 
 }
 
-
-
-
+#registerContainer
+{
+    text-align: center;
+}

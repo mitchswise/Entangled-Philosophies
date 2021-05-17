@@ -1,3 +1,6 @@
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+
 var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
 
 var xhr;
@@ -42,6 +45,23 @@ export function addUser(username, email, password, language) {
 export function login(username, password) {
 	var jsonPayload = '{"username":"' + username + '", "password":"' + password + '"}';
 	var url = urlBase + '/login.php';
+
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		cookies.set('login', jsonObject.UserID, { path: '/' });
+		console.log(cookies.get('login'));
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function sendActivation(username) {
+	var jsonPayload = '{"username":"' + username + '"}';
+	var url = urlBase + '/sendActivation.php';
 
 	connect("POST", url);
 

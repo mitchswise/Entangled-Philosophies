@@ -22,8 +22,7 @@
 	
 	if($result->num_rows > 0) {
 		$row = $result->fetch_assoc();
-		#if(password_verify($_password, $row["password"])) {
-		if($_password == $row["password"]) {
+		if(password_verify($_password, $row["password"])) {
 			$user_id = $row["id"];
 			if($row["is_verified"] == 0) {
 				$error_code = 2;
