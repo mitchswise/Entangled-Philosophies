@@ -53,3 +53,18 @@ export function login(username, password) {
 		return null;
 	}
 }
+
+export function sendActivation(username) {
+	var jsonPayload = '{"username":"' + username + '"}';
+	var url = urlBase + '/sendActivation.php';
+	
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
