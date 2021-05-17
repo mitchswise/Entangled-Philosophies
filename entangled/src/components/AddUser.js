@@ -23,7 +23,7 @@ function testLogin() {
 	document.getElementById("ansField").innerHTML = ("Status: " + data.UserID);
 }
 
-export default class APITest extends React.Component {
+export default class AddUser extends React.Component {
     render() {
         const element = (
         <div className="container" id="outer-container"> 
