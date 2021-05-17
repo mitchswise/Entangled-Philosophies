@@ -3,8 +3,8 @@
 	header("Access-Control-Allow-Origin: *");
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
-	require '/home/blaze/Documents/GitHub/Entangled-Philosophies/api/vendor/autoload.php';
-	include 'database.php';	
+	require './vendor/autoload.php';
+	include 'database.php';
 
 	$conn = new mysqli($servername, $username, $password, $dbname);
 	if ($conn->connect_error) {
@@ -12,7 +12,7 @@
 	}
 
 	$inData = json_decode(file_get_contents('php://input'), true);
-	$sql = "SELECT activation_code email FROM users WHERE username = '" . $inData["username"] . "';";
+	$sql = "SELECT activation_code, email, id FROM users WHERE username = '" . $inData["username"] . "';";
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_assoc();
@@ -21,7 +21,8 @@
 			$mail->setFrom('regularspam34627@gmail.com', 'Entangled Philosophy');
 			$mail->addAddress($row["email"], $inData["username"]);
 			$mail->Subject = 'Activation code for ' . $inData["username"];
-			$mail->Body = 'Your activation code: ' . $row["activate_code"];
+			$URL = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/verify.php?code=' . $row["activation_code"] . '&id=' . $row["id"];
+			$mail->Body = $URL;
 			
 			$mail->isSMTP();
 			$mail->Host = 'smtp.gmail.com';
@@ -35,10 +36,10 @@
 			echo '{"status":"success"}';
 		}
 		catch (Exception $e) {
-			echo $e->errorMessage();
+			echo '{"status":"' . $e->errorMessage() . '"}';
 		}
 		catch (\Exception $e) {
-			echo $e->getMessage();
+			echo '{"status":"' . $e->getMessage() . '"}';
 		}
 
 	} else {
