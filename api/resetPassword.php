@@ -23,6 +23,7 @@
 		//change the password
 		$new_pass = generatePassword(15);
 		$sql = "UPDATE users SET password = '" . password_hash($new_pass, PASSWORD_DEFAULT) . "' WHERE id = " . $row["id"] . ";";
+		$result = $conn->query($sql);
 
 		$mail = new PHPMailer(TRUE);
 		try {
