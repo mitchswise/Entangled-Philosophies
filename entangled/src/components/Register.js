@@ -10,7 +10,7 @@ function validateEmail(mail) {
     return regexPattern.test(mail);
 }
 
-function testButton() {
+function doAddUser() {
     document.getElementById("addUserStatus").innerHTML = ("");
     var firstPass = document.getElementById("password").value;
     var secondPass = document.getElementById("password2").value;
@@ -46,6 +46,8 @@ function testButton() {
         return;
     }
 
+    //Call verification by email endpoint here!
+
     document.getElementById("addUserStatus").innerHTML = ("Account created! Check your email for verification before logging in.");
     document.getElementById("password").value = "";
     document.getElementById("password2").value = "";
@@ -77,11 +79,10 @@ export default class Register extends React.Component {
                                 <div class="dropdown-content" id="dropdownRegister">
                                     <a href="#">English</a>
                                     <a href="#">German</a>
-                                    <a href="#">Spanish</a>
                                 </div>
                             </div>
                         </div>
-                        <button type="button" className="inputBoxes" id="login" onClick={testButton}><div id="loginBtnTxt">Create</div></button>
+                        <button type="button" className="inputBoxes" id="login" onClick={doAddUser}><div id="loginBtnTxt">Create</div></button>
 
                     </div>
                     <br /><div id="addUserStatus"></div>
