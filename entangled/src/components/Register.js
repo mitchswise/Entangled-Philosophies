@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { addUser } from '../api.js';
-import { login } from '../api.js';
+import { addUser, sendActivation } from '../api.js';
 import { Alert } from 'react';
 import './Register.css';
 
@@ -46,7 +45,7 @@ function doAddUser() {
         return;
     }
 
-    //Call verification by email endpoint here!
+    sendActivation(username);
 
     document.getElementById("addUserStatus").innerHTML = ("Account created! Check your email for verification before logging in.");
     document.getElementById("password").value = "";
