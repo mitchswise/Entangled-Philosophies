@@ -13,6 +13,9 @@ export default props => {
         <Link to="/about">About</Link>
       </a>
       <a className="menu-item">
+        <Link to="/login">Login</Link>
+      </a>
+      <a className="menu-item">
         <Link to="/register">Register</Link>
       </a>
     </Menu>
