@@ -73,3 +73,18 @@ export function sendActivation(username) {
 		return null;
 	}
 }
+
+export function resetPassword(username, email) {
+	var jsonPayload = '{"username":"' + username + '", "email":"' + email + '"}';
+	var url = urlBase + '/resetPassword.php';
+	
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}

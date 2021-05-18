@@ -1,8 +1,6 @@
 import React from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
-import {addUser} from '../api.js';
-import {login} from '../api.js';
-import {sendActivation} from '../api.js';
+import {addUser, login, sendActivation, resetPassword} from '../api.js';
 
 function testFunc() {
     var username = document.getElementById("username").value;
@@ -23,6 +21,14 @@ function testLogin() {
 	document.getElementById("ansField").innerHTML = ("Status: " + data.UserID);
 }
 
+function testResetPassword() {
+    var username = document.getElementById("forgot_username").value;
+    var email = document.getElementById("forgot_email").value;
+
+    var data = resetPassword(username, email);
+    document.getElementById("ansField").innerHTML = ("Status: " + data.status);
+}
+
 export default class AddUser extends React.Component {
     render() {
         const element = (
@@ -37,6 +43,11 @@ export default class AddUser extends React.Component {
 			<input type="text" id="loginusername"/><br/>
 			<input type="text" id="loginpassword"/><br/>
 			<button type="button" id="login" onClick={testLogin}>Login</button>
+
+            <h3>Forgot Password? Enter username and email</h3>
+            <input type="text" id="forgot_username"/><br/>
+            <input type="text" id="forgot_email"/><br/>
+            <button type="button" id="resetPass" onClick={testResetPassword}>Reset Password</button>
         </div>
         );
         return element; 
