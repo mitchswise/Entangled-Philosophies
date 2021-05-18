@@ -1,8 +1,7 @@
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
-// var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
-var urlBase = 'http://chdr.cs.ucf.edu/~ah458967/Entangled-Philosophies/api';
+var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
 
 var xhr;
 
