@@ -6,7 +6,7 @@
 	require './vendor/autoload.php';
 	include 'database.php';
 
-	$conn = new mysqli($servername, $username, $password, $dbname);
+	$conn = new mysqli($host, $username, $password, $dbname);
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 	}
@@ -17,9 +17,10 @@
 	$sql = "SELECT email, username, id FROM users WHERE username = '" . $inData["username"] . "' AND email = '" . $inData["email"] . "';";
 	$result = $conn->query($sql);
 
+	
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_assoc();
-
+		
 		//change the password
 		$new_pass = generatePassword(15);
 		$sql = "UPDATE users SET password = '" . password_hash($new_pass, PASSWORD_DEFAULT) . "' WHERE id = " . $row["id"] . ";";
