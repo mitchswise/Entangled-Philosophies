@@ -1,5 +1,5 @@
 import Cookies from 'universal-cookie';
-const cookies = new Cookies();
+export const cookies = new Cookies();
 
 var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
 
