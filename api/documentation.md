@@ -5,3 +5,27 @@ Required Inputs | username and unhashed password
 Optional Inputs | n/a
 Successful Output | JSON with userID, error_code = 0, error_message = ""
 Error Output | JSON with error_code = 1 or 2, error_message describing issue
+
+url/setPerms | Updates permission level of a user
+--- | ---
+HTTP Request | POST
+Required Inputs | username, permission_level
+Optional Inputs | n/a
+Successful Output | JSON with status:success
+Error Output | JSON with status:error
+
+url/getPerms | Checks the permission level of a user
+--- | ---
+HTTP Request | POST
+Required Inputs | username
+Optional Inputs | n/a
+Successful Output | JSON with permission_level
+Error Output | JSON with error:user not found
+
+url/getAdmins | Gets all admin or super admin users
+--- | ---
+HTTP Request | POST
+Required Inputs | n/a
+Optional Inputs | n/a
+Successful Output | JSON with array of usernames and ids
+Error Output | JSON with error:no admins found
