@@ -92,7 +92,7 @@ export function resetPassword(username, email) {
 
 export function setPerms(username, permission_level) {
 	var jsonPayload = '{"username":"' + username + '", "permission_level":' + permission_level + '}';
-	var url = urlBase + '/setPerms.php/';
+	var url = urlBase + '/setPerms.php';
 
 	connect("POST", url);
 

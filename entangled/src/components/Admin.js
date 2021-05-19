@@ -6,7 +6,8 @@ import {setPerms} from '../api.js';
 function doSetPerms() {
     var username = document.getElementById("username").value;
     var permission_level = document.getElementById("permission_level").value;
-	setPerms(username, permission_level);
+	var data = setPerms(username, permission_level);
+	document.getElementById("ansField_adminPage").innerHTML = data.status;
 }
 
 export default class Login extends React.Component {
