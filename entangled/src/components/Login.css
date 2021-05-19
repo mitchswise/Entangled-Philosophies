@@ -137,3 +137,13 @@
 {
     text-align: center;
 }
+
+#loginUserStatus {
+    color: red;
+    text-align: center;
+    text-decoration: bold;
+    font-size: 18px;
+    top: -150px;
+    position: relative;
+    margin: auto;
+}
