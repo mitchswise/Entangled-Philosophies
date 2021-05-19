@@ -62,7 +62,7 @@ export function login(username, password) {
 export function sendActivation(username) {
 	var jsonPayload = '{"username":"' + username + '"}';
 	var url = urlBase + '/sendActivation.php';
-	
+
 	connect("POST", url);
 
 	try {

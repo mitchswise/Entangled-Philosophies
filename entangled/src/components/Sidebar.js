@@ -1,3 +1,4 @@
+  
 import React from 'react';
 import { BrowserRouter as Router, Switch, Link, Route } from 'react-router-dom';
 import { slide as Menu } from 'react-burger-menu';
@@ -16,7 +17,7 @@ export default props => {
         <Link to="/login">Login</Link>
       </a>
       <a className="menu-item">
-        <Link to="/register">Register</Link>
+        <Link to="/login">Login</Link>
       </a>
     </Menu>
   );

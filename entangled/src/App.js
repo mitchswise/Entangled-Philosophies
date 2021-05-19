@@ -17,8 +17,8 @@ function App() {
       <img src={Logo} id="logo"/>
       <img src={Logo2} id="logo2"/>
       <h1 id="entangledPhilosophies">Entangled Philosophies</h1>
-      
-      
+
+
     <div class="dropdown">
      <button class="dropbtn" id="dropdown">Choose Language</button>
    <div class="dropdown-content">
@@ -35,7 +35,7 @@ function App() {
           <Route exact path="/apitest" component={APITest}/>
           <Route exact path="/register" component={Register}/>
           <Route exact path="/login" component={Login}/>
-		  <Route exact path="/adduser" component={AddUser}/>
+		      <Route exact path="/adduser" component={AddUser}/>
         </Switch>
       </Router>
     </div>
