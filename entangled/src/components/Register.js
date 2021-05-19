@@ -1,7 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { addUser, sendActivation } from '../api.js';
-import { Alert } from 'react';
+import { Link, Redirect } from 'react-router-dom';
+import { addUser, sendActivation, cookies } from '../api.js';
 import './Register.css';
 
 function validateEmail(mail) {
@@ -55,12 +54,20 @@ function doAddUser() {
 }
 
 export default class Register extends React.Component {
+
+    renderRedirect = () => {
+        if(cookies.get('UserID')) {
+            return <Redirect to = '/' />
+        }
+    }
+
     render() {
         const element = (
             <div className="container" id="outer-container">
                 <div className="header">
                     <h1 id="title">Account Registration</h1>
                 </div>
+                {this.renderRedirect()}
                 <div className="RegisterBox">
                     <div className="RegisterFields">
                         <h2 id="leftUsername">Username</h2>
@@ -86,7 +93,7 @@ export default class Register extends React.Component {
 
                         <hr id="hr"></hr>
 
-                        <h4 id="alreadyRegisteredLoginText">Already Registered? Login</h4>
+                        <Link to="/login" id="alreadyRegisteredLoginText">Already Registered? Login</Link>
                     </div>
                 </div>
                 <br /><div id="addUserStatus"></div>
