@@ -6,14 +6,14 @@
 	
 	$inputData = json_decode(file_get_contents('php://input'), true);
 	
-	$username = $inputData["username"];
+	$user = $inputData["username"];
 	
 	$conn = mysqli_connect($host, $username, $password, $dbname);
 	if($conn->connect_error) {
 		die("Connection failed " . $conn->connect_error);
 	}
 	
-	$query = "SELECT permission_level FROM users WHERE username = '" . $username . "';";
+	$query = "SELECT permission_level FROM users WHERE username = '" . $user . "';";
 	$result = mysqli_query($conn, $query);
 
 	if($result->num_rows > 0) {

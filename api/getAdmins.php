@@ -15,9 +15,6 @@
 	$arr = array();
 	while ($row = $result->fetch_assoc()) {
 		$arr[] = array('username' => $row["username"], 'id' => $row["id"]);
-		echo json_encode($arr);
 	}
-	else {
-		echo '{"error":"user not found"}';
-	}
+	echo '{"admins":' . json_encode($arr) . '}';
 ?>

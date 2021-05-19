@@ -28,7 +28,7 @@ function App() {
     </div>
     </div>
 
-      <Router basename={'/~al657032/Entangled-Philosophies/entangled/build'}>
+      <Router basename={'/~entangledPhilosophy/Entangled-Philosophies/entangled/build'}>
         <Sidebar outerContainerId={'outer-container'} />
         <Switch>
           <Route exact path="/" component={Home}/>
