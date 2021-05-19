@@ -88,3 +88,47 @@ export function resetPassword(username, email) {
 		return null;
 	}
 }
+
+export function setPerms(username, permission_level) {
+	var jsonPayload = '{"username":"' + username + '", "permission_level":' + permission_level + '}';
+	var url = urlBase + '/setPerms.php';
+
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function getPerms(username) {
+	var jsonPayload = '{"username":"' + username + '"}';
+	var url = urlBase + '/getPerms.php';
+	
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function getAdmins() {
+	var url = urlBase + '/getAdmins.php';
+
+	connect("GET", url);
+
+	try {
+		xhr.send();
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
