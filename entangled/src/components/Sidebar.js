@@ -18,6 +18,9 @@ export default props => {
       <a className="menu-item">
         <Link to="/register">Register</Link>
       </a>
+	  <a className="menu-item">
+		<Link to="/admin">Admin</Link>
+	  </a>
     </Menu>
   );
 };
