@@ -36,14 +36,22 @@ export default class Login extends React.Component {
             <div className="header">
                 <h1 id="title">Login</h1>
             </div>
-            <body>
+            <div className="LoginBox">
+                <div className="LoginFields">
+                    <h2 id="leftUsername">Username</h2>
+                    <input type="text" className="inputBoxes" id="username" /><br />
+                    <h2 id="leftPassword">Password</h2>
+                    <input type="password" className="inputBoxes" id="password" /><br />
+                    <button type="button" className="inputBoxes" id="login" onClick={doLogin}><div id="loginBtnTxt">Log In</div></button>
 
-                <input type="text" id="login_username" /><br />
-                <input type="text" id="login_password" /><br />
-                <button type="button" id="login_loginPage" onClick={doLogin}>Login</button>
-                <div id="ansField_loginPage"></div><br/>
 
-            </body>
+                    <hr id="hr"></hr>
+
+                    <h4 id="alreadyRegisteredLoginText">Don't have an account? Register</h4>
+                    
+
+                </div>
+            </div>
         </div>
     }
 }
