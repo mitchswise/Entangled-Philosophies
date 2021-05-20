@@ -1,3 +1,3 @@
 <?php
-    const languages = ["eng", "ger"];
+    const supported_languages = ["eng", "ger"];
 ?>
