@@ -29,3 +29,11 @@ Required Inputs | n/a
 Optional Inputs | n/a
 Successful Output | JSON with array of usernames and ids
 Error Output | JSON with error:no admins found
+
+url/addTag | Adds a user-created or admin tag
+--- | ---
+HTTP Request | POST
+Required Inputs | n/a
+Optional Inputs | n/a
+Successful Output | JSON with a successful "status" field
+Error Output | JSON with a "status" field describing the error
