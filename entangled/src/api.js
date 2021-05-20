@@ -138,21 +138,19 @@ export function getAdmins() {
 export function addTag(user, language, translations) {
 	var jsonPayload = '{"userID":' + user + ', "language":"' + language + '", ';
 	for(const lang in translations) {
-		jsonPayload += '"' + lang + '":"' + translations.lang + '", ';
+		jsonPayload += '"' + lang + '":"' + translations[lang] + '", ';
 	}
 	jsonPayload = jsonPayload.substring(0, jsonPayload.length-2) + "}";
 
-	console.log("Main check: " + jsonPayload);
-
-	// var url = urlBase + '/addTag.php';
-	// connect("POST", url);
+	var url = urlBase + '/addTag.php';
+	connect("POST", url);
 	
-	// try {
-	// 	xhr.send();
-	// 	var jsonObject = JSON.parse(xhr.responseText);
-	// 	return jsonObject;
-	// } catch (err) {
-	// 	return null;
-	// }
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
 
 }

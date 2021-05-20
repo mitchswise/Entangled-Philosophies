@@ -32,46 +32,57 @@ function testAddTag() {
     var category = document.getElementById("category").value;
     var jsonLanguages = '{"category":"' + category + '", ';
     for(const index in supported_languages) {
+        var htmlName = "tagname_"+supported_languages[index];
+        var value = document.getElementById(htmlName).value;
+        jsonLanguages += '"' + supported_languages[index] + '":"' + value + '", ';
     }
-    // for(const lang in supported_languages) {
-        // var htmlName = "tagname_"+lang;
-        // console.log("OKAY " + htmlName);
-        // var value = document.getElementById("tagname_"+lang).value;
-        // jsonLanguages += '"' + lang + '":"' + value + '", ';
-    // }
     jsonLanguages = jsonLanguages.substring(0, jsonLanguages.length - 2) + "}";
 
     var userID = 0;
     var language = "eng";
+    var jsonParse = JSON.parse(jsonLanguages);
 
-    addTag(userID, language, jsonLanguages);
+    var data = addTag(userID, language, jsonParse);
+    document.getElementById("tagStatus").innerHTML = data.status;
+}
+
+function testAddUserTag() {
+    var category = document.getElementById("categoryUser").value;
+    var jsonLanguages = '{"category":"' + category + '", ';
+    var value = document.getElementById("tagname_def").value;
+    jsonLanguages += '"def":"' + value + '", ';
+    jsonLanguages = jsonLanguages.substring(0, jsonLanguages.length - 2) + "}";
+
+    var userID = 10;
+    var language = "eng";
+    var jsonParse = JSON.parse(jsonLanguages);
+
+    var data = addTag(userID, language, jsonParse);
+    document.getElementById("tagStatus").innerHTML = data.status;
 }
 
 export default class AddUser extends React.Component {
     render() {
         const element = (
         <div className="container" id="outer-container"> 
-            <h1> Hello World!</h1>
-			<input type="text" id="username"/><br/>
-			<input type="text" id="email"/><br/>
-			<input type="text" id="password"/><br/>
-            <button type="button" id="checker" onClick={testFunc}>Test Endpoint</button>
-            <div id="ansField">Status: </div><br/>
-
-			<input type="text" id="loginusername"/><br/>
-			<input type="text" id="loginpassword"/><br/>
-			<button type="button" id="login" onClick={testLogin}>Login</button>
 
             <h3>Forgot Password? Enter username and email</h3>
             <input type="text" id="forgot_username"/><br/>
             <input type="text" id="forgot_email"/><br/>
             <button type="button" id="resetPass" onClick={testResetPassword}>Reset Password</button>
 
-            <h3>Add a tag! Enter category and supply translations in english and german</h3>
+            <h3>Add an Admin tag! Enter category and supply translations in english and german</h3>
             <input type="text" id="category"/><br/>
             <input type="text" id="tagname_eng"/><br/>
             <input type="text" id="tagname_ger"/><br/>
-            <button type="button" id="addTag" onClick={testAddTag}>Add tag</button>
+            <button type="button" id="addTag" onClick={testAddTag}>Add Admin tag</button>
+
+            <h3>Add a User tag! Enter category and the name of your tag</h3>
+            <input type="text" id="categoryUser"/><br/>
+            <input type="text" id="tagname_def"/><br/>
+            <button type="button" id="addTag" onClick={testAddUserTag}>Add User tag</button>
+
+            <div id = "tagStatus">Tag Status: </div>
         </div>
         );
         return element; 
