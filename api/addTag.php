@@ -16,21 +16,32 @@
     //check for invalid category
     $category_name = $inData["category"];
     $category_id = -1;
+
+    //admins can only use admin-made categories but users can
+    //use both admin and their own categories.
+    //If there are duplicate category names, we'll prioritize a user's category first.
     
-    $query = "SELECT category_id FROM category_translation WHERE language = '" . $language . "' AND text = '" . 
-                $category_name . "' AND owner = " . $userID . ";";
-    $result = $conn->query($query);
-    if(!$result) {
-        $message = '{"status":"' . $conn->error . '"}';
-        echo $message;
-        return;
+    if($userID > 0) {
+        $query = "SELECT category_id FROM category_translation WHERE language = 'def' AND text = '" . 
+                $category_name . "' AND owner = " . $userID . ";";    
+        $result = $conn->query($query);
+        if($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $category_id = $row["category_id"];
+        }
+    }
+    if($category_id == -1) {
+        $query = "SELECT category_id FROM category_translation WHERE language = '" . $language . "' AND text = '" . 
+                    $category_name . "' AND owner = 0;";
+        $result = $conn->query($query);
+    
+        if($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $category_id = $row["category_id"];
+        }
     }
 
-    if($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $category_id = $row["category_id"];
-    }
-    else {
+    if($category_id == -1) {
         $message = '{"status":"category does not exist."}';
         echo $message;
         return;
@@ -60,7 +71,7 @@
         }
     }
     else { //User tag
-        $tag_name = $inData["userLang"];
+        $tag_name = $inData["def"];
 
         //users cant have overlap with any of their own tags
         $query = "SELECT * FROM tags_translation WHERE text = '" . $tag_name . "' AND owner = " . $userID . ";";
@@ -94,7 +105,7 @@
     }
     else { //User inserts just one entry whose langauge is "def".
         $query = "INSERT INTO tags_translation (tag_id, language, text, owner) VALUES 
-        (" . $tag_id . ", 'def', '" . $inData["userLang"] . "', " . $userID . ");";
+        (" . $tag_id . ", 'def', '" . $inData["def"] . "', " . $userID . ");";
     }
 
     $result = $conn->query($query);
