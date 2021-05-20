@@ -1,7 +1,9 @@
 import Cookies from 'universal-cookie';
 export const cookies = new Cookies();
+export const supported_languages = ["eng", "ger"];
 
-var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+// var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+var urlBase = 'http://chdr.cs.ucf.edu/~ah458967/Entangled-Philosophies/api';
 
 var xhr;
 
@@ -131,4 +133,26 @@ export function getAdmins() {
 	} catch (err) {
 		return null;
 	}
+}
+
+export function addTag(user, language, translations) {
+	var jsonPayload = '{"userID":' + user + ', "language":"' + language + '", ';
+	for(const lang in translations) {
+		jsonPayload += '"' + lang + '":"' + translations.lang + '", ';
+	}
+	jsonPayload = jsonPayload.substring(0, jsonPayload.length-2) + "}";
+
+	console.log("Main check: " + jsonPayload);
+
+	// var url = urlBase + '/addTag.php';
+	// connect("POST", url);
+	
+	// try {
+	// 	xhr.send();
+	// 	var jsonObject = JSON.parse(xhr.responseText);
+	// 	return jsonObject;
+	// } catch (err) {
+	// 	return null;
+	// }
+
 }

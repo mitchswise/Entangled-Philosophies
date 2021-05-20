@@ -1,5 +1,5 @@
 import React from 'react';
-import {addUser, login, sendActivation, resetPassword} from '../api.js';
+import {addUser, login, sendActivation, resetPassword, supported_languages, addTag} from '../api.js';
 
 function testFunc() {
     var username = document.getElementById("username").value;
@@ -28,6 +28,25 @@ function testResetPassword() {
     document.getElementById("ansField").innerHTML = ("Status: " + data.status);
 }
 
+function testAddTag() {
+    var category = document.getElementById("category").value;
+    var jsonLanguages = '{"category":"' + category + '", ';
+    for(const index in supported_languages) {
+    }
+    // for(const lang in supported_languages) {
+        // var htmlName = "tagname_"+lang;
+        // console.log("OKAY " + htmlName);
+        // var value = document.getElementById("tagname_"+lang).value;
+        // jsonLanguages += '"' + lang + '":"' + value + '", ';
+    // }
+    jsonLanguages = jsonLanguages.substring(0, jsonLanguages.length - 2) + "}";
+
+    var userID = 0;
+    var language = "eng";
+
+    addTag(userID, language, jsonLanguages);
+}
+
 export default class AddUser extends React.Component {
     render() {
         const element = (
@@ -47,6 +66,12 @@ export default class AddUser extends React.Component {
             <input type="text" id="forgot_username"/><br/>
             <input type="text" id="forgot_email"/><br/>
             <button type="button" id="resetPass" onClick={testResetPassword}>Reset Password</button>
+
+            <h3>Add a tag! Enter category and supply translations in english and german</h3>
+            <input type="text" id="category"/><br/>
+            <input type="text" id="tagname_eng"/><br/>
+            <input type="text" id="tagname_ger"/><br/>
+            <button type="button" id="addTag" onClick={testAddTag}>Add tag</button>
         </div>
         );
         return element; 
