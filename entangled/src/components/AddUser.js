@@ -30,10 +30,19 @@ function testResetPassword() {
 
 function testAddTag() {
     var category = document.getElementById("category").value;
+    if(!category) {
+        document.getElementById("tagStatus").innerHTML = "Please fill out blank sections";
+        return;
+    }
+
     var jsonLanguages = '{"category":"' + category + '", ';
     for(const index in supported_languages) {
         var htmlName = "tagname_"+supported_languages[index];
         var value = document.getElementById(htmlName).value;
+        if(!value) {
+            document.getElementById("tagStatus").innerHTML = "Please fill out blank sections";
+            return;
+        }
         jsonLanguages += '"' + supported_languages[index] + '":"' + value + '", ';
     }
     jsonLanguages = jsonLanguages.substring(0, jsonLanguages.length - 2) + "}";
@@ -50,6 +59,12 @@ function testAddUserTag() {
     var category = document.getElementById("categoryUser").value;
     var jsonLanguages = '{"category":"' + category + '", ';
     var value = document.getElementById("tagname_def").value;
+
+    if(!value || !category) {
+        document.getElementById("tagStatus").innerHTML = "Please fill out blank sections";
+        return;
+    }
+
     jsonLanguages += '"def":"' + value + '", ';
     jsonLanguages = jsonLanguages.substring(0, jsonLanguages.length - 2) + "}";
 
