@@ -33,7 +33,8 @@ Error Output | JSON with error:no admins found
 url/addTag | Adds a user-created or admin tag
 --- | ---
 HTTP Request | POST
-Required Inputs | n/a
+Required Inputs | abc
+def
 Optional Inputs | n/a
 Successful Output | JSON with a successful "status" field
 Error Output | JSON with a "status" field describing the error
