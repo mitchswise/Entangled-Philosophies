@@ -1,3 +1,23 @@
+.ForgotBox {
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+    border-color: black;
+    width: 1100px;
+    Height: 345px;
+    top: -140px;
+    position: relative;
+    text-align: center;
+    margin:auto;
+}
+
+.ForgotFields {
+    top: -20px;
+    position: relative;
+}
+
 #resetPasswordStatus {
     color: red;
     text-align: center;
@@ -8,6 +28,6 @@
     margin: auto;
 }
 
-#email{
+#forgotEmail {
     top: -24px;
 }

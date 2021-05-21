@@ -30,12 +30,12 @@ export default class ForgotPass extends React.Component {
                 <h1 id="title">Forgot Password</h1>
             </div>
             {this.renderRedirect()}
-            <div className="LoginBox">
-                <div className="LoginFields">
+            <div className="ForgotBox">
+                <div className="ForgotFields">
                     <h2 id="leftUsername">Username</h2>
                     <input type="text" className="inputBoxes" id="username" /><br />
                     <h2 id="leftPassword">Email</h2>
-                    <input type="password" className="inputBoxes" id="email" /><br />
+                    <input type="password" className="inputBoxes" id="forgotEmail" /><br />
                     <button type="button" className="inputBoxes" id="login" onClick={doResetPassword}><div id="loginBtnTxt">Log In</div></button>
 
 
