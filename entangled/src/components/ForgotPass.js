@@ -5,7 +5,7 @@ import { resetPassword, cookies } from '../api.js';
 
 function doResetPassword() {
     var username = document.getElementById("username").value;
-    var email = document.getElementById("email").value;
+    var email = document.getElementById("forgotEmail").value;
 
     if(!username || !email) {
         document.getElementById("resetPasswordStatus").innerHTML = "Please fill out all fields.";
@@ -35,7 +35,7 @@ export default class ForgotPass extends React.Component {
                     <h2 id="leftUsername">Username</h2>
                     <input type="text" className="inputBoxes" id="username" /><br />
                     <h2 id="leftPassword">Email</h2>
-                    <input type="password" className="inputBoxes" id="forgotEmail" /><br />
+                    <input type="text" className="inputBoxes" id="forgotEmail" /><br />
                     <button type="button" className="inputBoxes" id="login" onClick={doResetPassword}><div id="loginBtnTxt">Log In</div></button>
 
 
