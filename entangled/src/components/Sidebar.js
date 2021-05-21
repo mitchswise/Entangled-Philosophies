@@ -5,7 +5,7 @@ import { slide as Menu } from 'react-burger-menu';
 import './Sidebar.css';
 
 export default props => {
-  return (
+  return (// Settings should only show up when user is logged in
     <Menu>
       <a className="menu-item">
         <Link to="/">Home</Link>
@@ -17,7 +17,10 @@ export default props => {
         <Link to="/login">Login</Link>
       </a>
       <a className="menu-item">
-        <Link to="/login">Login</Link>
+        <Link to="/register">Register</Link>
+      </a>
+      <a className="menu-item">
+        <Link to="/settings">Settings</Link>
       </a>
     </Menu>
   );

@@ -1,0 +1,144 @@
+.SettingsBox {
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+    border-color: black;
+    width: 1100px;
+    Height: 545px;
+    top: -140px;
+    position: relative;
+    text-align: center;
+    margin:auto;
+}
+
+
+#password{
+    top: -24px;
+}
+
+#password2{
+    top:-46px;
+}
+
+#email{
+    top:-70px;
+}
+
+.SettingsFields {
+    top: -20px;
+    position: relative;
+}
+
+#addUserStatus {
+    color: red;
+    text-align: center;
+    text-decoration: bold;
+    font-size: 18px;
+    top: -150px;
+    position: relative;
+    margin: auto;
+}
+
+.inputBoxes {
+
+    position: relative;
+    width: 350px;
+    height:28px;
+
+}
+
+#settingsBtnTxt {
+    vertical-align:middle;
+    bottom:0px;
+    position: relative;
+    color: blue;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#settings {
+    background-color: white;
+    border: none;
+    top:-27px;
+    height:36px;
+    width: 250px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+}
+
+
+#settings:hover {
+    background-color: #f75449;
+
+}
+
+#leftUsername
+{
+    position: relative;
+    top: 50px;
+    left: -280px;
+
+}
+
+#leftEmail
+{
+    position: relative;
+    top: 20px;
+    left: -280px;
+}
+
+#hr{
+    width:100%;
+    top:54px;
+    color: lightgray;
+    position: relative;
+
+}
+
+#language 
+{
+    position: relative;
+    left: -330px;
+    top: 0px;
+}
+
+#leftPassword
+{
+    position: relative;
+    left: -280px;
+    top: 28px;
+
+}
+
+#leftConfirmPassword
+{
+    position: relative;
+    left: -329px;
+    top: 6px;
+
+}
+
+#leftEmail
+{
+    position: relative;
+    left: -260px;
+    top: -18px;
+}
+
+#dropDownContainer
+{
+   position: relative;
+   left:-1750px;
+   top:0px;
+
+}
+
+#registerContainer
+{
+    text-align: center;
+}
