@@ -42,6 +42,9 @@ export default class Sidebar extends React.Component {
             <Link to="/about">About</Link>
           </a>
           <a className="menu-item">
+            <Link to="/tags">Tags</Link>
+          </a>
+          <a className="menu-item">
             <Link to="/" onClick={logout}>Logout</Link>
           </a>
         </Menu>
@@ -58,6 +61,9 @@ export default class Sidebar extends React.Component {
           </a>
           <a className="menu-item">
             <Link to="/admin">Admin</Link>
+          </a>
+          <a className="menu-item">
+            <Link to="/tags">Tags</Link>
           </a>
           <a className="menu-item">
             <Link to="/" onClick={logout}>Logout</Link>
