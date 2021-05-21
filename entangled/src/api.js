@@ -153,3 +153,18 @@ export function addTag(user, language, translations) {
 	}
 
 }
+
+export function removeTag(name, language, user) {
+	var jsonPayload = '{"name":"' + name + '", "language":"' + language + '", "userID":' + user + '}';
+
+	var url = urlBase + '/removeTag.php';
+	connect("POST", url);
+	
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
