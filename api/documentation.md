@@ -38,3 +38,13 @@ Example Admin Input | {"userID": 0,<br/>    "language":"eng",<br/>    "category"
 Optional Inputs | n/a
 Successful Output | JSON with a successful "status" field
 Error Output | JSON with a "status" field describing the error
+
+
+url/removeTag | Removes a user-created or admin tag
+--- | ---
+HTTP Request | POST
+Required Inputs | JSON with 3 fields:<br/><b>name</b>: the name of the tag to delete<br/><b>language</b>: the language the tag is in ("def" if user tag, other language if admin tag<br/><b>userID</b>: the id of the user calling the delete. Equal to 0 if an admin is deleting or the user id of the owner otherwise.
+Example Input | {"name":"words", "language":"eng", "userID":0}
+Optional Inputs | n/a
+Successful Output | JSON with a "status" field saying tag is deleted
+Error Output | JSON with a "status" field saying the tag does not exist/doesn't belong to you.

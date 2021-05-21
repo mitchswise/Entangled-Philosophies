@@ -1,5 +1,6 @@
 import React from 'react';
-import {addUser, login, sendActivation, resetPassword, supported_languages, addTag} from '../api.js';
+import {addUser, login, sendActivation, resetPassword, 
+    supported_languages, addTag, removeTag} from '../api.js';
 
 function testFunc() {
     var username = document.getElementById("username").value;
@@ -76,6 +77,19 @@ function testAddUserTag() {
     document.getElementById("tagStatus").innerHTML = data.status;
 }
 
+function testRemoveTag() {
+    var name = document.getElementById("tagRemoveName").value;
+    var lang = document.getElementById("tagRemoveLang").value;
+    var user = document.getElementById("tagRemoveUser").value;
+    if(!name || !lang || !user) {
+        document.getElementById("tagStatus").innerHTML = "Please fill out blank sections";
+        return;
+    }
+
+    var data = removeTag(name, lang, user);
+    document.getElementById("tagStatus").innerHTML = data.status;
+}
+
 export default class AddUser extends React.Component {
     render() {
         const element = (
@@ -96,6 +110,12 @@ export default class AddUser extends React.Component {
             <input type="text" id="categoryUser"/><br/>
             <input type="text" id="tagname_def"/><br/>
             <button type="button" id="addTag" onClick={testAddUserTag}>Add User tag</button>
+
+            <h3>Remove a tag! Enter the name, its language, and the user id of the owner</h3>
+            <input type="text" id="tagRemoveName"/><br/>
+            <input type="text" id="tagRemoveLang"/><br/>
+            <input type="text" id="tagRemoveUser"/><br/>
+            <button type="button" id="removeTag" onClick={testRemoveTag}>Remove tag</button>
 
             <div id = "tagStatus">Tag Status: </div>
         </div>
