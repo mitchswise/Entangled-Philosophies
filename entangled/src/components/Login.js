@@ -56,7 +56,8 @@ export default class Login extends React.Component {
 
                     <hr id="hr"></hr>
 
-                    <Link to="/register" id="alreadyRegisteredLoginText">Don't have an account? Register</Link>
+                    <Link to="/register" id="dontHaveAccountText">Don't have an account? Register</Link>
+                    <Link to="/forgotpass" id="forgotPasswordText">Forgot your password?</Link>
                     
 
                 </div>

@@ -77,8 +77,19 @@
 
 }
 
-#alreadyRegisteredLoginText {
+#dontHaveAccountText {
     top: 60px;
+    left: 500px;
+    position: relative;
+    text-decoration: thin;
+    font-weight:lighter;
+    color:blue;
+    font-size: 12px;
+}
+
+#forgotPasswordText {
+    top: 60px;
+    left: -550px;
     position: relative;
     text-decoration: thin;
     font-weight:lighter;
