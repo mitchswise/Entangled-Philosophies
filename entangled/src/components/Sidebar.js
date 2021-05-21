@@ -7,29 +7,72 @@ import { cookies } from '../api';
 
 function logout() {
   cookies.remove('UserID', { path: '/' });
+  cookies.remove('PermLvl', { path: '/' });
+  window.location.reload();
 }
 
-export default props => {
-  return (
-    <Menu>
-      <a className="menu-item">
-        <Link to="/">Home</Link>
-      </a>
-      <a className="menu-item">
-        <Link to="/about">About</Link>
-      </a>
-      <a className="menu-item">
-        <Link to="/login">Login</Link>
-      </a>
-      <a className="menu-item">
-        <Link to="/register">Register</Link>
-      </a>
-      <a className="menu-item">
-		    <Link to="/admin">Admin</Link>
-	    </a>
-      <a className="menu-item">
-		    <Link to="/login" onClick={logout} >Logout</Link>
-	    </a>
-    </Menu>
-  );
-};
+export default class Sidebar extends React.Component {
+
+  renderLogin() {
+    if(!cookies.get('UserID')) { //not logged in
+      return (
+      <Menu>
+        <a className="menu-item">
+          <Link to="/">Home</Link>
+        </a>
+        <a className="menu-item">
+          <Link to="/about">About</Link>
+        </a>
+        <a className="menu-item">
+          <Link to="/login">Login</Link>
+        </a>
+        <a className="menu-item">
+          <Link to="/register">Register</Link>
+        </a>
+      </Menu>
+      );
+    }
+    else if(cookies.get('PermLvl') == 0) { //regular user
+      return (
+        <Menu>
+          <a className="menu-item">
+            <Link to="/">Home</Link>
+          </a>
+          <a className="menu-item">
+            <Link to="/about">About</Link>
+          </a>
+          <a className="menu-item">
+            <Link to="/" onClick={logout}>Logout</Link>
+          </a>
+        </Menu>
+        );
+    }
+    else if(cookies.get('PermLvl') > 0) { //some administrator      
+      return (
+        <Menu>
+          <a className="menu-item">
+            <Link to="/">Home</Link>
+          </a>
+          <a className="menu-item">
+            <Link to="/about">About</Link>
+          </a>
+          <a className="menu-item">
+            <Link to="/admin">Admin</Link>
+          </a>
+          <a className="menu-item">
+            <Link to="/" onClick={logout}>Logout</Link>
+          </a>
+        </Menu>
+        );
+    }
+
+  }
+
+  render() {
+    const element = (
+      this.renderLogin()
+    );
+    return element;
+
+  }
+}
