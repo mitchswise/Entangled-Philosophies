@@ -2,7 +2,8 @@ import React from 'react';
 import './Login.css';
 import {setPerms} from '../api.js';
 import {getPerms} from '../api.js';
-import {getAdmins} from '../api.js';
+import {getAdmins, cookies} from '../api.js';
+import { Redirect } from 'react-router-dom';
 
 function doSetPerms() {
     var username = document.getElementById("username").value;
@@ -29,13 +30,20 @@ function doGetAdmins() {
 }
 
 export default class Login extends React.Component {
+
+	renderRedirect = () => {
+        if(!cookies.get('UserID') || cookies.get('PermLvl') < 1) {
+            return <Redirect to = '/' />
+        }
+    }
+
     render() {
         return <div className="container">
             <div className="header">
                 <h1 id="title">Add Admin</h1>
             </div>
             <body>
-
+				{this.renderRedirect()}
                 <input type="text" id="username" /><br />
                 <input type="text" id="permission_level" /><br />
                 <button type="button" id="setPermsButton" onClick={doSetPerms}>Set Permission Level</button>
