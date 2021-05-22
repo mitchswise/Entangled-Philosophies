@@ -29,7 +29,7 @@ function App() {
     </div>
     </div>
 
-      <Router basename={'/~entangledPhilosophy/Entangled-Philosophies/entangled/build'}>
+      <Router basename={'/~ah458967/Entangled-Philosophies/entangled/build'}>
         <Sidebar outerContainerId={'outer-container'} />
         <Switch>
           <Route exact path="/" component={Home}/>
@@ -40,7 +40,7 @@ function App() {
 		      <Route exact path="/adduser" component={AddUser}/>
           <Route exact path="/admin" component={Admin}/>
           <Route exact path="/forgotpass" component={ForgotPass}/>
-          <Route exact path="/ahmadTags" component={MakeTable}/>
+          <Route exact path="/tags" component={MakeTable}/>
         </Switch>
       </Router>
     </div>
