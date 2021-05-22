@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+}    
+#wrapper {
+     width: 1005px;
+     margin: 0 auto;
+}
+
+#leftcolumn {
+    border: 0px solid rgb(0, 0, 0);
+    float: left;
+    min-height: 450px;
+}
+
+#rightcolumn {
+    border: 1px solid rgb(0, 0, 0);
+    float: right;
+    min-height: 450px;
+}
+#leftcolumn {
+     width: 500px;
+}
+#rightcolumn {
+     width: 500px;
+}

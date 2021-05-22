@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTable, useFilters, useSortBy, usePagination } from "react-table";
 import './Table.css';
 
-export default function Table({ columns, data }) {
+export default function Table({ columns, data, passedFunction }) {
     const {
         getTableProps, // table props from react-table
         getTableBodyProps, // table body props from react-table
@@ -27,13 +27,21 @@ export default function Table({ columns, data }) {
 
     const handleFilterChange = e => {
         const value = e.target.value || undefined;
-        setFilter("name", value);
+        setFilter("text", value);
         setFilterInput(value);
     };
 
     return (
         <>
-        
+        <div>
+        <input
+            value={filterInput}
+            onChange={handleFilterChange}
+            placeholder={"Search name"}
+        />
+        <button onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
+        <button onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
+        </div>
         <table {...getTableProps()}>
             <thead>
             {headerGroups.map(headerGroup => (
@@ -59,7 +67,7 @@ export default function Table({ columns, data }) {
             {page.map((row, i) => {
                 prepareRow(row);
                 return (
-                <tr {...row.getRowProps()}>
+                <tr {...row.getRowProps()} onClick={() => passedFunction(row.original)} >
                     {row.cells.map(cell => {
                     return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
                     })}
@@ -68,15 +76,7 @@ export default function Table({ columns, data }) {
             })}
             </tbody>
         </table>
-        <div>
-        <input
-            value={filterInput}
-            onChange={handleFilterChange}
-            placeholder={"Search name"}
-        />
-        <button onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
-        <button onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
-        </div>
+        
     </>
     );
 }
