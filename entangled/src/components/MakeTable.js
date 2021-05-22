@@ -1,8 +1,11 @@
 import React from "react";
 import { Redirect } from 'react-router-dom'; 
-import { getTags, addTag, cookies, supported_languages } from '../api.js';
+import { getTags, addTag, removeTag,
+    getTagTranslation, cookies, supported_languages } from '../api.js';
 import Table from "./Table";
 import './MakeTable.css';
+
+//table set-up functions:
 
 const columns = [
     {
@@ -21,7 +24,10 @@ function makeData() {
     return result.tags;
 }
 
-function doAddTag() {
+//endpoint calling functions:
+
+//adds a tag to the database
+function doAddTag(edit_tag) {
     var translations = {}
     var tag_category = document.getElementById("tagCategoryBox").value;
     if(!tag_category) {
@@ -59,44 +65,67 @@ function doAddTag() {
     //SWITCH to calling settings endpoint when it's done
     var language = "eng";
 
-    var data = addTag(userID, language, translations);
+    var data = addTag(userID, language, translations, edit_tag);
     document.getElementById("tagsPageStatus").innerHTML = data.status;
 }
+
+//removes a tag from the database
+function doRemoveTag(rowInfo) {
+    var tagName = rowInfo.text;
+    var userID = rowInfo.owner;
+    var language = rowInfo.owner == 0 ? "eng" : "def"; //Switch!
+
+    var data = removeTag(tagName, language, userID);
+    document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
+}
+
+//conditional render functions for button clicks:
 
 function UserEditTag({ rowInfo }) {
     var tagName = rowInfo.text;
     var category = rowInfo.catText;
     return <div>
-        <input type="text" className="inputBoxes" id="tagNameBox" value = {tagName} placeholder="tag name" />
-        <input type="text" className="inputBoxes" id="tagCategoryBox" value={category} placeholder="tag category" />
-        <button >Save</button>
+        <h1>Edit Tag</h1>
+        <input type="text" className="inputBoxes" id="defBox" placeholder={tagName} />
+        <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder={category} />
+        <button onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
+        <button onClick={() => doRemoveTag(rowInfo)} >Delete</button>
     </div>
 }
 
 function UserAddTag() {
     return <div> 
+        <h1>Add Tag</h1>
         <input type="text" className="inputBoxes" id="defBox" placeholder="tag name" />
         <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder="tag category" />
-        <button onClick={doAddTag}>Save</button>
+        <button onClick={() => doAddTag(-1)}>Save</button>
     </div>
 }
 
-function AdminEditTag() {
-    document.getElementById("tagsPageStatus").innerHTML = "In development";
+function AdminEditTag({ rowInfo }) {
+    var translations = getTagTranslation(rowInfo.tag_id);
+
+    var category = rowInfo.catText;
+    var tag_eng = translations.eng;
+    var tag_ger = translations.ger;
+
     return <div>
-        <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder="tag category" />
-        <input type="text" className="inputBoxes" id="engBox" placeholder="English tag" />
-        <input type="text" className="inputBoxes" id="gerBox" placeholder="German tag" />
-        <button >Save</button>
+        <h1>Edit Tag</h1>
+        <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder={category} />
+        <input type="text" className="inputBoxes" id="engBox" placeholder={tag_eng} />
+        <input type="text" className="inputBoxes" id="gerBox" placeholder={tag_ger} />
+        <button onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
+        <button onClick={() => doRemoveTag(rowInfo)} >Delete</button>
     </div>
 }
 
 function AdminAddTag() {
     return <div>
+        <h1>Add Tag</h1>
         <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder="tag category" />
         <input type="text" className="inputBoxes" id="engBox" placeholder="English tag" />
         <input type="text" className="inputBoxes" id="gerBox" placeholder="German tag" />
-        <button onClick={doAddTag}>Save</button>
+        <button onClick={() => doAddTag(-1)}>Save</button>
     </div>
 }
 
@@ -112,6 +141,7 @@ export default class MakeTable extends React.Component {
     state = { tagAdditionState : 0,
         rowInfo: null };
 
+    //not logged in?
     renderRedirect = () => {
         if(!cookies.get('UserID')) {
             return <Redirect to = '/' />
@@ -123,7 +153,13 @@ export default class MakeTable extends React.Component {
         var element = (<div></div>);
         this.setState({ rowInfo: rowInfo });
         if(cookies.get('PermLvl') < 1) {
-            this.setState({ tagAdditionState: 4 });
+            if(rowInfo.owner != cookies.get('UserID')) {
+                document.getElementById("tagsPageStatus").innerHTML = "Status: You can't edit public tags.";
+                this.setState({ tagAdditionState: 0 });
+            }
+            else {
+                this.setState({ tagAdditionState: 4 });
+            }
         }
         else {
             this.setState({ tagAdditionState: 3 });
@@ -158,7 +194,7 @@ export default class MakeTable extends React.Component {
                         <div id="rightcolumn">
                             {tagAdditionState == 1 ? <AdminAddTag /> :
                              tagAdditionState == 2 ? <UserAddTag /> :
-                             tagAdditionState == 3 ? <AdminEditTag /> :
+                             tagAdditionState == 3 ? <AdminEditTag rowInfo={rowInfo} /> :
                              tagAdditionState == 4 ? <UserEditTag rowInfo={rowInfo} /> :
                             <div></div>}
                             

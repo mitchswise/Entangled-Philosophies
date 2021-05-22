@@ -135,8 +135,9 @@ export function getAdmins() {
 	}
 }
 
-export function addTag(user, language, translations) {
-	var jsonPayload = '{"userID":' + user + ', "language":"' + language + '", ';
+export function addTag(user, language, translations, edit_tag) {
+	console.log("Hello " + edit_tag);
+	var jsonPayload = '{"userID":' + user + ', "language":"' + language + '", "edit_tag":' + edit_tag + ', ';
 	for(const lang in translations) {
 		jsonPayload += '"' + lang + '":"' + translations[lang] + '", ';
 	}
@@ -174,6 +175,21 @@ export function getTags(userID, language) {
 	var jsonPayload = '{"userID":"' + userID + '", "language":"' + language + '"}';
 
 	var url = urlBase + '/getTags.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function getTagTranslation(tag_id) {
+	var jsonPayload = '{"tag_id":' + tag_id + '}';
+
+	var url = urlBase + '/getTagTranslations.php';
 	connect("POST", url);
 
 	try {
