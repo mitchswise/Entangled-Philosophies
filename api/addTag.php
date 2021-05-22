@@ -12,6 +12,7 @@
     $inData = json_decode(file_get_contents('php://input'), true);
     $userID = $inData["userID"];
     $language = $inData["language"];
+    $edit_tag = $inData["edit_tag"]; //-1 if we're inserting, not 0 means it's the tag id
 
     //check for invalid category
     $category_name = $inData["category"];
@@ -61,7 +62,7 @@
             if($idx > 0) $query = $query . " OR ";
             $cur_lang = supported_languages[$idx];
             $query = $query . "(text = '" . $inData[$cur_lang] . "' AND language = '" . 
-		        $cur_lang . "' AND owner = 0)";
+		        $cur_lang . "' AND owner = 0 AND tag_id != " . $edit_tag . ")";
         }
         $query = $query . ";";
 
@@ -74,7 +75,7 @@
         $tag_name = $inData["def"];
 
         //users cant have overlap with any of their own tags
-        $query = "SELECT * FROM tags_translation WHERE text = '" . $tag_name . "' AND owner = " . $userID . ";";
+        $query = "SELECT * FROM tags_translation WHERE text = '" . $tag_name . "' AND owner = " . $userID . " AND tag_id != " . $edit_tag . ";";
         $result = $conn->query($query);
 
         if($result->num_rows > 0) {
@@ -87,35 +88,67 @@
         return;
     }
 
-    //now insert the tag 
-    $query = "INSERT INTO tags (owner_id, category_id) VALUES (" . $userID . ", " . $category_id . ");";
-    $result = $conn->query($query);
-    $tag_id = $conn->insert_id;
-
-    //now insert all translations of the tag
-    if($userID == 0) { //Admin inserts all translations
-        $query = "INSERT INTO tags_translation (tag_id, language, text, owner) VALUES ";
-        for($idx = 0; $idx < $lang_len; $idx++) {
-            if($idx > 0) $query = $query . ", ";
-            $cur_lang = supported_languages[$idx];
-            $add_to_query = "(" . $tag_id . ", '" . $cur_lang . "', '" . $inData[$cur_lang] . "', " . $userID . ")";
-            $query = $query . $add_to_query;
-        }
-        $query = $query . ";";
-    }
-    else { //User inserts just one entry whose langauge is "def".
-        $query = "INSERT INTO tags_translation (tag_id, language, text, owner) VALUES 
-        (" . $tag_id . ", 'def', '" . $inData["def"] . "', " . $userID . ");";
-    }
-
-    $result = $conn->query($query);
-    if(!$result) {
-        $message = '{"status":"' . $conn->error . '", "tagID":"' . $tag_id . '", "SQL":"' . $query . '"}';
-        echo $message;
-        return;
-    }
+    if($edit_tag == -1) { //okay inserting a tag
+        //now insert the tag 
+        $query = "INSERT INTO tags (owner_id, category_id) VALUES (" . $userID . ", " . $category_id . ");";
+        $result = $conn->query($query);
+        $tag_id = $conn->insert_id;
     
-    $message = '{"status":"Successfully added tag"}';
-    echo $message;
+        //now insert all translations of the tag
+        if($userID == 0) { //Admin inserts all translations
+            $query = "INSERT INTO tags_translation (tag_id, language, text, owner) VALUES ";
+            for($idx = 0; $idx < $lang_len; $idx++) {
+                if($idx > 0) $query = $query . ", ";
+                $cur_lang = supported_languages[$idx];
+                $add_to_query = "(" . $tag_id . ", '" . $cur_lang . "', '" . $inData[$cur_lang] . "', " . $userID . ")";
+                $query = $query . $add_to_query;
+            }
+            $query = $query . ";";
+        }
+        else { //User inserts just one entry whose langauge is "def".
+            $query = "INSERT INTO tags_translation (tag_id, language, text, owner) VALUES 
+            (" . $tag_id . ", 'def', '" . $inData["def"] . "', " . $userID . ");";
+        }
+    
+        $result = $conn->query($query);
+        if(!$result) {
+            $message = '{"status":"' . $conn->error . '"}';
+            echo $message;
+            return;
+        }
+        
+        $message = '{"status":"Successfully added tag"}';
+        echo $message;
+    }
+    else { //okay editing a tag
+
+        if($userID == 0) {
+            for($idx = 0; $idx < $lang_len; $idx++) {
+                $cur_lang = supported_languages[$idx];
+                $query = "UPDATE tags_translation SET text = '" . $inData[$cur_lang] . "' WHERE tag_id = " . 
+                    $edit_tag . " AND language = '" . $cur_lang . "';";
+                
+                $conn->query($query);
+                if(!$result) {
+                    $message = '{"status":"' . $conn->error . '"}';
+                    echo $message;
+                    return;
+                }
+            }
+        }
+        else {
+            $query = "UPDATE tags_translation SET text = '" . $inData["def"] . "' WHERE tag_id = " . $edit_tag . ";";
+            $conn->query($query);
+            if(!$result) {
+                $message = '{"status":"' . $conn->error . '"}';
+                echo $message;
+                return;
+            }
+        }
+        $message = '{"status":"Successfully updated tag"}';
+        echo $message; 
+
+    }
+
 
 ?>
