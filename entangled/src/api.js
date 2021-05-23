@@ -54,7 +54,6 @@ export function login(username, password) {
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);
 		cookies.set('login', jsonObject.UserID, { path: '/' });
-		console.log(cookies.get('login'));
 		return jsonObject;
 	} catch (err) {
 		return null;
@@ -212,7 +211,6 @@ export function addCategory(user, cat_id, translations) {
 	
 	try {
 		xhr.send(jsonPayload);
-		console.log("Okay.. " + xhr.responseText + ":");
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
@@ -244,7 +242,6 @@ export function getCats(userID, language) {
 
 	try {
 		xhr.send(jsonPayload);
-		console.log("OKAU " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
@@ -260,7 +257,6 @@ export function getCategoryTranslation(cat_id) {
 
 	try {
 		xhr.send(jsonPayload);
-		console.log("Finished api " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
