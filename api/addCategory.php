@@ -93,7 +93,7 @@
             }
         }
         else {
-            $query = "UPDATE tags_translation SET text = '" . $inData["def"] . "' WHERE tag_id = " . $edit_category . ";";
+            $query = "UPDATE category_translation SET text = '" . $inData["def"] . "' WHERE category_id = " . $edit_category . ";";
             $conn->query($query);
             if(!$result) {
                 $message = '{"status":"' . $conn->error . '"}';
@@ -101,7 +101,7 @@
                 return;
             }
         }
-        $message = '{"status":"Successfully updated tag"}';
+        $message = '{"status":"Successfully updated category"}';
         echo $message; 
 
     }
