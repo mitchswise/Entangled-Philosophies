@@ -2,24 +2,21 @@ body {
     margin: 0;
 }    
 #wrapper {
-     width: 1005px;
+     width: 90%;
      margin: 0 auto;
 }
 
 #leftcolumn {
     border: 0px solid rgb(0, 0, 0);
     float: left;
+    width: 600px;
+    height: 600px;
     min-height: 450px;
 }
 
 #rightcolumn {
-    border: 1px solid rgb(0, 0, 0);
+    border: 2px solid rgb(0, 0, 0);
     float: right;
+    width: 500px;
     min-height: 450px;
-}
-#leftcolumn {
-     width: 500px;
-}
-#rightcolumn {
-     width: 500px;
 }

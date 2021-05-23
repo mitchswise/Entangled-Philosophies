@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTable, useFilters, useSortBy, usePagination } from "react-table";
 import './Table.css';
 
-export default function Table({ columns, data, passedFunction }) {
+export default function Table({ columns, data, loadTag, addTags, toggleView }) {
     const {
         getTableProps, // table props from react-table
         getTableBodyProps, // table body props from react-table
@@ -36,11 +36,13 @@ export default function Table({ columns, data, passedFunction }) {
         <div>
         <input
             value={filterInput}
+            id="tagsSearchBar"
             onChange={handleFilterChange}
             placeholder={"Search name"}
         />
-        <button onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
-        <button onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
+        <button id="tagsAddButton" onClick={addTags} >Add</button>
+        <button id="tagsAddButton" onClick={toggleView} >Toggle</button>
+        
         </div>
         <table {...getTableProps()}>
             <thead>
@@ -67,7 +69,7 @@ export default function Table({ columns, data, passedFunction }) {
             {page.map((row, i) => {
                 prepareRow(row);
                 return (
-                <tr {...row.getRowProps()} onClick={() => passedFunction(row.original)} >
+                <tr {...row.getRowProps()} onClick={() => loadTag(row.original)} >
                     {row.cells.map(cell => {
                     return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
                     })}
@@ -76,7 +78,8 @@ export default function Table({ columns, data, passedFunction }) {
             })}
             </tbody>
         </table>
-        
+        <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
+        <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
     </>
     );
 }
