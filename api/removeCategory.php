@@ -14,7 +14,7 @@
     $language = $inData["language"];
     $cat_name = $inData["name"];
 
-    //does the tag exist?
+    //does the category exist?
     $query = "SELECT category_id FROM category_translation WHERE owner = " . $userID . " AND language = '" . $language . "' AND text = '" . $cat_name . "';";
     $result = $conn->query($query);
 
@@ -26,6 +26,10 @@
 
     $row = $result->fetch_assoc();
     $cat_id = $row["category_id"];
+
+    //find all tags that have this category
+    $query = "SELECT id FROM tags WHERE category_id = " . $cat_id . ";";
+    $result = $conn->query($query);
 
     //remove all translations
     $query = "DELETE FROM category_translation WHERE category_id = " . $cat_id . ";";
