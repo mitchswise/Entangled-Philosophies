@@ -69,7 +69,9 @@ export default function Table({ columns, data, loadTag, addTags, toggleView }) {
             {page.map((row, i) => {
                 prepareRow(row);
                 return (
-                <tr {...row.getRowProps()} onClick={() => loadTag(row.original)} >
+                <tr {...row.getRowProps()} 
+                        // style={row.original.owner === 0 ? {hover: 'white'} : {hover: 'blue'} } 
+                        onClick={() => loadTag(row.original)} >
                     {row.cells.map(cell => {
                     return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
                     })}
