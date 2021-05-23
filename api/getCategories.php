@@ -14,11 +14,11 @@
 	$language = $inData["language"];
     
     $query = "SELECT category_id, text, owner FROM category_translation WHERE language = '" . $language 
-        . "' AND (owner = 0 OR owner = " . $userID . ";";
+        . "' AND (owner = 0 OR owner = " . $userID . ");";
     $result = $conn->query($query);
 
     if(!$result) {
-        echo '{"status":"' . $result->conn_error . '"}';
+        echo '{"status":"' . $query . '"}';
         return;
     }
 

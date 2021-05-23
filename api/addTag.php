@@ -121,6 +121,8 @@
         echo $message;
     }
     else { //okay editing a tag
+        $query = "UPDATE tags SET category_id = " . $category_id . " WHERE id = " . $edit_tag . ";";
+        $result = $conn->query($query);
 
         if($userID == 0) {
             for($idx = 0; $idx < $lang_len; $idx++) {
