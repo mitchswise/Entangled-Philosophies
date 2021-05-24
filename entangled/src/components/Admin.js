@@ -1,5 +1,5 @@
-import React from 'react';
-import './Login.css';
+import React, { useState, useEffect } from 'react';
+import './Admin.css';
 import {setPerms} from '../api.js';
 import {getPerms} from '../api.js';
 import {getAdmins, cookies} from '../api.js';
@@ -24,7 +24,7 @@ function doGetAdmins() {
 	var outputString = "";
 	var i;
 	for (i = 0; i < arr.length; i++) {
-		outputString += "username: " + arr[i].username + ", id: " + arr[i].id + "<br/>";
+		outputString += "<ul> username: " + arr[i].username + ", id: " + arr[i].id + "</ul>";
 	}
 	document.getElementById("adminList").innerHTML = outputString;
 }
@@ -42,21 +42,29 @@ export default class Login extends React.Component {
             <div className="header">
                 <h1 id="title">Add Admin</h1>
             </div>
-            <body>
+            <div class="AdminBox">
 				{this.renderRedirect()}
-                <input type="text" id="username" /><br />
-                <input type="text" id="permission_level" /><br />
-                <button type="button" id="setPermsButton" onClick={doSetPerms}>Set Permission Level</button>
+
+				<div class="AddAdminBox">
+				<h2>Username</h2>
+                <input type="text" class="inputBoxes" id="username" /><br />
+				<h2>Permission Level</h2>
+                <input type="text" class="inputBoxes" id="permission_level" /><br />
+                <button type="button" id="btn" onClick={doSetPerms}><div id="btnTxt">Set Permission Level</div></button>
                 <div id="ansField_adminPage"></div><br/><br/>
 
-				<input type="text" id="usernameGet"/><br/>
-				<button type="button" id="getPermsButton" onClick={doGetPerms}>Get Permission Level</button>
+				<h2>Username</h2>
+				<input type="text" class="inputBoxes" id="usernameGet"/><br/>
+				<button type="button" id="btn" onClick={doGetPerms}><div id="btnTxt">Get Permission Level</div></button>
 				<div id="permLevel"></div><br/><br/>
+				</div>
 
-				<button type="button" id="getAdminsButton" onClick={doGetAdmins}>Get All Admins</button>
-				<div id="adminList"></div><br/>
+				<div class="UserListBox">
+					<button type="button" id="btn" onClick={doGetAdmins}><div id="btnTxt">Get All Admins</div></button>
+					<div id="adminList"></div><br/>
+				</div>
 
-            </body>
+            </div>
         </div>
     }
 }
