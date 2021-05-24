@@ -16,30 +16,30 @@ function doAddUser() {
     var email = document.getElementById("email").value;
     var language = "eng"; //Needs fixing!
 
-    if(!username) {
+    if (!username) {
         document.getElementById("addUserStatus").innerHTML = ("Enter a username.");
         return;
     }
-    if(!firstPass) {
+    if (!firstPass) {
         document.getElementById("addUserStatus").innerHTML = ("Enter a password.");
         return;
     }
-    if(!secondPass) {
+    if (!secondPass) {
         document.getElementById("addUserStatus").innerHTML = ("Confirm your password.");
         return;
     }
 
-    if(firstPass != secondPass) {
+    if (firstPass != secondPass) {
         document.getElementById("addUserStatus").innerHTML = ("Passwords do not match");
         return;
     }
-    if(!validateEmail(email)) {
+    if (!validateEmail(email)) {
         document.getElementById("addUserStatus").innerHTML = ("Invalid email");
         return;
     }
 
     var response = addUser(username, email, firstPass, language);
-    if(response.status != "success") {
+    if (response.status != "success") {
         document.getElementById("addUserStatus").innerHTML = ("Error: " + response.status);
         return;
     }
@@ -56,8 +56,8 @@ function doAddUser() {
 export default class Register extends React.Component {
 
     renderRedirect = () => {
-        if(cookies.get('UserID')) {
-            return <Redirect to = '/' />
+        if (cookies.get('UserID')) {
+            return <Redirect to='/' />
         }
     }
 
@@ -79,12 +79,12 @@ export default class Register extends React.Component {
                         <h2 id="leftEmail">Email</h2>
                         <input type="text" className="inputBoxes" id="email" /><br />
 
-                        <div id="dropDownContainer">
+                        <div id="registerDownContainer">
                             <div class="dropdown" id="test">
                                 <button class="dropbtn" id="chooseRegisterLangBtn">Choose Language</button>
                                 <div class="dropdown-content" id="dropdownRegister">
-                                    <a href="#">English</a>
-                                    <a href="#">German</a>
+                                    <button type="submit" id="englishButton">English</button>
+                                    <button type="submit" id="germanButton">German</button>
                                 </div>
                             </div>
                         </div>

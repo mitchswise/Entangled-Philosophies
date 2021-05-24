@@ -148,36 +148,36 @@ function UserEdit({ rowInfo, toggleState }) {
         var translations = getCategoryTranslation(rowInfo.cat_id);
         var cat = translations.def;
         return <div>
-            <h1>Edit Category</h1>
+            <h1 id="editTagHeader">Edit Category</h1>
             <input type="text" className="inputBoxes" id="defBox" placeholder={cat} />
-            <button onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
-            <button onClick={() => doRemoveCat(rowInfo)} >Delete</button>
+            <button id="editCatButtons" onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
+            <button id="editCatButtons" onClick={() => doRemoveCat(rowInfo)} >Delete</button>
         </div>
     }
     var tagName = rowInfo.text;
     var category = rowInfo.catText;
     return <div>
-        <h1>Edit Tag</h1>
+        <h1 id="editTagHeader">Edit Tag</h1>
         <input type="text" className="inputBoxes" id="defBox" placeholder={tagName} />
         <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder={category} />
-        <button onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
-        <button onClick={() => doRemoveTag(rowInfo)} >Delete</button>
+        <button id="editTagButtons" onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
+        <button id="editTagButtons" onClick={() => doRemoveTag(rowInfo)} >Delete</button>
     </div>
 }
 
 function UserAdd({ toggleState }) {
     if(toggleState) {
         return <div>
-            <h1>Add Category</h1>
+            <h1 id="editTagHeader">Add Category</h1>
             <input type="text" className="inputBoxes" id="defBox" placeholder="Category name" />
-            <button onClick={() => doAddCat(-1)}>Save</button>
+            <button id="addCatButtons" onClick={() => doAddCat(-1)}>Save</button>
         </div>
     }
     return <div> 
-        <h1>Add Tag</h1>
+        <h1 id="editTagHeader">Add Tag</h1>
         <input type="text" className="inputBoxes" id="defBox" placeholder="tag name" />
         <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder="tag category" />
-        <button onClick={() => doAddTag(-1)}>Save</button>
+        <button id="addTagButtons" onClick={() => doAddTag(-1)}>Save</button>
     </div>
 }
 
@@ -187,11 +187,11 @@ function AdminEdit({ rowInfo, toggleState }) {
         var cat_eng = translations.eng;
         var cat_ger = translations.ger;
         return <div>
-            <h1>Edit Category</h1>
+            <h1 id="editTagHeader">Edit Category</h1>
             <input type="text" className="inputBoxes" id="engBox" placeholder={cat_eng} />
             <input type="text" className="inputBoxes" id="gerBox" placeholder={cat_ger} />
-            <button onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
-            <button onClick={() => doRemoveCat(rowInfo)} >Delete</button>
+            <button id="editCatButtonsAdmin" onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
+            <button id="editCatButtonsAdmin" onClick={() => doRemoveCat(rowInfo)} >Delete</button>
         </div>
     }
 
@@ -202,30 +202,30 @@ function AdminEdit({ rowInfo, toggleState }) {
     var tag_ger = translations.ger;
 
     return <div>
-        <h1>Edit Tag</h1>
+        <h1 id="editTagHeader">Edit Tag</h1>
         <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder={category} />
         <input type="text" className="inputBoxes" id="engBox" placeholder={tag_eng} />
         <input type="text" className="inputBoxes" id="gerBox" placeholder={tag_ger} />
-        <button onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
-        <button onClick={() => doRemoveTag(rowInfo)} >Delete</button>
+        <button id="editTagButtonsAdmin" onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
+        <button id="editTagButtonsAdmin" onClick={() => doRemoveTag(rowInfo)} >Delete</button>
     </div>
 }
 
 function AdminAdd({ toggleState }) {
     if(toggleState) {
         return <div>
-            <h1>Add Category</h1>
+            <h1 id="editTagHeader">Add Category</h1>
             <input type="text" className="inputBoxes" id="engBox" placeholder="English category" />
             <input type="text" className="inputBoxes" id="gerBox" placeholder="German category" />
-            <button onClick={() => doAddCat(-1)}>Save</button>
+            <button id="addCatButtonsAdmin" onClick={() => doAddCat(-1)}>Save</button>
         </div>
     }
     return <div>
-        <h1>Add Tag</h1>
+        <h1 id="editTagHeader">Add Tag</h1>
         <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder="tag category" />
         <input type="text" className="inputBoxes" id="engBox" placeholder="English tag" />
         <input type="text" className="inputBoxes" id="gerBox" placeholder="German tag" />
-        <button onClick={() => doAddTag(-1)}>Save</button>
+        <button id="addTagButtonsAdmin" onClick={() => doAddTag(-1)}>Save</button>
     </div>
 }
 

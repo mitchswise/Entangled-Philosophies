@@ -28,3 +28,87 @@ body {
     height: 600px;
     min-height: 450px;
 }
+
+#editTagHeader {
+    text-align: center;
+}
+
+#engBox {
+    left:10%;
+    top:10%;
+    position: relative;
+}
+#gerBox {
+    left:10%;
+    top:10%;
+    position: relative;
+}
+#defBox {
+    left:10%;
+    top:10%;
+    position: relative;
+}
+
+#tagCategoryBox {
+    top:16%;
+    left:10%;
+    position: relative;
+}
+
+#editTagButtons {
+    margin: 0;
+    position: relative;
+    bottom: -425px;
+    left: -33%;
+}
+
+#editTagButtonsAdmin {
+    margin: 0;
+    position: relative;
+    bottom: -405px;
+    left: -33%;
+}
+
+#addTagButtons {
+    margin: 0;
+    position: relative;
+    bottom: -425px;
+    /* bottom: 20%; */
+    /* top: 400px; */
+    left: -29%;
+}
+
+#addTagButtonsAdmin {
+    margin: 0;
+    position: relative;
+    bottom: -405px;
+    left: -29%;
+}
+
+#addCatButtons {
+    margin: 0;
+    position: relative;
+    bottom: -460px;
+    left: -29%;
+}
+
+#addCatButtonsAdmin {
+    margin: 0;
+    position: relative;
+    bottom: -440px;
+    left: -29%;
+}
+
+#editCatButtons {
+    margin: 0;
+    position: relative;
+    bottom: -460px;
+    left: -33%;
+}
+
+#editCatButtonsAdmin {
+    margin: 0;
+    position: relative;
+    bottom: -440px;
+    left: -33%;
+}
