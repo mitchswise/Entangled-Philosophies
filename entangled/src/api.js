@@ -53,7 +53,6 @@ export function login(username, password) {
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);
 		cookies.set('login', jsonObject.UserID, { path: '/' });
-		console.log(cookies.get('login'));
 		return jsonObject;
 	} catch (err) {
 		return null;
@@ -134,8 +133,8 @@ export function getAdmins() {
 	}
 }
 
-export function addTag(user, language, translations) {
-	var jsonPayload = '{"userID":' + user + ', "language":"' + language + '", ';
+export function addTag(user, language, translations, edit_tag) {
+	var jsonPayload = '{"userID":' + user + ', "language":"' + language + '", "edit_tag":' + edit_tag + ', ';
 	for(const lang in translations) {
 		jsonPayload += '"' + lang + '":"' + translations[lang] + '", ';
 	}
@@ -160,6 +159,101 @@ export function removeTag(name, language, user) {
 	var url = urlBase + '/removeTag.php';
 	connect("POST", url);
 	
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function getTags(userID, language) {
+	var jsonPayload = '{"userID":"' + userID + '", "language":"' + language + '"}';
+
+	var url = urlBase + '/getTags.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function getTagTranslation(tag_id) {
+	var jsonPayload = '{"tag_id":' + tag_id + '}';
+
+	var url = urlBase + '/getTagTranslations.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function addCategory(user, cat_id, translations) {
+	var jsonPayload = '{"userID":' + user + ', "edit_category":' + cat_id + ', ';
+	for(const lang in translations) {
+		jsonPayload += '"' + lang + '":"' + translations[lang] + '", ';
+	}
+	jsonPayload = jsonPayload.substring(0, jsonPayload.length-2) + "}";
+
+	var url = urlBase + '/addCategory.php';
+	connect("POST", url);
+	
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+
+}
+
+export function removeCategory(name, language, user) {
+	var jsonPayload = '{"name":"' + name + '", "language":"' + language + '", "userID":' + user + '}';
+
+	var url = urlBase + '/removeCategory.php';
+	connect("POST", url);
+	
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function getCats(userID, language) {
+	var jsonPayload = '{"userID":"' + userID + '", "language":"' + language + '"}';
+
+	var url = urlBase + '/getCategories.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function getCategoryTranslation(cat_id) {
+	var jsonPayload = '{"cat_id":' + cat_id + '}';
+
+	var url = urlBase + '/getCategoriesTranslations.php';
+	connect("POST", url);
+
 	try {
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);

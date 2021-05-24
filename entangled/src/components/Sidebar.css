@@ -4,7 +4,7 @@
   width: 36px;
   height: 25px;
   left: 20px;
-  top: -92px;
+  top: -40px;
 }
 
 
@@ -42,7 +42,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
   position: fixed;
   height: 100%;
   left: -40px;
-  
+  margin-top: -24px;  
 }
 
 /* General sidebar styles */
@@ -50,7 +50,6 @@ Note: Beware of modifying this element as it can break the animations - you shou
   background: white;
   padding: 2.5em 1.5em 0;
   font-size: 1.15em;
-  margin-top: -75px
 }
 
 /* Morph shape necessary with bubble or elastic */
@@ -62,7 +61,6 @@ Note: Beware of modifying this element as it can break the animations - you shou
 .bm-item-list {
   color: #b8b7ad;
   padding: 0.8em;
-  top: 21px;
   position: relative;
   left:22px;
 }
@@ -85,5 +83,5 @@ Note: Beware of modifying this element as it can break the animations - you shou
 /* Styling of overlay */
 .bm-overlay {
   background: rgba(0, 0, 0, 0.3);
-  margin-top: -50px;
+  margin-top: 1px;
 }
