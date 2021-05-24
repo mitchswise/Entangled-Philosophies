@@ -10,6 +10,7 @@ import AddUser from './components/AddUser.js';
 import Admin from './components/Admin.js';
 import ForgotPass from './components/ForgotPass.js';
 import Tags from './components/Tags.js';
+import UploadPaper from './components/UploadPaper.js';
 import Logo from './components/logo.JPG';
 import Logo2 from './components/mag_glass.JPG';
 
@@ -39,6 +40,7 @@ function App() {
           <Route exact path="/login" component={Login} />
           <Route exact path="/adduser" component={AddUser} />
           <Route exact path="/admin" component={Admin} />
+		  <Route exact path="/uploadpaper" component={UploadPaper}/>
           <Route exact path="/forgotpass" component={ForgotPass} />
           <Route exact path="/tags" component={Tags} />
         </Switch>
