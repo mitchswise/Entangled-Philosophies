@@ -50,7 +50,7 @@ export default class Sidebar extends React.Component {
         </Menu>
         );
     }
-    else if(cookies.get('PermLvl') > 0) { //some administrator      
+    else if(cookies.get('PermLvl') > 0) { //some administrator
       return (
         <Menu>
           <a className="menu-item">

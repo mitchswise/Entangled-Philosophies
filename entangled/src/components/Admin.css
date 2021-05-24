@@ -1,0 +1,82 @@
+.AdminBox {
+    position: relative;
+    top: -50px;
+    border-style: none;
+    border-color: black;
+    border-width: 1px;
+    width: 80%;
+    margin: auto;
+}
+
+.UserListBox {
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    width: 45%;
+    height: 600px;
+    padding:20px;
+    float: left;
+}
+
+.UserListBox h2 {
+    text-align: center;
+}
+
+.AddAdminBox {
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    width: 45%;
+    height: 600px;
+    padding:20px;
+    float: right;
+    text-align: center;
+}
+
+#adminList {
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    height: 532px
+}
+
+div#adminList  ul {
+    border-top-style: none;
+    border-right-style: none;
+    border-bottom-style: solid;
+    border-left-style: none;
+    border-color: black;
+    border-width: 1px;
+    padding: 10px;
+    margin: 0px;
+}
+
+#btnTxt {
+    vertical-align:middle;
+    bottom:0px;
+    position: relative;
+    color: white;
+    text-decoration: bold;
+    font-size: 14px;
+}
+
+#btn {
+    background-color: #f74135;
+    border: none;
+    margin: 10px;
+    height:36px;
+    width: 110px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+}
+
+.inputBoxes {
+
+    position: relative;
+    width: 350px;
+    height:28px;
+
+}

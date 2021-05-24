@@ -9,14 +9,14 @@ function testFunc() {
 export default class APITest extends React.Component {
     render() {
         const element = (
-        <div className="container" id="outer-container"> 
-        <div className="header">     
+        <div className="container" id="outer-container">
+        <div className="header">
                <h1 id="title">API Test Page</h1>
 </div>
             <button type="button" id="checker" onClick={testFunc}>Test Endpoint</button>
             <div id="ansField">Number of rows in Papers table: </div>
         </div>
         );
-        return element; 
+        return element;
     }
 }

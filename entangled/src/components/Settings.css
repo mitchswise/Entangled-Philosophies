@@ -1,4 +1,4 @@
-.RegisterBox {
+.SettingsBox {
     border-top-style: solid;
     border-right-style: solid;
     border-bottom-style: solid;
@@ -6,8 +6,8 @@
     border-width: 1px;
     border-color: black;
     width: 1100px;
-    Height: 600px;
-    top: -50px;
+    Height: 545px;
+    top: -140px;
     position: relative;
     text-align: center;
     margin:auto;
@@ -26,7 +26,7 @@
     top:-70px;
 }
 
-.RegisterFields {
+.SettingsFields {
     top: -20px;
     position: relative;
 }
@@ -49,21 +49,21 @@
 
 }
 
-#loginBtnTxt {
+#settingsBtnTxt {
     vertical-align:middle;
     bottom:0px;
     position: relative;
-    color: white;
-    text-decoration: bold;
+    color: blue;
     font-size: 14px;
+    font-weight: bold;
 }
 
-#login {
-    background-color: #f74135;
+#settings {
+    background-color: white;
     border: none;
-    top:30px;
+    top:-27px;
     height:36px;
-    width: 110px;
+    width: 250px;
     border-top-style: solid;
     border-right-style: solid;
     border-bottom-style: solid;
@@ -72,18 +72,9 @@
 }
 
 
-#login:hover {
+#settings:hover {
     background-color: #f75449;
 
-}
-
-#alreadyRegisteredLoginText {
-    top: 60px;
-    position: relative;
-    text-decoration: thin;
-    font-weight:lighter;
-    color:blue;
-    font-size: 12px;
 }
 
 #leftUsername
@@ -94,12 +85,26 @@
 
 }
 
+#leftEmail
+{
+    position: relative;
+    top: 20px;
+    left: -280px;
+}
+
 #hr{
     width:100%;
     top:54px;
     color: lightgray;
     position: relative;
 
+}
+
+#language 
+{
+    position: relative;
+    left: -330px;
+    top: 0px;
 }
 
 #leftPassword
@@ -129,21 +134,11 @@
 {
    position: relative;
    left:-1750px;
-   top:40px;
+   top:0px;
 
-}
-
-#dropdownRegister{
-    left: -5.7px;
 }
 
 #registerContainer
 {
     text-align: center;
-}
-
-#registerDownContainer
-{
-    top:-20px;
-    position: relative;
 }

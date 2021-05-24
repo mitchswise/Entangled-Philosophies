@@ -59,7 +59,7 @@ export default class Login extends React.Component {
 
                     <Link to="/register" id="dontHaveAccountText">Don't have an account? Register</Link>
                     <Link to="/forgotpass" id="forgotPasswordText">Forgot your password?</Link>
-                    
+
 
                 </div>
             </div>
