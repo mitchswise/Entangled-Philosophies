@@ -12,27 +12,7 @@ export default class UploadPaper extends React.Component {
         }
     }
 
-    render() {
-		const tagChoices = []
-		var tagChoice = "Tag";
-		
-		tagChoices.push(
-			<div class="dropdown" id="dropdowncontainer2">
-				<button class="dropbtn" id="dropdown2">{tagChoice}</button>
-				<div class="dropdown-content">
-					<button type="submit">Temp Tag 1</button>
-					<button type="submit">Temp Tag 2</button>
-					<button type="submit">Temp Tag 3</button>
-					<button type="submit">Temp Tag 4</button>
-					<button type="submit">Temp Tag 5</button>
-					<button type="submit">Temp Tag 6</button>
-					<button type="submit">Temp Tag 7</button>
-					<button type="submit">Temp Tag 8</button>
-					<button type="submit">Temp Tag 9</button>
-				</div>
-			</div>
-		)
-		
+    render() {		
         return <div className="container">
             <div className="header">
                 <h1 id="title">Upload Paper</h1>
@@ -47,7 +27,7 @@ export default class UploadPaper extends React.Component {
 					<h2 id="leftTags">Tags</h2>
 					<input type="text" className="inputBoxes" id="tags" disabled/><br />
 					<button type="button" className="inputBoxes" id="addTag"><div id="addTagBtnTxt">+</div></button>
-					{tagChoices}
+					<input type="text" className="inputBoxes" id="tagsearch" /><br />
                     <button type="button" className="inputBoxes" id="upload"><div id="uploadBtnTxt">Upload</div></button>
 
 
