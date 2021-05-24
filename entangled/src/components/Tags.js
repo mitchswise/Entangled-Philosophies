@@ -3,12 +3,12 @@ import { Redirect } from 'react-router-dom';
 import { getTags, addTag, removeTag, getTagTranslation, 
     getCats, addCategory, removeCategory, getCategoryTranslation, 
     cookies, supported_languages } from '../api.js';
-import Table from "./Table";
-import './MakeTable.css';
+import Table from "./TagsTable";
+import './Tags.css';
 
 //table set-up functions:
 
-const columns = [
+const columnsTags = [
     {
         Header: "Tag",
         accessor: "text"
@@ -19,21 +19,22 @@ const columns = [
     }
 ];
 
-const columns2 = [
+const columnsCategories = [
     {
         Header: "Category",
         accessor: "text"
     }
 ];
 
-
-function makeData() {
+//loads all available tags for a user
+function getTagData() {
     if(!cookies.get('UserID')) return [];
     var result = getTags(cookies.get('UserID'), "eng");
     return result.tags;
 }
 
-function makeData2() {
+//loads all available categories for a user
+function getCategoryData() {
     if(!cookies.get('UserID')) return [];
     var result = getCats(cookies.get('UserID'), "eng");
     return result.categories;
@@ -41,7 +42,7 @@ function makeData2() {
 
 //endpoint calling functions:
 
-//adds a tag to the database
+//add/edit a tag to the database
 function doAddTag(edit_tag) {
     var translations = {}
     var tag_category = document.getElementById("tagCategoryBox").value;
@@ -84,16 +85,17 @@ function doAddTag(edit_tag) {
     document.getElementById("tagsPageStatus").innerHTML = data.status;
 }
 
-//removes a tag from the database
+//remove a tag from the database
 function doRemoveTag(rowInfo) {
     var tagName = rowInfo.text;
     var userID = rowInfo.owner;
-    var language = rowInfo.owner == 0 ? "eng" : "def"; //Switch!
+    var language = rowInfo.owner === 0 ? "eng" : "def"; //Switch!
 
     var data = removeTag(tagName, language, userID);
     document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
 }
 
+//add/edit a category to the database
 function doAddCat(edit_cat) {
     console.log("Test " + edit_cat);
     var translations = {}
@@ -125,17 +127,15 @@ function doAddCat(edit_cat) {
         }
     }
 
-    //SWITCH to calling settings endpoint when it's done
-    var language = "eng";
-
     var data = addCategory(userID, edit_cat, translations);
     document.getElementById("tagsPageStatus").innerHTML = data.status;
 }
 
+//remove a category from the database
 function doRemoveCat(rowInfo) {
     var catName = rowInfo.text;
     var userID = rowInfo.owner;
-    var language = rowInfo.owner == 0 ? "eng" : "def"; //Switch!
+    var language = rowInfo.owner === 0 ? "eng" : "def"; //Switch!
 
     var data = removeCategory(catName, language, userID);
     document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
@@ -229,10 +229,10 @@ function AdminAdd({ toggleState }) {
     </div>
 }
 
-const myData = makeData()
-const myData2 = makeData2()
+const tagData = getTagData()
+const categoryData = getCategoryData()
 
-export default class MakeTable extends React.Component {
+export default class Tags extends React.Component {
 
     //0 = no tag adds/edits have been clicked
     //1 = an admin is adding a tag
@@ -250,6 +250,7 @@ export default class MakeTable extends React.Component {
         }
     }
 
+    //clear input boxes when switching between row entries
     elementClear = () => {
         const inputBoxes = ["tagCategoryBox", "engBox", "gerBox", "defBox"];
         for(const tag in inputBoxes) {
@@ -260,16 +261,16 @@ export default class MakeTable extends React.Component {
         }
     }
 
+    //switch from tag to category view (or vice versa)
     toggleView = () => {
         this.setState((prevState) => ({ toggleState: !prevState.toggleState }));
     }
     
     //When a user/admin clicks an entry and wants to edit it.
     loadTag = (rowInformation) => {
-        var element = (<div></div>);
         this.setState({ rowInfo: rowInformation });
         if(cookies.get('PermLvl') < 1) {
-            if(rowInformation.owner != cookies.get('UserID')) {
+            if(rowInformation.owner !== cookies.get('UserID')) {
                 document.getElementById("tagsPageStatus").innerHTML = "Status: You can't edit public items.";
                 this.setState({ tagAdditionState: 0 });
             }
@@ -284,7 +285,6 @@ export default class MakeTable extends React.Component {
 
     //When a user/admin clicks on "Add"
     makeTagAddInputBoxes = () => {
-        var element = (<div></div>);
         if(cookies.get('PermLvl') < 1) { //regular user
             this.setState({ tagAdditionState: 2 })
         }
@@ -294,35 +294,38 @@ export default class MakeTable extends React.Component {
     }
 
     render() {
-        const { tagAdditionState, toggleState, rowInfo } = this.state;
+        const { tagAdditionState, toggleState } = this.state;
         return (
             <div className="container">
                 <div className="header">
-                    <h1 id="title">Tags</h1>
+                    {
+                        toggleState === false ? <h1 id="title">Tags</h1>
+                        : <h1 id="title">Categories</h1>
+                    }
                 </div>
                 {this.renderRedirect()}
                 <body>
                     <div id="wrapper">
                         <div id="leftcolumn">
                             {
-                                toggleState == false ?
-                                <Table class="tagElement" id="tagTable" columns={columns} 
-                                data={myData} loadTag={this.loadTag} addTags={this.makeTagAddInputBoxes}
+                                toggleState === false ?
+                                <Table class="tagElement" id="tagTable" columns={columnsTags} 
+                                data={tagData} loadTag={this.loadTag} addTags={this.makeTagAddInputBoxes}
                                 toggleView={this.toggleView} /> :
-                                <Table class="tagElement" id="tagTable" columns={columns2} 
-                                data={myData2} loadTag={this.loadTag} addTags={this.makeTagAddInputBoxes}
+                                <Table class="tagElement" id="tagTable" columns={columnsCategories} 
+                                data={categoryData} loadTag={this.loadTag} addTags={this.makeTagAddInputBoxes}
                                 toggleView={this.toggleView} />
                             }
+                            <div id = "tagsPageStatus">Status:</div>
                         </div>
                         <div id="rightcolumn">
                             {this.elementClear()}
-                            {tagAdditionState == 1 ? <AdminAdd toggleState={toggleState} /> :
-                             tagAdditionState == 2 ? <UserAdd toggleState={toggleState} /> :
-                             tagAdditionState == 3 ? <AdminEdit toggleState={toggleState} rowInfo={this.state.rowInfo} /> :
-                             tagAdditionState == 4 ? <UserEdit toggleState={toggleState} rowInfo={this.state.rowInfo} /> :
+                            {tagAdditionState === 1 ? <AdminAdd toggleState={toggleState} /> :
+                             tagAdditionState === 2 ? <UserAdd toggleState={toggleState} /> :
+                             tagAdditionState === 3 ? <AdminEdit toggleState={toggleState} rowInfo={this.state.rowInfo} /> :
+                             tagAdditionState === 4 ? <UserEdit toggleState={toggleState} rowInfo={this.state.rowInfo} /> :
                             <div></div>}
                         </div>
-                        <div id = "tagsPageStatus">Status:</div>
                     </div>
                 </body>
             </div>

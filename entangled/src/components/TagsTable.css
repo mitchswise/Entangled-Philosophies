@@ -40,5 +40,13 @@ table th {
 
 #pageNumbers {
   position: relative;
-  left: 40%;
+  top: 3%;
+  left: 25%;
+}
+#pagePrevious {
+  left: 10%;
+}
+
+#pageNext {
+  left: 90%;
 }

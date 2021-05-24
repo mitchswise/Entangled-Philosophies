@@ -1,20 +1,23 @@
 import React from "react";
 import { useState } from 'react';
 import { useTable, useFilters, useSortBy, usePagination } from "react-table";
-import './Table.css';
+import './TagsTable.css';
 
 export default function Table({ columns, data, loadTag, addTags, toggleView }) {
     const {
-        getTableProps, // table props from react-table
-        getTableBodyProps, // table body props from react-table
-        headerGroups, // headerGroups, if your table has groupings
-        page, // rows for the table based on the data passed
-        prepareRow, // Prepare the row (this function needs to be called for each row before getting the row props)
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        page,
+        prepareRow,
         setFilter,
         nextPage,
         previousPage,
         canPreviousPage,
-        canNextPage
+        canNextPage,
+        setPageSize,
+        pageOptions,
+        state
     } = useTable({
         columns,
         data
@@ -23,6 +26,7 @@ export default function Table({ columns, data, loadTag, addTags, toggleView }) {
     useSortBy,
     usePagination);
 
+    const { pageIndex, pageSize } = state;
     const [filterInput, setFilterInput] = useState("");
 
     const handleFilterChange = e => {
@@ -70,7 +74,6 @@ export default function Table({ columns, data, loadTag, addTags, toggleView }) {
                 prepareRow(row);
                 return (
                 <tr {...row.getRowProps()} 
-                        // style={row.original.owner === 0 ? {hover: 'white'} : {hover: 'blue'} } 
                         onClick={() => loadTag(row.original)} >
                     {row.cells.map(cell => {
                     return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
@@ -80,7 +83,21 @@ export default function Table({ columns, data, loadTag, addTags, toggleView }) {
             })}
             </tbody>
         </table>
+        <select id="pageNumbers" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
+            {
+                [10, 15, 20].map(pageSize => (
+                    <option key={pageSize} value={pageSize} >
+                        Show {pageSize}
+                    </option>
+                ))
+            }
+        </select>
         <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
+        <span id = "pageNumbers">
+            Page{' '}
+            {pageIndex + 1} / {pageOptions.length}
+            {' '}
+        </span>
         <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
     </>
     );
