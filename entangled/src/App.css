@@ -1,22 +1,22 @@
-.App {
-  text-align: center;
+#title{
+  top: -106px !important;
+  border-top-style: none;
+  border-right-style: none;
+  border-bottom-style: solid;
+  border-left-style: none;
+  border-color: black;
+  border-width: 1px;
+  padding-bottom:5px;
+  width: 100%;
 }
 
-body {
-  overflow-x: hidden !important;
+#dropdowncontainer{
+float:right;
+margin-right: 1%;
+top:9px;
+position: relative;
 }
 
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
 
 .App-header {
   background-color: #282c34;
@@ -29,11 +29,13 @@ body {
   color: white;
 }
 
+
+
 #logo{
   width:50px;
   height:50px;
   left: 78px;
-  top:76px;
+  top: 2px;
   position:relative;
 }
 
@@ -41,7 +43,7 @@ body {
   width:34px;
   height:34px;
   left: 100px;
-  top:68px;
+  top:-6px;
   position:relative;
 }
 
@@ -49,37 +51,14 @@ body {
   color: #61dafb;
 }
 
-
-#entangledPhilosophies{
-  color: white;
-  padding-left:110px;
-  margin-top:30px;
-  font-size: 30px;
-  top: -100px;
-  left: 50px;
+.container {
+  margin: auto;
   position: relative;
- 
-}
-div.container {
-  border-top-style: solid;
-  border-right-style: none;
-  border-bottom-style: none;
-  border-left-style: none;
-  border-width: 1px;
-  margin-top: -76px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
+div.header {
+padding-top: 0px !important;
+}
 
 .dropbtn {
   background-color: white;
@@ -99,9 +78,7 @@ div.container {
 .dropdown {
   position: relative;
   display: inline-block;
-  top:-60px;
   z-index:1;
-  left:1750px;
 
 }
 
@@ -121,28 +98,16 @@ div.container {
   display: block;
 }
 
+.dropdown-content button {
+  width: 93%;
+}
+
 .dropdown-content a:hover {background-color: #ddd;}
 
 .dropdown:hover .dropdown-content {display: block;}
 
 .dropdown:hover .dropbtn {background-color: #f3f3f3;
   ;}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @keyframes App-logo-spin {

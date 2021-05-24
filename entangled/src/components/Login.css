@@ -7,7 +7,7 @@
     border-color: black;
     width: 1100px;
     Height: 345px;
-    top: -140px;
+    top: -50px;
     position: relative;
     text-align: center;
     margin:auto;
@@ -77,8 +77,19 @@
 
 }
 
-#alreadyRegisteredLoginText {
+#dontHaveAccountText {
     top: 60px;
+    left: 500px;
+    position: relative;
+    text-decoration: thin;
+    font-weight:lighter;
+    color:blue;
+    font-size: 12px;
+}
+
+#forgotPasswordText {
+    top: 60px;
+    left: -550px;
     position: relative;
     text-decoration: thin;
     font-weight:lighter;
@@ -136,4 +147,14 @@
 #registerContainer
 {
     text-align: center;
+}
+
+#loginUserStatus {
+    color: red;
+    text-align: center;
+    text-decoration: bold;
+    font-size: 18px;
+    top: -150px;
+    position: relative;
+    margin: auto;
 }

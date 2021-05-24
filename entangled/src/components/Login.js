@@ -1,41 +1,51 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import './Login.css';
-import { login } from '../api.js';
+import { login, cookies, getPerms } from '../api.js';
 
 function doLogin() {
-    var username = document.getElementById("login_username").value;
-    var password = document.getElementById("login_password").value;
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
 
     if(!username) {
-        document.getElementById("ansField_loginPage").innerHTML = "Enter a username.";
+        document.getElementById("loginUserStatus").innerHTML = "Enter a username.";
         return;
     }
     if(!password) {
-        document.getElementById("ansField_loginPage").innerHTML = "Enter a password.";
+        document.getElementById("loginUserStatus").innerHTML = "Enter a password.";
         return;
     }
 
     var data = login(username, password);
     if(data.error_code == 1) {
-        document.getElementById("ansField_loginPage").innerHTML = "Username and password combination does not exist.";
+        document.getElementById("loginUserStatus").innerHTML = "Username and password combination does not exist.";
         return;
     }
     else if(data.error_code == 2) {
-        document.getElementById("ansField_loginPage").innerHTML = "Account not verified. Please check your email.";
+        document.getElementById("loginUserStatus").innerHTML = "Account not verified. Please check your email.";
         return;
     }
 
-    //successful login!
-	document.getElementById("ansField_loginPage").innerHTML = "Login successful! Work in progress to redirect to search page";
+    var permLevel = getPerms(username).permission_level;
+    cookies.set('UserID', data.UserID, { path: '/' });
+    cookies.set('PermLvl', permLevel, { path: '/' });
+    window.location.reload();
 }
 
 export default class Login extends React.Component {
+
+    renderRedirect = () => {
+        if(cookies.get('UserID')) {
+            return <Redirect to = '/' />
+        }
+    }
+
     render() {
         return <div className="container">
             <div className="header">
                 <h1 id="title">Login</h1>
             </div>
+            {this.renderRedirect()}
             <div className="LoginBox">
                 <div className="LoginFields">
                     <h2 id="leftUsername">Username</h2>
@@ -47,11 +57,13 @@ export default class Login extends React.Component {
 
                     <hr id="hr"></hr>
 
-                    <h4 id="alreadyRegisteredLoginText">Don't have an account? Register</h4>
-                    
+                    <Link to="/register" id="dontHaveAccountText">Don't have an account? Register</Link>
+                    <Link to="/forgotpass" id="forgotPasswordText">Forgot your password?</Link>
+
 
                 </div>
             </div>
+            <br /><div id="loginUserStatus"></div>
         </div>
     }
 }

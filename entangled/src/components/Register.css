@@ -7,7 +7,7 @@
     border-color: black;
     width: 1100px;
     Height: 600px;
-    top: -140px;
+    top: -50px;
     position: relative;
     text-align: center;
     margin:auto;
@@ -133,7 +133,17 @@
 
 }
 
+#dropdownRegister{
+    left: -5.7px;
+}
+
 #registerContainer
 {
     text-align: center;
+}
+
+#registerDownContainer
+{
+    top:-20px;
+    position: relative;
 }

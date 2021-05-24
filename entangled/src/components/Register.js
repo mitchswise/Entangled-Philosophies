@@ -1,7 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { addUser, sendActivation } from '../api.js';
-import { Alert } from 'react';
+import { Link, Redirect } from 'react-router-dom';
+import { addUser, sendActivation, cookies } from '../api.js';
 import './Register.css';
 
 function validateEmail(mail) {
@@ -17,30 +16,30 @@ function doAddUser() {
     var email = document.getElementById("email").value;
     var language = "eng"; //Needs fixing!
 
-    if(!username) {
+    if (!username) {
         document.getElementById("addUserStatus").innerHTML = ("Enter a username.");
         return;
     }
-    if(!firstPass) {
+    if (!firstPass) {
         document.getElementById("addUserStatus").innerHTML = ("Enter a password.");
         return;
     }
-    if(!secondPass) {
+    if (!secondPass) {
         document.getElementById("addUserStatus").innerHTML = ("Confirm your password.");
         return;
     }
 
-    if(firstPass != secondPass) {
+    if (firstPass != secondPass) {
         document.getElementById("addUserStatus").innerHTML = ("Passwords do not match");
         return;
     }
-    if(!validateEmail(email)) {
+    if (!validateEmail(email)) {
         document.getElementById("addUserStatus").innerHTML = ("Invalid email");
         return;
     }
 
     var response = addUser(username, email, firstPass, language);
-    if(response.status != "success") {
+    if (response.status != "success") {
         document.getElementById("addUserStatus").innerHTML = ("Error: " + response.status);
         return;
     }
@@ -55,12 +54,20 @@ function doAddUser() {
 }
 
 export default class Register extends React.Component {
+
+    renderRedirect = () => {
+        if (cookies.get('UserID')) {
+            return <Redirect to='/' />
+        }
+    }
+
     render() {
         const element = (
             <div className="container" id="outer-container">
                 <div className="header">
                     <h1 id="title">Account Registration</h1>
                 </div>
+                {this.renderRedirect()}
                 <div className="RegisterBox">
                     <div className="RegisterFields">
                         <h2 id="leftUsername">Username</h2>
@@ -72,12 +79,12 @@ export default class Register extends React.Component {
                         <h2 id="leftEmail">Email</h2>
                         <input type="text" className="inputBoxes" id="email" /><br />
 
-                        <div id="dropDownContainer">
+                        <div id="registerDownContainer">
                             <div class="dropdown" id="test">
                                 <button class="dropbtn" id="chooseRegisterLangBtn">Choose Language</button>
                                 <div class="dropdown-content" id="dropdownRegister">
-                                    <a href="#">English</a>
-                                    <a href="#">German</a>
+                                    <button type="submit" id="englishButton">English</button>
+                                    <button type="submit" id="germanButton">German</button>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +93,7 @@ export default class Register extends React.Component {
 
                         <hr id="hr"></hr>
 
-                        <h4 id="alreadyRegisteredLoginText">Already Registered? Login</h4>
+                        <Link to="/login" id="alreadyRegisteredLoginText">Already Registered? Login</Link>
                     </div>
                 </div>
                 <br /><div id="addUserStatus"></div>
