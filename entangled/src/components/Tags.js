@@ -89,7 +89,7 @@ function doAddTag(edit_tag) {
 function doRemoveTag(rowInfo) {
     var tagName = rowInfo.text;
     var userID = rowInfo.owner;
-    var language = rowInfo.owner === 0 ? "eng" : "def"; //Switch!
+    var language = rowInfo.owner == 0 ? "eng" : "def"; //Switch!
 
     var data = removeTag(tagName, language, userID);
     document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
@@ -135,7 +135,7 @@ function doAddCat(edit_cat) {
 function doRemoveCat(rowInfo) {
     var catName = rowInfo.text;
     var userID = rowInfo.owner;
-    var language = rowInfo.owner === 0 ? "eng" : "def"; //Switch!
+    var language = rowInfo.owner == 0 ? "eng" : "def"; //Switch!
 
     var data = removeCategory(catName, language, userID);
     document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
