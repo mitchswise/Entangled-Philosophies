@@ -32,24 +32,26 @@
     $query = "SELECT id FROM tags WHERE category_id = " . $cat_id . ";";
     $result = $conn->query($query);
     
-    //remove all translations
-    $query = "DELETE FROM tags_translation WHERE (";
-    $num_tags = 0;
-    while ($row = $result->fetch_assoc()) {
-        if($num_tags > 0) $query = $query . " OR ";
-        
-        $tag_to_remove = $row["id"];
-        $query = $query . "(tag_id = " . $tag_to_remove . ")";
-        $num_tags++;
-    }
-    $query = $query . ");";
-
-    $result = $conn->query($query);
-
-    if(!$result) {
-        $message = '{"status":"' . $conn->error . '"}';
-        echo $message;
-        return;
+    if($result->num_rows > 0) {
+        //remove all translations
+        $query = "DELETE FROM tags_translation WHERE (";
+        $num_tags = 0;
+        while ($row = $result->fetch_assoc()) {
+            if($num_tags > 0) $query = $query . " OR ";
+            
+            $tag_to_remove = $row["id"];
+            $query = $query . "(tag_id = " . $tag_to_remove . ")";
+            $num_tags++;
+        }
+        $query = $query . ");";
+    
+        $result = $conn->query($query);
+    
+        if(!$result) {
+            $message = '{"status":"' . $conn->error . '"}';
+            echo $message;
+            return;
+        }
     }
 
     //remove all tag entries from tag table
