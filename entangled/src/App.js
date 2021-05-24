@@ -9,6 +9,7 @@ import Register from './components/Register.js';
 import Login from './components/Login.js';
 import AddUser from './components/AddUser.js';
 import Settings from './components/Settings.js';
+import Admin from './components/Admin.js';
 import Logo from './components/logo.JPG';
 import Logo2 from './components/mag_glass.JPG';
 
@@ -38,6 +39,7 @@ function App() {
           <Route exact path="/login" component={Login}/>
 		      <Route exact path="/adduser" component={AddUser}/>
           <Route exact path="/settings" component={Settings}/>
+          <Route exact path="/admin" component={Admin}/>
         </Switch>
       </Router>
     </div>
