@@ -21,6 +21,14 @@
     border: 1px solid #999;
     overflow: auto;
 }
+
+#tagsSearchBar {
+    height:31px;
+    top:-5px;
+    position: relative;
+    width:25%;
+    left:1px;
+}
   
 .close-icon {
     content: 'x';
@@ -84,4 +92,10 @@
     color: 'gray';
     margin-left: auto;
     height: 1px;
+}
+
+#bottomBar {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
 }

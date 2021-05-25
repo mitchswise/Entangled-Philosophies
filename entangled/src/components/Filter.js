@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import './Filter.css';
 
 export default class Popup extends React.Component {
-
-    
     constructor(props) {
         super(props);
         this.state = {
             itemList: [],
             someBool: false,
             textFilter: undefined,
-            filterState: this.props.filterState
+            filterState: JSON.parse(JSON.stringify(this.props.filterState))
         }
     }
 
@@ -34,7 +32,7 @@ export default class Popup extends React.Component {
         this.setState((prevState) => ({ filterState: newFilter }));
     }
 
-    //Tags should only consist of digits and every other entry should have
+    //Tag ids should only consist of digits and every other entry should have
     //some other character. Meaning if a key is a string of digits, it is a tag.
     isDigit(val) {
         return /^\d+$/.test(val);
@@ -47,6 +45,13 @@ export default class Popup extends React.Component {
                 newFilter[filterIdx][entry] = newState;
             }
         }
+        this.setState((prevState) => ({ filterState: newFilter }));
+    }
+
+    changeInclude(filterIdx, field) {
+        const newFilter = this.state.filterState.slice(); //copy of state
+        if(newFilter[filterIdx][field] == "OR") newFilter[filterIdx][field] = "AND";
+        else newFilter[filterIdx][field] = "OR";
         this.setState((prevState) => ({ filterState: newFilter }));
     }
 
@@ -78,6 +83,8 @@ export default class Popup extends React.Component {
             var tagList = categories[x];
             const filterIndex = textToFilter[x];
             const isHidden = filterState[filterIndex]["_hidden"];
+            const includeState = filterState[filterIndex]["include"];
+            const excludeState = filterState[filterIndex]["exclude"];
 
             this.state.itemList.push(<div className="flexcon" id="wrapperFilter">
                 <div id="leftcolumnFilter"> 
@@ -87,8 +94,16 @@ export default class Popup extends React.Component {
                     <button onClick={() => this.setAllTags(filterIndex, 1)} id="viewRow">All</button>
                     <button onClick={() => this.setAllTags(filterIndex, 0)} id="viewRow">Clear</button>
                     <button onClick={() => this.setAllTags(filterIndex, 2)} id="viewRow">None</button>
-                    <button id="viewRow">OR</button>
-                    <button id="viewRow">OR</button>
+
+                    <button onClick={() => this.changeInclude(filterIndex, "include")} style={{color: '#337ab7'}}
+                        id="viewRow">
+                            {includeState == "OR" ? "OR" : "AND" }
+                        </button>
+                    <button onClick={() => this.changeInclude(filterIndex, "exclude")} style={{color: '#b73333'}}
+                        id="viewRow">
+                            {excludeState == "OR" ? "OR" : "AND" }
+                        </button>
+
                     <button onClick={() => this.toggleHide(filterIndex)} id="viewRow">
                         {isHidden == false ? 'Hide' : 'Show'}
                     </button>
@@ -120,6 +135,11 @@ export default class Popup extends React.Component {
         this.setState((prevState) => ({ textFilter: e.target.value.toLowerCase() || undefined }));
     }
 
+    handleCancel = e => {
+        this.setState((prevState) => ({ filterState: this.props.filterState }));
+        this.props.handleClose();
+    }
+
     render() {
         return (
             <div className="popup-box">
@@ -129,15 +149,15 @@ export default class Popup extends React.Component {
                     <input
                         id="tagsSearchBar"
                         onChange={this.updateFilter}
-                        placeholder={"Search name"}
+                        placeholder={"Search..."}
                     />
                     </div>
                     <div id="middleBar">
                         {this.state.itemList}
                     </div>
                     <div id="bottomBar">
-                        <button>Save</button>
-                        <button onClick={this.props.handleClose}>Cancel</button>
+                        <button onClick={() => this.props.handleSave(this.state.filterState)} >Save</button>
+                        <button onClick={this.handleCancel}>Cancel</button>
                     </div>
                 </div>
             </div>

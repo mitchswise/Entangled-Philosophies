@@ -29,8 +29,8 @@ function initState() {
         var cat_id = categories[x][0].cat_id;
         row_state["row_name"] = cat_id;
         
-        row_state["andState"] = "OR";
-        row_state["orState"] = "OR";
+        row_state["include"] = "OR";
+        row_state["exclude"] = "OR";
         row_state["_hidden"] = false;
         
         for(const tag in categories[x]) {
@@ -41,20 +41,25 @@ function initState() {
     
     return initState;
 }
-const filterState = initState();
 
 export default class DummySearch extends React.Component {
     
     state = {
-        isOpen: false
+        isOpen: false,
+        filterState: initState()
     }
 
     togglePopup = () => {
+        
         this.setState((prevState) => ({ isOpen: !prevState.isOpen }));
+    }
+    handleFilterSave = (newFitlerState) => {
+        this.setState((prevState) => ({ filterState: newFitlerState }));
+        this.togglePopup();
     }
 
     render() {
-        const { isOpen } = this.state;
+        const { isOpen, filterState } = this.state;
         return (<div className="container">
             <div className="header">
                 <h1 id="title">Search</h1>
@@ -69,6 +74,7 @@ export default class DummySearch extends React.Component {
                     handleClose={this.togglePopup}
                     tagData={tagData}
                     filterState={filterState}
+                    handleSave={this.handleFilterSave}
                 />}
             </div>
         </div>);
