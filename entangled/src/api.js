@@ -2,7 +2,7 @@ import Cookies from 'universal-cookie';
 export const cookies = new Cookies();
 export const supported_languages = ["eng", "ger"];
 
-var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+var urlBase = 'http://chdr.cs.ucf.edu/~al657032/Entangled-Philosophies/api';
 
 var xhr;
 
@@ -252,6 +252,36 @@ export function getCategoryTranslation(cat_id) {
 	var jsonPayload = '{"cat_id":' + cat_id + '}';
 
 	var url = urlBase + '/getCategoriesTranslations.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function addPaper(title, author, url) {
+	var jsonPayload = '{"title":"' + title + '", "author":"' + author + '", "url":"' + url + '"}';
+
+	var url = urlBase + '/addPaper.php';	
+	connect("POST", url);
+	
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function removePaper(id) {
+	var jsonPayload = '{"id":' + id + '}';
+	
+	var url = urlBase + '/removePaper.php';
 	connect("POST", url);
 
 	try {
