@@ -78,3 +78,10 @@
     margin-right: 1%;
     float: right;
 }
+
+#lineSeparator {
+    width: 99%;
+    color: 'gray';
+    margin-left: auto;
+    height: 1px;
+}

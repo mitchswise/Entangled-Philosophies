@@ -3,11 +3,15 @@ import './Filter.css';
 
 export default class Popup extends React.Component {
 
-    state = {
-        itemList: [],
-        someBool: false,
-        textFilter: undefined,
-        filterState: this.props.filterState
+    
+    constructor(props) {
+        super(props);
+        this.state = {
+            itemList: [],
+            someBool: false,
+            textFilter: undefined,
+            filterState: this.props.filterState
+        }
     }
 
     buttonClick = e => {
@@ -27,6 +31,22 @@ export default class Popup extends React.Component {
     toggleHide(filterIdx) {
         const newFilter = this.state.filterState.slice(); //copy of state
         newFilter[filterIdx]["_hidden"] = !newFilter[filterIdx]["_hidden"];
+        this.setState((prevState) => ({ filterState: newFilter }));
+    }
+
+    //Tags should only consist of digits and every other entry should have
+    //some other character. Meaning if a key is a string of digits, it is a tag.
+    isDigit(val) {
+        return /^\d+$/.test(val);
+    }
+
+    setAllTags(filterIdx, newState) {
+        const newFilter = this.state.filterState.slice(); //copy of state
+        for(const entry in newFilter[filterIdx]) {
+            if(this.isDigit(entry)) {
+                newFilter[filterIdx][entry] = newState;
+            }
+        }
         this.setState((prevState) => ({ filterState: newFilter }));
     }
 
@@ -64,9 +84,9 @@ export default class Popup extends React.Component {
                     <p>{x}</p>
                 </div>
                 <div id="rightcolumnFilter"> 
-                    <button id="viewRow">All</button>
-                    <button id="viewRow">Clear</button>
-                    <button id="viewRow">None</button>
+                    <button onClick={() => this.setAllTags(filterIndex, 1)} id="viewRow">All</button>
+                    <button onClick={() => this.setAllTags(filterIndex, 0)} id="viewRow">Clear</button>
+                    <button onClick={() => this.setAllTags(filterIndex, 2)} id="viewRow">None</button>
                     <button id="viewRow">OR</button>
                     <button id="viewRow">OR</button>
                     <button onClick={() => this.toggleHide(filterIndex)} id="viewRow">
@@ -91,7 +111,7 @@ export default class Popup extends React.Component {
                         onClick={this.buttonClick} >{curTag.text}</button>)
                 }
             }
-            this.state.itemList.push(<hr></hr>)
+            // this.state.itemList.push(<hr id="lineSeparator"></hr>)
         }
 
     }
