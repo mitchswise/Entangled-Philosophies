@@ -48,7 +48,7 @@ export default class UploadPaper extends React.Component {
 					<form id="uploadForm" method="post" enctype="multipart/form-data">
 						Upload a file:
 						<input type="file" name="file" id="paperFile"/>
-						<input type="submit" id="paperSubmit"/>
+						<input type="submit" name="submit" id="paperSubmit"/>
 					</form>
 
                     <button type="button" className="inputBoxes" id="upload" onClick={doAddPaper}><div id="uploadBtnTxt">Upload</div></button>

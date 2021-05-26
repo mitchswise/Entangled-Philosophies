@@ -4,17 +4,18 @@ form.addEventListener('submit', e => {
 	e.preventDefault();
 	const files = document.querySelector('[name=file]').files;
 	const formData = new FormData();
-	formData.append('paper', files[0]);
+	formData.append('file', files[0]);
 	
 	console.log(files[0]); // Debug
-	const xhr = new XMLHttpRequest();
-	xhr.responseType = 'json';
-	
-	xhr.onload = () => {
-		console.log(xhr.response);
-	};
+	const xhr = new XMLHttpRequest();	
 
-	xhr.open('POST', url);
-	xhr.send(formData);
-	
+	xhr.open('POST', url, false);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	try {
+		xhr.send(formData);
+		var jsonObject = JSON.parse(xhr.responseText);
+		console.log(jsonObject.status);	
+	} catch (err) {
+		console.log(xhr.responseText);
+	}
 });
