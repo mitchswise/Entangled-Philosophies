@@ -141,7 +141,7 @@ export default class Popup extends React.Component {
                     var tag_id = curTag.tag_id;
     
                     const buttonState = filterState[filterIndex][tag_id];
-                    this.state.itemList.push(<button id={curTag.tag_id} 
+                    this.state.itemList.push(<button id={curTag.tag_id} className="filterButtons"
                         style={
                             buttonState == 0 ? { backgroundColor: '#f0f0f0', color: 'black', borderRadius: 2 } :
                             buttonState == 1 ? { backgroundColor: '#337ab7', color: 'white', borderRadius: 2 } : 

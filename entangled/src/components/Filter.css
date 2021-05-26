@@ -23,6 +23,10 @@
     overflow: auto;
 }
 
+.filterButtons {
+    float: left;
+}
+
 #filterSearchBar {
     height: 25px;
     position: relative;
