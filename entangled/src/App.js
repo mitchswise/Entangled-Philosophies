@@ -11,7 +11,7 @@ import Admin from './components/Admin.js';
 import ForgotPass from './components/ForgotPass.js';
 import Tags from './components/Tags.js';
 import UploadPaper from './components/UploadPaper.js';
-import DummySearch from './components/DummySearch.js';
+import Search from './components/Search.js';
 import Logo from './components/logo.JPG';
 import Logo2 from './components/mag_glass.JPG';
 
@@ -44,7 +44,7 @@ function App() {
 		      <Route exact path="/uploadpaper" component={UploadPaper}/>
           <Route exact path="/forgotpass" component={ForgotPass} />
           <Route exact path="/tags" component={Tags} />
-          <Route exact path="/search" component={DummySearch} />
+          <Route exact path="/search" component={Search} />
         </Switch>
       </Router>
     </div>

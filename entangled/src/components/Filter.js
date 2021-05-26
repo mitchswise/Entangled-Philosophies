@@ -168,7 +168,7 @@ export default class Popup extends React.Component {
         return (
             <div className="popup-box">
                 {this.loadData()}
-                <div className="box">
+                <div className="filterBox">
                     <div className="flexcon" id="wrapperFilter">
                         <div id="leftcolumnFilter" >
                             <input

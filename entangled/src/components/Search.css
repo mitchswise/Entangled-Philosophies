@@ -1,0 +1,47 @@
+div.header {
+    padding-top: 100px; 
+}
+
+#title {
+        top: -184px;
+        position:relative;
+        color: #f74135;
+        text-align: center;
+        font-size: 38px;
+
+}
+
+
+
+
+
+.box {
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+    border-color: black;
+    top: -80px;
+    position: relative;
+    text-align: center;
+    margin:auto;
+    width:44%;
+    height:740px;
+    top:-62px;
+}
+
+#leftBox, #rightBox {
+    display: inline-block;    
+} 
+
+#leftBox {
+    margin-right: 4%;
+}
+
+#searchBody {
+    text-align: center;
+    position: relative;
+    width: 100%;
+}
+
