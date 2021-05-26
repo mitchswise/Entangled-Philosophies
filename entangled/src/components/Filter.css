@@ -22,32 +22,28 @@
     overflow: auto;
 }
 
-#tagsSearchBar {
-    height:31px;
-    top:-5px;
-    position: relative;
-    width:25%;
-    left:1px;
-}
-  
-.close-icon {
-    content: 'x';
-    cursor: pointer;
-    position: fixed;
-    right: calc(15% - 30px);
-    top: calc(100vh - 85vh - 33px);
-    background: #ededed;
-    width: 25px;
+#filterSearchBar {
     height: 25px;
-    border-radius: 50%;
-    line-height: 20px;
-    text-align: center;
-    border: 1px solid #999;
-    font-size: 20px;
+    position: relative;
+    width: 200%;
 }
 
 #topBar {
-    min-height: 5%;
+    width: 100%;
+    min-height: 25px;
+    display: flex;
+}
+
+#topLeftFilter {
+    margin: auto;
+    margin-left: 0%;
+    float: left;
+}
+
+#topRightFilter {
+    margin: auto;
+    margin-right: 1%;
+    float: right;
 }
 
 #middleBar {
@@ -88,10 +84,14 @@
 }
 
 #lineSeparator {
-    width: 99%;
-    color: 'gray';
-    margin-left: auto;
-    height: 1px;
+    border:none;
+    border-top:1px dotted rgb(0, 0, 0);
+    color:#fff;
+    padding-bottom: 10px;
+    background-color:#fff;
+    height:1px;
+    float: left;
+    width:99%;
 }
 
 #bottomBar {

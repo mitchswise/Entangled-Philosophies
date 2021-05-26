@@ -2,14 +2,26 @@ import React, { useState } from "react";
 import './Filter.css';
 
 export default class Popup extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            itemList: [],
-            someBool: false,
-            textFilter: undefined,
-            filterState: JSON.parse(JSON.stringify(this.props.filterState))
+    state = {
+        itemList: [],
+        someBool: false,
+        textFilter: undefined,
+        filterState: JSON.parse(JSON.stringify(this.props.filterState))
+    }
+
+    resetFilter() {
+        const newFilter = this.state.filterState.slice();
+        for(const index in newFilter) {
+            for(const key in newFilter[index]) {
+                if(key !== "row_name") {
+                    newFilter[index][key] = 0;
+                }
+            }
+            newFilter[index]["_hidden"] = false;
+            newFilter[index]["include"] = "OR";
+            newFilter[index]["exclude"] = "OR";
         }
+        this.setState((prevState) => ({ filterState: newFilter }));
     }
 
     buttonClick = e => {
@@ -48,6 +60,14 @@ export default class Popup extends React.Component {
         this.setState((prevState) => ({ filterState: newFilter }));
     }
 
+    setAllView(newView) {
+        const newFilter = this.state.filterState.slice(); //copy of state
+        for(const index in newFilter) {
+            newFilter[index]["_hidden"] = newView;
+        }
+        this.setState((prevState) => ({ filterState: newFilter }));
+    }
+
     changeInclude(filterIdx, field) {
         const newFilter = this.state.filterState.slice(); //copy of state
         if(newFilter[filterIdx][field] == "OR") newFilter[filterIdx][field] = "AND";
@@ -63,6 +83,7 @@ export default class Popup extends React.Component {
 
         const { filterState } = this.state;
 
+        //processes all tags that match the current filter
         this.props.tagData.forEach((item, index) => {
             if(!this.state.textFilter ||  item.text.toLowerCase().includes(this.state.textFilter)) {
                 if(!(item.catText in categories)) {
@@ -78,6 +99,7 @@ export default class Popup extends React.Component {
             }
         });
 
+        //for each category that has some matching tags
         for(const x in categories) {
 
             var tagList = categories[x];
@@ -85,6 +107,8 @@ export default class Popup extends React.Component {
             const isHidden = filterState[filterIndex]["_hidden"];
             const includeState = filterState[filterIndex]["include"];
             const excludeState = filterState[filterIndex]["exclude"];
+            //we set up the sections for the html with the proper
+            //states and hide the section if necessary
 
             this.state.itemList.push(<div className="flexcon" id="wrapperFilter">
                 <div id="leftcolumnFilter"> 
@@ -126,7 +150,7 @@ export default class Popup extends React.Component {
                         onClick={this.buttonClick} >{curTag.text}</button>)
                 }
             }
-            // this.state.itemList.push(<hr id="lineSeparator"></hr>)
+            this.state.itemList.push(<hr id="lineSeparator"></hr>)
         }
 
     }
@@ -145,12 +169,19 @@ export default class Popup extends React.Component {
             <div className="popup-box">
                 {this.loadData()}
                 <div className="box">
-                    <div id="topBar">
-                    <input
-                        id="tagsSearchBar"
-                        onChange={this.updateFilter}
-                        placeholder={"Search..."}
-                    />
+                    <div className="flexcon" id="wrapperFilter">
+                        <div id="leftcolumnFilter" >
+                            <input
+                                id="filterSearchBar"
+                                onChange={this.updateFilter}
+                                placeholder={"Search..."}
+                            />
+                        </div>
+                        <div id="rightcolumnFilter">
+                            <button onClick={() => this.setAllView(false)} id="viewRow" >Show All</button>
+                            <button onClick={() => this.setAllView(true)} id="viewRow" >Hide All</button>
+                            <button onClick={() => this.resetFilter()} id="viewRow" >Reset</button>
+                        </div>
                     </div>
                     <div id="middleBar">
                         {this.state.itemList}
