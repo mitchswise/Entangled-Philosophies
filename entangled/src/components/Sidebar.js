@@ -24,11 +24,15 @@ export default class Sidebar extends React.Component {
           <Link to="/about">About</Link>
         </a>
         <a className="menu-item">
+          <Link to="/search">Search</Link>
+        </a>
+        <a className="menu-item">
           <Link to="/login">Login</Link>
         </a>
         <a className="menu-item">
           <Link to="/register">Register</Link>
         </a>
+        
       </Menu>
       );
     }
@@ -41,6 +45,9 @@ export default class Sidebar extends React.Component {
           <a className="menu-item">
             <Link to="/about">About</Link>
           </a>
+          <a className="menu-item">
+          <Link to="/search">Search</Link>
+        </a>
           <a className="menu-item">
             <Link to="/tags">Tags</Link>
           </a>

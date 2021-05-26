@@ -12,10 +12,9 @@
   
 .filterBox {
     position: relative;
-    width: 90%;
+    width: 60%;
     margin: 0 auto;
-    height: 90%;
-    max-height: 70vh;
+    height: 76%;
     margin-top: calc(100vh - 85vh - 20px);
     background: #fff;
     border-radius: 4px;

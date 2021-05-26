@@ -37,11 +37,12 @@ div.header {
 
 #leftBox {
     margin-right: 4%;
+    top:-355px;
 }
 
 #searchBody {
     text-align: center;
     position: relative;
     width: 100%;
+    height:500px;
 }
-
