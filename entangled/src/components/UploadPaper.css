@@ -1,4 +1,4 @@
-.LoginBox {
+.PaperBox {
     border-top-style: solid;
     border-right-style: solid;
     border-bottom-style: solid;
@@ -7,31 +7,35 @@
     border-color: black;
     width: 1100px;
     Height: 345px;
-    top: -50px;
+    top: -100px;
     position: relative;
     text-align: center;
     margin:auto;
 }
 
-
-#password{
-    top: -24px;
+#titleName{
+    top:20px;
 }
 
-#password2{
-    top:-46px;
+#author{
+    top:-24px;
 }
 
-#email{
+#tagsearch{
+	top:-48px;
+	left:-17px;
+}
+
+#tags{
     top:-70px;
 }
 
-.LoginFields {
+.PaperFields {
     top: -20px;
     position: relative;
 }
 
-.inputBoxes {
+.PaperBoxes {
 
     position: relative;
     width: 350px;
@@ -39,7 +43,7 @@
 
 }
 
-#loginBtnTxt {
+#uploadBtnTxt {
     vertical-align:middle;
     bottom:0px;
     position: relative;
@@ -48,10 +52,19 @@
     font-size: 14px;
 }
 
-#login {
+#addTagBtnTxt {
+    vertical-align:middle;
+    bottom:0px;
+    position: relative;
+    color: white;
+    text-decoration: bold;
+    font-size: 14px;
+}
+
+#upload {
     background-color: #f74135;
     border: none;
-    top:30px;
+    top:60px;
     height:36px;
     width: 110px;
     border-top-style: solid;
@@ -61,37 +74,36 @@
     border-width: 1px;
 }
 
+#addTag {
+    background-color: #f74135;
+    border: none;
+    top:-48px;
+	left: -36px;
+    height:33px;
+    width: 33px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+}
 
-#login:hover {
+
+#upload:hover {
     background-color: #f75449;
 
 }
 
-#dontHaveAccountText {
-    top: 60px;
-    left: 500px;
-    position: relative;
-    text-decoration: thin;
-    font-weight:lighter;
-    color:blue;
-    font-size: 12px;
+#addTag:hover {
+    background-color: #f75449;
+
 }
 
-#forgotPasswordText {
-    top: 60px;
-    left: -550px;
-    position: relative;
-    text-decoration: thin;
-    font-weight:lighter;
-    color:blue;
-    font-size: 12px;
-}
-
-#leftUsername
+#leftTitle
 {
     position: relative;
-    top: 50px;
-    left: -280px;
+    top: 70px;
+    left: -224px;
 
 }
 
@@ -103,48 +115,22 @@
 
 }
 
-#leftPassword
+#leftAuthor
 {
     position: relative;
-    left: -280px;
+    left: -240px;
     top: 28px;
 
 }
 
-#leftConfirmPassword
+#leftTags
 {
     position: relative;
-    left: -329px;
-    top: 6px;
-
-}
-
-#leftEmail
-{
-    position: relative;
-    left: -260px;
+    left: -224px;
     top: -18px;
-}
-
-#dropDownContainer
-{
-   position: relative;
-   left:-1750px;
-   top:40px;
-
 }
 
 #registerContainer
 {
     text-align: center;
-}
-
-#loginUserStatus {
-    color: red;
-    text-align: center;
-    text-decoration: bold;
-    font-size: 18px;
-    top: -60px;
-    position: relative;
-    margin: auto;
 }
