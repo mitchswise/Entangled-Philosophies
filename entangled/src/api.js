@@ -2,7 +2,8 @@ import Cookies from 'universal-cookie';
 export const cookies = new Cookies();
 export const supported_languages = ["eng", "ger"];
 
-var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+// var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+var urlBase = 'http://chdr.cs.ucf.edu/~ah458967/Entangled-Philosophies/api';
 
 var xhr;
 
@@ -252,6 +253,54 @@ export function getCategoryTranslation(cat_id) {
 	var jsonPayload = '{"cat_id":' + cat_id + '}';
 
 	var url = urlBase + '/getCategoriesTranslations.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function addMetadataTag(category, language, text, tag_id) {
+	var jsonDict = {category:category, language:language, text:text, tag_id:tag_id };
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/addMetadataTag.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function tagExists(text, language, userID) {
+	var jsonDict = {text:text, language:language, userID:userID };
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/tagExists.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function addTagToPaper(paper_id, tag_id, userID) {
+	var jsonDict = {paper_id:paper_id, tag_id:tag_id, userID:userID };
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/addTagToPaper.php';
 	connect("POST", url);
 
 	try {
