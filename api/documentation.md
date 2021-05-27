@@ -99,7 +99,7 @@ Error Output | JSON with a "status" field describing the error that occurred.
 url/getCategoriesTranslation | Returns all available translations of a single category.
 --- | ---
 HTTP Request | POST
-Required Inputs | JSON with 1 field:<br/><b>cat_id</b>: the ID of the tag
+Required Inputs | JSON with 1 field:<br/><b>cat_id</b>: the ID of the category
 Example Input | {"cat_id":26}
 Optional Inputs | n/a
 Successful Output | JSON array a field for each supported language (currently english and german) if the requested category is admin-owned. If the category is a user category, there will be a single field labelled "def" (for default langauge) containing the user's category name.
