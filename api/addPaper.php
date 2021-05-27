@@ -18,8 +18,9 @@
 	$result = $conn->query($sql);
 
 	if ($conn->affected_rows > 0) {
-		echo '{"status":"success"}';
+		$new_id = $conn->insert_id;
+		echo '{"status":"success", "id":' . $new_id . '}';
 	} else {
-		echo '{"status":"' . $conn->error . '"}'; 	
+		echo '{"status":"' . $conn->error . '", "id":-1}'; 	
 	}
 ?>

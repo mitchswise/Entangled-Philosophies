@@ -5,17 +5,16 @@ form.addEventListener('submit', e => {
 	const files = document.querySelector('[name=file]').files;
 	const formData = new FormData();
 	formData.append('file', files[0]);
-	
-	console.log(files[0]); // Debug
-	const xhr = new XMLHttpRequest();	
 
-	xhr.open('POST', url, false);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try {
-		xhr.send(formData);
-		var jsonObject = JSON.parse(xhr.responseText);
-		console.log(jsonObject.status);	
-	} catch (err) {
-		console.log(xhr.responseText);
-	}
+	var jsonObject;
+
+	fetch(url, {
+		method: 'POST',
+		body: formData
+	}).then(response => response.text())
+	  .then(data => jsonObject = JSON.parse(data))
+	  .then(json => {
+		document.getElementById("filename").value = json.url;
+		document.getElementById("uploadStatus").innerHTML = "Uploaded " + json.url + " with status " + json.status;
+	  });
 });
