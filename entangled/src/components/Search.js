@@ -17,9 +17,10 @@ const columnsTags = [
 
 //loads all available tags for a user
 function getTagData() {
-    var userID = 0;
+    var userID = 0, prefLang = "eng";
     if (cookies.get('UserID')) userID = cookies.get('UserID');
-    var result = getTags(userID, "eng");
+    if (cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
+    var result = getTags(userID, prefLang);
 
     return result.tags;
 }
@@ -45,6 +46,7 @@ function initState() {
         row_state["include"] = "OR";
         row_state["exclude"] = "OR";
         row_state["_hidden"] = false;
+        row_state["_expand"] = false;
 
         for (const tag in categories[x]) {
             row_state[categories[x][tag].tag_id] = 0;

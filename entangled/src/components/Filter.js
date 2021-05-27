@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import './Filter.css';
 
+const TAG_LIMIT = 10; //Only TAG_LIMIT tags per category unless 'expand' is hit
+
 export default class Popup extends React.Component {
     state = {
         itemList: [],
@@ -75,6 +77,12 @@ export default class Popup extends React.Component {
         this.setState((prevState) => ({ filterState: newFilter }));
     }
 
+    flipExpand(filterIdx) {
+        const newFilter = this.state.filterState.slice(); //copy of state
+        newFilter[filterIdx]["_expand"] = !newFilter[filterIdx]["_expand"];
+        this.setState((prevState) => ({ filterState: newFilter }));
+    }
+
     loadData() {
         var categories = {};
 
@@ -107,6 +115,7 @@ export default class Popup extends React.Component {
             const isHidden = filterState[filterIndex]["_hidden"];
             const includeState = filterState[filterIndex]["include"];
             const excludeState = filterState[filterIndex]["exclude"];
+            const isExpanded = filterState[filterIndex]["_expand"];
             //we set up the sections for the html with the proper
             //states and hide the section if necessary
 
@@ -115,6 +124,9 @@ export default class Popup extends React.Component {
                     <p>{x}</p>
                 </div>
                 <div id="rightcolumnFilter"> 
+                    <button onClick={() => this.flipExpand(filterIndex)} id="viewRow">
+                        {isExpanded ? "Shrink" : "Expand" }
+                    </button>
                     <button onClick={() => this.setAllTags(filterIndex, 1)} id="viewRow">All</button>
                     <button onClick={() => this.setAllTags(filterIndex, 0)} id="viewRow">Clear</button>
                     <button onClick={() => this.setAllTags(filterIndex, 2)} id="viewRow">None</button>
@@ -136,18 +148,25 @@ export default class Popup extends React.Component {
 
             //button stuff
             if(!isHidden) {
+                var curTags = 0;
+                
+
                 for(const tag in tagList) {
                     var curTag = tagList[tag];
                     var tag_id = curTag.tag_id;
     
-                    const buttonState = filterState[filterIndex][tag_id];
-                    this.state.itemList.push(<button id={curTag.tag_id} className="filterButtons"
-                        style={
-                            buttonState == 0 ? { backgroundColor: '#f0f0f0', color: 'black', borderRadius: 2 } :
-                            buttonState == 1 ? { backgroundColor: '#337ab7', color: 'white', borderRadius: 2 } : 
-                            { backgroundColor: '#b73333', color: 'white', borderRadius: 2 }
-                        }
-                        onClick={this.buttonClick} >{curTag.text}</button>)
+                    if(curTags < TAG_LIMIT || isExpanded) {
+                        curTags++;
+
+                        const buttonState = filterState[filterIndex][tag_id];
+                        this.state.itemList.push(<button id={curTag.tag_id} className="filterButtons"
+                            style={
+                                buttonState == 0 ? { backgroundColor: '#f0f0f0', color: 'black', borderRadius: 2 } :
+                                buttonState == 1 ? { backgroundColor: '#337ab7', color: 'white', borderRadius: 2 } : 
+                                { backgroundColor: '#b73333', color: 'white', borderRadius: 2 }
+                            }
+                            onClick={this.buttonClick} >{curTag.text}</button>)
+                    }
                 }
             }
             this.state.itemList.push(<hr id="lineSeparator"></hr>)
