@@ -31,7 +31,7 @@
 
     if($tag_id == -1) { //new metadata
         //can't have duplicate tag text
-        $query = "SELECT tag_id FROM tags_translation WHERE text = '" . $text . "';";
+        $query = "SELECT tag_id FROM tags_translation WHERE text = '" . $text . "' AND owner = 0;";
         $result = $conn->query($query);
         
         if($result->num_rows > 0) {
@@ -56,7 +56,7 @@
 
     }
     else { //edit existing metadata
-        $query = "SELECT tag_id FROM tags_translation WHERE text = '" . $text . "' AND tag_id != " . $tag_id . ";";
+        $query = "SELECT tag_id FROM tags_translation WHERE text = '" . $text . "' AND tag_id != " . $tag_id . " AND owner = 0;";
         $result = $conn->query($query);
         
         if($result->num_rows > 0) {
