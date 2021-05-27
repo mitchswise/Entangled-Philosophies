@@ -263,12 +263,42 @@ export function getCategoryTranslation(cat_id) {
 	}
 }
 
+export function addPaper(title, author, url) {
+	var jsonPayload = '{"title":"' + title + '", "author":"' + author + '", "url":"' + url + '"}';
+
+	var url = urlBase + '/addPaper.php';	
+	connect("POST", url);
+  
+  try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
 export function addMetadataTag(category, language, text, tag_id) {
 	var jsonDict = {category:category, language:language, text:text, tag_id:tag_id };
 	var jsonPayload = JSON.stringify(jsonDict);
 
 	var url = urlBase + '/addMetadataTag.php';
 	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function removePaper(id) {
+	var jsonPayload = '{"id":' + id + '}';
+	
+	var url = urlBase + '/removePaper.php';
+  connect("POST", url);
 
 	try {
 		xhr.send(jsonPayload);
