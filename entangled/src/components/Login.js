@@ -27,8 +27,10 @@ function doLogin() {
     }
 
     var permLevel = getPerms(username).permission_level;
+    var userLang = "eng";
     cookies.set('UserID', data.UserID, { path: '/' });
     cookies.set('PermLvl', permLevel, { path: '/' });
+    cookies.set('PrefLang', userLang, { path: '/' });
     window.location.reload();
 }
 

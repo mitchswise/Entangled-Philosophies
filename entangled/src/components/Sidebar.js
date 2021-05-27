@@ -8,6 +8,7 @@ import { cookies } from '../api';
 function logout() {
   cookies.remove('UserID', { path: '/' });
   cookies.remove('PermLvl', { path: '/' });
+  cookies.remove('PrefLang', { path: '/' });
   window.location.reload();
 }
 
