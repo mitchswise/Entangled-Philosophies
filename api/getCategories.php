@@ -13,8 +13,8 @@
 	$userID = $inData["userID"];
 	$language = $inData["language"];
     
-    $query = "SELECT category_id, text, owner FROM category_translation WHERE (language = '" . $language 
-        . "' AND owner = 0) OR (owner = " . $userID . ");";
+    $query = "SELECT category_id, text, owner FROM category_translation WHERE ((language = '" . $language 
+        . "' OR language='met') AND owner = 0) OR (owner = " . $userID . ");";
     $result = $conn->query($query);
 
     if(!$result) {

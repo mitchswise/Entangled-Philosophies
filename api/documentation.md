@@ -99,8 +99,35 @@ Error Output | JSON with a "status" field describing the error that occurred.
 url/getCategoriesTranslation | Returns all available translations of a single category.
 --- | ---
 HTTP Request | POST
-Required Inputs | JSON with 1 field:<br/><b>cat_id</b>: the ID of the tag
+Required Inputs | JSON with 1 field:<br/><b>cat_id</b>: the ID of the category
 Example Input | {"cat_id":26}
 Optional Inputs | n/a
 Successful Output | JSON array a field for each supported language (currently english and german) if the requested category is admin-owned. If the category is a user category, there will be a single field labelled "def" (for default langauge) containing the user's category name.
 Error Output | JSON with a "status" field describing the error that occurred.
+
+url/addMetadataTag | Adds/edits a metadata tag
+--- | ---
+HTTP Request | POST
+Required Inputs | JSON with 4 fields:<br/><b>category</b>: the text of the category to add to.<br/><b>language</b>: the preferred language of the user inserting the tag (used to figure out category_id).<br/><b>text</b>: the text of the new tag (not language bound).<br/><b>tag_id</b>: -1 if this is a tag addition or the actual id of the tag to be edited.
+Example Input | {"category":"Title", "language":"eng", "text":"Philosophy Paper", "tag_id":-1}
+Optional Inputs | n/a
+Successful Output | JSON with a "status" field describing the successful action.
+Error Output | JSON with a "status" field describing the error that occurred.
+
+url/tagExists | Checks if a tag exists. Prioritizes user-created tags, then public tags
+--- | ---
+HTTP Request | POST
+Required Inputs | JSON with 3 fields:<br/><b>text</b>: the text of the tag to check.<br/><b>language</b>: the preferred language of the user checking the tag.<br/><b>userID</b>: the id of the user checking for a tag (0 if admin, > 0 otherwise).
+Example Input | {"text":"words", "language":"eng", "userID":0}
+Optional Inputs | n/a
+Successful Output | JSON with a "tag_id" field. If "tag_id" = -1, the tag doesn't exist, otherwise "tag_id" is the correct tag identifier.
+Error Output | General SQL connection error if encountered.
+
+url/addTagToPaper | Adds a tag to a paper in the paper_tag relational table
+--- | ---
+HTTP Request | POST
+Required Inputs | JSON with 3 fields:<br/><b>paper_id</b>: the id of the target paper.<br/><b>tag_id</b>: the id of the tag to add.<br/><b>userID</b>: the id of the user adding the tag to the paper (0 if admin, > 0 otherwise).
+Example Input | {"paper_id":1, "tag_id":20, "userID":0}
+Optional Inputs | n/a
+Successful Output | JSON with a "status" field describing the success of adding the tag.
+Error Output | JSON with a "status" field describing whether there was a general error or if the tag has already been added to the paper by userID.

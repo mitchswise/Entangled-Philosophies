@@ -268,7 +268,23 @@ export function addPaper(title, author, url) {
 
 	var url = urlBase + '/addPaper.php';	
 	connect("POST", url);
-	
+  
+  try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function addMetadataTag(category, language, text, tag_id) {
+	var jsonDict = {category:category, language:language, text:text, tag_id:tag_id };
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/addMetadataTag.php';
+	connect("POST", url);
+
 	try {
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);
@@ -282,10 +298,45 @@ export function removePaper(id) {
 	var jsonPayload = '{"id":' + id + '}';
 	
 	var url = urlBase + '/removePaper.php';
+  connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function tagExists(text, language, userID) {
+	var jsonDict = {text:text, language:language, userID:userID };
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/tagExists.php';
 	connect("POST", url);
 
 	try {
 		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function addTagToPaper(paper_id, tag_id, userID) {
+	var jsonDict = {paper_id:paper_id, tag_id:tag_id, userID:userID };
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	
+	var url = urlBase + '/addTagToPaper.php';
+	connect("POST", url);
+	console.log("Here? " + jsonPayload);
+
+	try {
+		xhr.send(jsonPayload);
+		console.log(" ... " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {

@@ -8,13 +8,17 @@ function validateEmail(mail) {
     return regexPattern.test(mail);
 }
 
-function doAddUser() {
+function doAddUser(preferredLanguage) {
+    if(!preferredLanguage) {
+        document.getElementById("addUserStatus").innerHTML = ("Please set your preferred language.");    
+        return;
+    }
     document.getElementById("addUserStatus").innerHTML = ("");
     var firstPass = document.getElementById("password").value;
     var secondPass = document.getElementById("password2").value;
     var username = document.getElementById("username").value;
     var email = document.getElementById("email").value;
-    var language = "eng"; //Needs fixing!
+    var language = preferredLanguage;
 
     if (!username) {
         document.getElementById("addUserStatus").innerHTML = ("Enter a username.");
@@ -55,6 +59,14 @@ function doAddUser() {
 
 export default class Register extends React.Component {
 
+    state = {
+        preferredLanguage: undefined
+    }
+
+    setLanguage = (newLang) => {
+        this.setState({ preferredLanguage: newLang });
+    }
+
     renderRedirect = () => {
         if (cookies.get('UserID')) {
             return <Redirect to='/' />
@@ -62,7 +74,9 @@ export default class Register extends React.Component {
     }
 
     render() {
+        const { preferredLanguage } = this.state;
         const element = (
+            <>
             <div className="container" id="outer-container">
                 <div className="header">
                     <h1 id="title">Account Registration</h1>
@@ -83,12 +97,22 @@ export default class Register extends React.Component {
                             <div class="dropdown" id="test">
                                 <button class="dropbtn" id="chooseRegisterLangBtn">Choose Language</button>
                                 <div class="dropdown-content" id="dropdownRegister">
-                                    <button type="submit" id="englishButton">English</button>
-                                    <button type="submit" id="germanButton">German</button>
+                                    <button onClick={() => this.setLanguage("eng")} 
+                                        style={ 
+                                            preferredLanguage === "eng" ? {color: 'green'} :
+                                            { color: 'black' }
+                                        } type="submit" id="englishButton">English</button>
+                                    <button onClick={() => this.setLanguage("ger")} 
+                                        style={ 
+                                            preferredLanguage === "ger" ? {color: 'green'} :
+                                            { color: 'black' }
+                                        } type="submit" id="germanButton">German</button>
                                 </div>
                             </div>
                         </div>
-                        <button type="button" className="inputBoxes" id="login" onClick={doAddUser}><div id="loginBtnTxt">Create</div></button>
+                        <button type="button" className="inputBoxes" id="login" onClick={() => doAddUser(this.state.preferredLanguage)}>
+                            <div id="loginBtnTxt">Create</div>
+                        </button>
 
 
                         <hr id="hr"></hr>
@@ -96,10 +120,10 @@ export default class Register extends React.Component {
                         <Link to="/login" id="alreadyRegisteredLoginText">Already Registered? Login</Link>
                     </div>
                 </div>
-                <br /><div id="addUserStatus"></div>
 
             </div>
-
+            <br /><div id="addUserStatus"></div>
+            </>
         );
         return element;
     }
