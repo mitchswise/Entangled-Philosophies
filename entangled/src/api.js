@@ -300,11 +300,14 @@ export function addTagToPaper(paper_id, tag_id, userID) {
 	var jsonDict = {paper_id:paper_id, tag_id:tag_id, userID:userID };
 	var jsonPayload = JSON.stringify(jsonDict);
 
+	
 	var url = urlBase + '/addTagToPaper.php';
 	connect("POST", url);
+	console.log("Here? " + jsonPayload);
 
 	try {
 		xhr.send(jsonPayload);
+		console.log(" ... " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
