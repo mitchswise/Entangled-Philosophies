@@ -17,7 +17,7 @@
 
 	if($result->num_rows > 0) {
 		$row = $result->fetch_assoc();
-		echo '{"username":"' . $row["username"] . '", "permission_level":' . $row["permission_level"] . ', "email":"' . $row["email"] . '", "language":' . $row["cookies"] . '}';
+		echo '{"username":"' . $row["username"] . '", "permission_level":' . $row["permission_level"] . ', "email":"' . $row["email"] . '", "language":"' . $row["language"] . '", "cookies":' . $row["cookies"] . '}';
 	} else {
 		echo '{"status":"' . $conn->error . '"}';
 	}
