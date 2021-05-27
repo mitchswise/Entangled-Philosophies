@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Route} from 'react-router-dom';
 import './Settings.css';
 
 
-export default class About extends React.Component {
+export default class Settings extends React.Component {
     render() {
         return <div className = "container">
         <div className="header">                       
-             <h1 id="title">Acount Settings</h1>
+             <h1 id="title">Account Settings</h1>
         </div>
 
         <div className="SettingsBox">

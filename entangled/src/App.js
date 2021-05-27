@@ -12,6 +12,7 @@ import ForgotPass from './components/ForgotPass.js';
 import Tags from './components/Tags.js';
 import UploadPaper from './components/UploadPaper.js';
 import Search from './components/Search.js';
+import Settings from './components/Settings.js';
 import Logo from './components/logo.JPG';
 import Logo2 from './components/mag_glass.JPG';
 
@@ -41,10 +42,11 @@ function App() {
           <Route exact path="/login" component={Login} />
           <Route exact path="/adduser" component={AddUser} />
           <Route exact path="/admin" component={Admin} />
-		      <Route exact path="/uploadpaper" component={UploadPaper}/>
+		  <Route exact path="/uploadpaper" component={UploadPaper}/>
           <Route exact path="/forgotpass" component={ForgotPass} />
           <Route exact path="/tags" component={Tags} />
           <Route exact path="/search" component={Search} />
+		  <Route exact path="/settings" component={Settings} />
         </Switch>
       </Router>
     </div>
