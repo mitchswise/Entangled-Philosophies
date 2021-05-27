@@ -113,3 +113,12 @@ Example Input | {"category":"Title", "language":"eng", "text":"Philosophy Paper"
 Optional Inputs | n/a
 Successful Output | JSON with a "status" field describing the successful action.
 Error Output | JSON with a "status" field describing the error that occurred.
+
+url/tagExists | Checks if a tag exists. Prioritizes user-created tags, then public tags
+--- | ---
+HTTP Request | POST
+Required Inputs | JSON with 3 fields:<br/><b>text</b>: the text of the tag to check.<br/><b>language</b>: the preferred language of the user checking the tag.<br/><b>userID</b>: the id of the user checking for a tag (0 if admin, > 0 otherwise).
+Example Input | {"text":"words", "language":"eng", "userID":0}
+Optional Inputs | n/a
+Successful Output | JSON with a "tag_id". If "tag_id" = -1, the tag doesn't exist, otherwise "tag_id" is the correct tag identifier.
+Error Output | General SQL connection error if encountered.
