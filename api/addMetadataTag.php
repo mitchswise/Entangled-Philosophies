@@ -43,8 +43,8 @@
         $result = $conn->query($query);
         $inserted_tag = $conn->insert_id;
 
-        $query = "INSERT INTO tags_translation (tag_id, language, text, owner) VALUES (" . $tag_id .
-            ", 'met', '" . $text . "', owner = 0);";
+        $query = "INSERT INTO tags_translation (tag_id, language, text, owner) VALUES (" . $inserted_tag .
+            ", 'met', '" . $text . "', 0);";
         $result = $conn->query($query);
 
         if(!$result) {

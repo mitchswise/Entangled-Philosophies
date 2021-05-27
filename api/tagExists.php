@@ -25,7 +25,7 @@
         }
     }
 
-    $query = "SELECT tag_id FROM tags_translation WHERE owner = 0 AND text = '" . $text . "';";
+    $query = "SELECT tag_id FROM tags_translation WHERE owner = 0 AND text = '" . $text . "' AND language = '" . $language . "';";
     $result = $conn->query($query);
 
     if($result->num_rows > 0) {

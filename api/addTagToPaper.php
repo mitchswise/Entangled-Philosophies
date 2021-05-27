@@ -24,7 +24,7 @@
     }
 
     $query = "INSERT INTO paper_tags (paper_id, tag_id, owner) VALUES (" . 
-        $paper_id . ", " . $tag_id . ", " . $userID . ";";
+        $paper_id . ", " . $tag_id . ", " . $userID . ");";
     $result = $conn->query($query);
 
     if(!$result) {

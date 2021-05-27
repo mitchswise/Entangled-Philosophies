@@ -15,8 +15,8 @@
 	$language = $inData["language"];
     
     //select all categories that this user can view
-    $query = "SELECT category_id, text FROM category_translation WHERE (owner = 0 AND (language = '" . $language . 
-    "' OR language='met')) OR (owner = " . $userID . " AND language = 'def');";
+    $query = "SELECT category_id, text FROM category_translation WHERE (owner = 0 AND language = '" . $language . 
+    "') OR (owner = " . $userID . " AND language = 'def');";
     $result = $conn->query($query);
     
     //map category_id -> cateogory_text (the real word)
@@ -46,8 +46,8 @@
     
     // echo '{"status":"hi"}';
     //select all tags this user can see
-    $query = "SELECT tag_id, text, owner FROM tags_translation WHERE ((owner = 0 AND language = '" . $language . 
-    "') OR (owner = " . $userID . " AND language = 'def'));";
+    $query = "SELECT tag_id, text, owner FROM tags_translation WHERE (owner = 0 AND (language = '" . $language . 
+    "' OR language='met')) OR (owner = " . $userID . " AND language = 'def');";
     $result = $conn->query($query);
 
     if(!$result) {
