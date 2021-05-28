@@ -100,7 +100,32 @@
 }
 
 #bottomBar {
+    display: flex;
     position: absolute;
+    align-items: center;
+    justify-content: center;
+    width: 95%;
     bottom: 10px;
-    left: 50%;
+}
+
+.bottomSaveButtons {
+    border-radius: 10px;
+    border: none;
+    color: white;
+    width: 100px;
+    height: 40px;
+    max-height: 60%;
+    text-align: center;
+    margin-left: 10px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+}
+
+#filterSaveButton {
+    background-color: #229acf;
+}
+
+#filterCancelButton {
+    background-color: #fd1200;
 }
