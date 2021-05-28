@@ -206,8 +206,8 @@ export default class Popup extends React.Component {
                         {this.state.itemList}
                     </div>
                     <div id="bottomBar">
-                        <button onClick={() => this.props.handleSave(this.state.filterState)} >Save</button>
-                        <button onClick={this.handleCancel}>Cancel</button>
+                        <button className="bottomSaveButtons" id="filterSaveButton" onClick={() => this.props.handleSave(this.state.filterState)} >Save</button>
+                        <button className="bottomSaveButtons" id="filterCancelButton" onClick={this.handleCancel}>Cancel</button>
                     </div>
                 </div>
             </div>
