@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import Filter from './Filter.js';
-import { cookies, getTags } from '../api.js'
+import { cookies, getTags, getUserInfo, sqlSearch } from '../api.js'
 import Table from "./Table.js";
 import './Search.css';
 
 const columnsTags = [
     {
-        Header: "Tag",
-        accessor: "text"
-    },
-    {
-        Header: "Category",
-        accessor: "catText"
+        Header: "Paper IDs",
+        accessor: "paper_id"
     }
+    // {
+    //     Header: "Category",
+    //     accessor: "catText"
+    // }
 ];
 
 //loads all available tags for a user
@@ -157,15 +157,23 @@ function translateToSQL(filterState, userID) {
 
 function sendSearchQuery(filterState, userID) {
     var query = translateToSQL(filterState, userID);
-    console.log("SQL: " + query);
     //make the call to the seach api
+    console.log("Made the query: " + query);
+
+    var userID = -1;
+    if(cookies.get('UserID')) userID = cookies.get('UserID');
+
+    var result = sqlSearch(userID, query);
+    console.log("RESULTS: " + JSON.stringify(result));
+    return result;
 }
 
 export default class Search extends React.Component {
 
     state = {
         isOpen: false,
-        filterState: initState()
+        filterState: initState(),
+        paperData: sendSearchQuery(initState(), -1)
     }
 
     togglePopup = () => {
@@ -176,14 +184,14 @@ export default class Search extends React.Component {
 
         var userID = -1;
         if(cookies.get('UserID')) userID = cookies.get('UserID');
-        sendSearchQuery(newFitlerState, userID);
+        this.setState({ paperData: sendSearchQuery(newFitlerState, userID) });
 
         // console.log("NEW STATE " + JSON.stringify(newFitlerState));
         this.togglePopup();
     }
 
     render() {
-        const { isOpen, filterState } = this.state;
+        const { isOpen, filterState, paperData } = this.state;
         return (<div id="searchContainer">
             <h1 id="title">Search</h1>
             <div id="searchBody">
@@ -196,7 +204,7 @@ export default class Search extends React.Component {
                 <div className="box" id="leftBox">
 
                     <Table class="tagElement" id="tagTable" columns={columnsTags} 
-                        data={tagData} loadFilter={this.togglePopup} />
+                        data={paperData} loadFilter={this.togglePopup} />
 
                 </div>
 
