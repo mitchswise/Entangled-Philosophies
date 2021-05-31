@@ -13,23 +13,6 @@
     margin:auto;
 }
 
-#titleName{
-    top:20px;
-}
-
-#author{
-    top:-24px;
-}
-
-#tagsearch{
-	top:-48px;
-	left:-17px;
-}
-
-#tags{
-    top:-70px;
-}
-
 .PaperFields {
     top: -20px;
     position: relative;
@@ -64,7 +47,7 @@
 #upload {
     background-color: #f74135;
     border: none;
-    top:60px;
+    top:-602px;
     height:36px;
     width: 110px;
     border-top-style: solid;
@@ -77,7 +60,7 @@
 #addTag {
     background-color: #f74135;
     border: none;
-    top:-48px;
+    top:-564px;
 	left: -36px;
     height:33px;
     width: 33px;
@@ -99,20 +82,24 @@
 
 }
 
-#leftTitle
-{
-    position: relative;
-    top: 70px;
-    left: -224px;
-
-}
-
 #hr{
     width:100%;
-    top:54px;
+    top:-602px;
     color: lightgray;
     position: relative;
 
+}
+
+#leftTitle
+{
+    position: relative;
+    left: -224px;
+    top: 70px;
+
+}
+
+#titleName{
+    top:20px;
 }
 
 #leftAuthor
@@ -123,11 +110,202 @@
 
 }
 
+#authorBox{
+    top:-22px;
+}
+
+#leftContributor
+{
+    position: relative;
+    left: -264px;
+    top: -14px;
+
+}
+
+#contributor{
+    top:-64px;
+}
+
+#leftRelations
+{
+    position: relative;
+    left: -244px;
+    top: -56px;
+
+}
+
+#relation{
+    top:-106px;
+}
+
+#leftSubject
+{
+    position: relative;
+    left: -240px;
+    top: -98px;
+
+}
+
+#subject{
+    top:-148px;
+}
+
+#leftDate
+{
+    position: relative;
+    left: -226px;
+    top: -140px;
+
+}
+
+#date{
+    top:-190px;
+}
+
+#leftDescription
+{
+    position: relative;
+    left: -264px;
+    top: -182px;
+
+}
+
+#description{
+    top:-232px;
+}
+
+#leftType
+{
+    position: relative;
+    left: -226px;
+    top: -224px;
+
+}
+
+#type{
+    top:-274px;
+}
+
+#leftFormat
+{
+    position: relative;
+    left: -240px;
+    top: -266px;
+
+}
+
+#format{
+    top:-316px;
+}
+
+#leftLanguage
+{
+    position: relative;
+    left: -254px;
+    top: -308px;
+
+}
+
+#languageBox{
+    top:-358px;
+}
+
+#leftSource
+{
+    position: relative;
+    left: -240px;
+    top: -350px;
+
+}
+
+#sourceBox{
+    top:-400px;
+}
+
+#leftPublisher
+{
+    position: relative;
+    left: -254px;
+    top: -392px;
+
+}
+
+#publisher{
+    top:-442px;
+}
+
+#leftRights
+{
+    position: relative;
+    left: -240px;
+    top: -434px;
+
+}
+
+#rights{
+    top:-484px;
+}
+
+#leftCoverage
+{
+    position: relative;
+    left: -254px;
+    top: -476px;
+
+}
+
+#coverage{
+    top:-526px;
+}
+
+#leftISBN
+{
+    position: relative;
+    left: -228px;
+    top: -518px;
+
+}
+
+#isbn{
+    top:-568px;
+}
+
+#leftURL
+{
+    position: relative;
+    left: -224px;
+    top: -560px;
+
+}
+
+#urlBox{
+    top:-610px;
+}
+
 #leftTags
 {
     position: relative;
     left: -224px;
-    top: -18px;
+    top: -560px;
+}
+
+#tagsearch{
+	top:-564px;
+	left:-15px;
+}
+
+#tags{
+    top:-602px;
+}
+
+#uploadForm{
+	position: relative;
+	top: -610px;
+}
+
+#paperStatus{
+	position: relative;
+	top: -564px;
 }
 
 #registerContainer
