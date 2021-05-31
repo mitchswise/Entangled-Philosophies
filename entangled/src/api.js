@@ -2,7 +2,8 @@ import Cookies from 'universal-cookie';
 export const cookies = new Cookies();
 export const supported_languages = ["eng", "ger"];
 
-var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+// var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+var urlBase = 'http://chdr.cs.ucf.edu/~ah458967/Entangled-Philosophies/api';
 
 var xhr;
 
@@ -347,6 +348,22 @@ export function getUserInfo(userID) {
 	var jsonPayload = JSON.stringify(jsonDict);
 	
 	var url = urlBase + '/getUserInfo.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function sqlSearch(userID, query) {
+	var jsonDict = { userID:userID, query:query };
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/sqlSearch.php';
 	connect("POST", url);
 
 	try {
