@@ -45,7 +45,7 @@ export default function Table({ columns, data, loadFilter }) {
         />
         <input
             value={filterInput}
-            id="tagsSearchBar"
+            id="searchSearchBar"
             onChange={handleFilterChange}
             placeholder={"Search name"}
         />

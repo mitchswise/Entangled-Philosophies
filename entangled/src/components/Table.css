@@ -22,9 +22,8 @@ table {
     color: white;
   }
   
-  #tagsSearchBar {
+  #searchSearchBar {
     height:31px;
-    top:-5px;
     position: relative;
     width:70%;
     left:1px;
