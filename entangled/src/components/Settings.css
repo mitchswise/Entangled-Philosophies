@@ -1,34 +1,34 @@
 .SettingsBox {
-    border-top-style: solid;
-    border-right-style: solid;
-    border-bottom-style: solid;
-    border-left-style: solid;
-    border-width: 1px;
+    position: relative;
+    top: -50px;
+    border-style: solid;
     border-color: black;
-    width: 1100px;
-    Height: 545px;
-    top: -140px;
-    position: relative;
-    text-align: center;
-    margin:auto;
+    border-width: 1px;
+    width: 80%;
+    height: 600px;
+    margin: auto;
 }
 
-
-#password{
-    top: -24px;
+.SettingsLeft {
+    border-style: none;
+    border-color: black;
+    border-width: 1px;
+    width: 45%;
+    height: 600px;
+    padding:20px;
+    float: left;
+    text-align: right;
 }
 
-#password2{
-    top:-46px;
-}
-
-#email{
-    top:-70px;
-}
-
-.SettingsFields {
-    top: -20px;
-    position: relative;
+.SettingsRight {
+    border-style: none;
+    border-color: black;
+    border-width: 1px;
+    width: 45%;
+    height: 600px;
+    padding:20px;
+    float: right;
+    text-align: left;
 }
 
 #addUserStatus {
@@ -41,13 +41,28 @@
     margin: auto;
 }
 
-.inputBoxes {
-
-    position: relative;
-    width: 350px;
-    height:28px;
-
+div.SettingsRight input {
+    width: 70%;
+    height: 1.5em;    
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    margin: 19.92px 0px 0px 0px;
+    font-size: 14px;
 }
+details {
+    width: 70%;   
+    margin: 20px 0px 0px 0px;
+    padding:3px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    padding: 3px;
+    text-align: center;
+    position: block;
+}
+
 
 #settingsBtnTxt {
     vertical-align:middle;
@@ -77,20 +92,7 @@
 
 }
 
-#leftUsername
-{
-    position: relative;
-    top: 50px;
-    left: -280px;
 
-}
-
-#leftEmail
-{
-    position: relative;
-    top: 20px;
-    left: -280px;
-}
 
 #hr{
     width:100%;
@@ -100,42 +102,14 @@
 
 }
 
-#language 
-{
-    position: relative;
-    left: -330px;
-    top: 0px;
-}
 
-#leftPassword
-{
-    position: relative;
-    left: -280px;
-    top: 28px;
-
-}
-
-#leftConfirmPassword
-{
-    position: relative;
-    left: -329px;
-    top: 6px;
-
-}
-
-#leftEmail
-{
-    position: relative;
-    left: -260px;
-    top: -18px;
-}
-
-#dropDownContainer
-{
-   position: relative;
-   left:-1750px;
-   top:0px;
-
+.dropDownContainer {
+    width: 70%;   
+    margin: 20px 0px 0px 0px;
+    padding:3px;
+    position: absolute;
+    margin: 0px;
+    padding: 0px;
 }
 
 #registerContainer

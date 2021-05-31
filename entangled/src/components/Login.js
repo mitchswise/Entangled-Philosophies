@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import './Login.css';
-import { login, cookies, getPerms } from '../api.js';
+import { login, cookies, getPerms, getUserInfo } from '../api.js';
 
 function doLogin() {
     var username = document.getElementById("username").value;
@@ -27,8 +27,11 @@ function doLogin() {
     }
 
     var permLevel = getPerms(username).permission_level;
+    var userInfo = getUserInfo(data.UserID);
+    var userLang = userInfo.language;
     cookies.set('UserID', data.UserID, { path: '/' });
     cookies.set('PermLvl', permLevel, { path: '/' });
+    cookies.set('PrefLang', userLang, { path: '/' });
     window.location.reload();
 }
 

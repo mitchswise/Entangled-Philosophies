@@ -8,6 +8,7 @@ import { cookies } from '../api';
 function logout() {
   cookies.remove('UserID', { path: '/' });
   cookies.remove('PermLvl', { path: '/' });
+  cookies.remove('PrefLang', { path: '/' });
   window.location.reload();
 }
 
@@ -51,6 +52,9 @@ export default class Sidebar extends React.Component {
           <a className="menu-item">
             <Link to="/tags">Tags</Link>
           </a>
+		  <a className="menu-item">
+			<Link to="/settings">Settings</Link>
+		  </a>
           <a className="menu-item">
             <Link to="/" onClick={logout}>Logout</Link>
           </a>
@@ -77,6 +81,9 @@ export default class Sidebar extends React.Component {
           </a>
 		  <a className="menu-item">
 			<Link to="/uploadpaper">Upload Paper</Link>
+		  </a>
+		  <a className="menu-item">
+			<Link to="/settings">Settings</Link>
 		  </a>
           <a className="menu-item">
             <Link to="/" onClick={logout}>Logout</Link>

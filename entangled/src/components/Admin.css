@@ -40,15 +40,61 @@
     height: 532px
 }
 
-div#adminList  ul {
+div#adminList  details {
+    border-top-style: none;
+    border-right-style: none;
+    border-bottom-style: none;
+    border-left-style: none;
+    border-color: black;
+    border-width: 1px;
+    padding: 0px;
+    margin: 0px;
+    cursor: pointer;
+}
+
+div#adminList  summary {
+    text-decoration: none;
+    margin: 0px 0px 0px 0px;
+    padding: 10px 0px 10px 0px;
+    width:100%;
+    text-align: left;
     border-top-style: none;
     border-right-style: none;
     border-bottom-style: solid;
     border-left-style: none;
     border-color: black;
     border-width: 1px;
+}
+
+summary {
+    list-style-type: none; /* Firefox */
+}
+  
+summary::-webkit-details-marker {
+    display: none; /* Chrome */
+}
+
+
+div#adminList  p {
     padding: 10px;
-    margin: 0px;
+    margin: auto;
+    border-top-style: none;
+    border-right-style: none;
+    border-bottom-style: solid;
+    border-left-style: none;
+    border-color: black;
+    border-width: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div#adminList button {
+    background-color: #f74135;
+    color: white;
+    font-size:16px;
+    padding: 5px;
+    text-align: center;
 }
 
 #btnTxt {
@@ -79,4 +125,10 @@ div#adminList  ul {
     width: 350px;
     height:28px;
 
+}
+
+#ansField_adminPage {
+    font-size: 20px;
+    color: lightskyblue;
+    padding: 20px;
 }
