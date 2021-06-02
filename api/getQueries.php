@@ -5,24 +5,28 @@
     include "languages.php";
 
     
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli($host, $username, $password, $dbname);
 	if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
 	}
     
 	$inData = json_decode(file_get_contents('php://input'), true);
-	$userID = $inData["userID"];
-
+	$userID = $inData["owner"];
+    
     $query = "SELECT * FROM saved_queries WHERE owner = " . $userID . ";";
     $result = $conn->query($query);
-
+    if(!$result) {
+        echo '{"status":"' . $conn->error . '", "query":"' . $query . '"}';
+        return;
+    }
+    
     $allQueries = array();
     $index = 0;
-
+    
     while($row = $result->fetch_assoc()) {
         $allQueries[$index] = $row;
         $index++;
     }
 
-    return '{"queries":' . json_encode($allQueries) . '}';
+    echo '{"queries":' . json_encode($allQueries) . '}';
 ?>
