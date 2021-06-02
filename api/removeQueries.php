@@ -16,12 +16,12 @@
 
     for($idx = 0; $idx < $tag_list_len; $idx++) {
         if($idx > 0) $query = $query . " OR ";
-        $query = $query . " id = " . $tag_list[$inData];
+        $query = $query . "id = " . strval($tag_list[$idx]);
     }
 
     $result = $conn->query($query);
     if(!$result) {
-        echo '{"status":"' . $conn->error . '"}';
+        echo '{"status":"' . $conn->error . '", "query":"' . $query . '", "COUNT": ' . $tag_list_len . '}';
         return;
     }
 
