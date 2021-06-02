@@ -1,5 +1,5 @@
 import React from 'react';
-import {addMetadataTag, tagExists, addTagToPaper } from '../api.js';
+import {addMetadataTag, tagExists, addTagToPaper, saveQuery, handleHistory } from '../api.js';
 
 function doTagExists() {
     var tagText = document.getElementById('tagText').value;
@@ -29,6 +29,24 @@ function doAddMetadata() {
     document.getElementById('tagStatus').innerHTML = "Status: " + data.status;
 }
 
+function doSaveQuery() {
+    var owner = document.getElementById("qOwner").value;
+    var query_type = document.getElementById("qQuery_type").value;
+    var is_history = document.getElementById("qHistory").value;
+    var query_text = document.getElementById("qQuery_text").value;
+    var name = document.getElementById("qName").value;
+
+    var jsonDict = { owner:owner, query_type:query_type, is_history:is_history, query_text:query_text, name:name };
+    var data = saveQuery(jsonDict);
+    document.getElementById('tagStatus').innerHTML = "Status: " + data.status;
+}
+
+function doHandleHistory() {
+    var owner = document.getElementById("hOwner").value;
+    var data = handleHistory(owner);
+    document.getElementById('tagStatus').innerHTML = "Status: " + data.status + " -- " + data.removed_count;
+}
+
 export default class AddUser extends React.Component {
     render() {
         const element = (
@@ -53,7 +71,20 @@ export default class AddUser extends React.Component {
             <input id="tag_idM" placeholder="tag id"></input>
             <button onClick={doAddMetadata}>Submit</button>
 
+            <h3>Save a query</h3>
+            <input id="qOwner" placeholder="owner"></input>
+            <input id="qQuery_type" placeholder="query_type"></input>
+            <input id="qHistory" placeholder="is_history"></input>
+            <input id="qQuery_text" placeholder="query_text"></input>
+            <input id="qName" placeholder="name"></input>
+            <button onClick={doSaveQuery}>Submit</button>
+
+            <h3>Remove overflow history</h3>
+            <input id="hOwner" placeholder="owner"></input>
+            <button onClick={doHandleHistory}>Submit</button>
+
             <div id = "tagStatus">Tag Status: </div>
+
         </div>
         );
         return element; 

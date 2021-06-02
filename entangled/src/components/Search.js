@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Filter from './Filter.js';
-import { cookies, getTags, getUserInfo, sqlSearch } from '../api.js'
+import { cookies, getTags, getUserInfo, sqlSearch, handleHistory, saveQuery } from '../api.js'
 import Table from "./Table.js";
+import QueryPopup from './saveQueryPopup.js';
 import './Search.css';
 
 const columnsTags = [
@@ -157,27 +158,47 @@ function translateToSQL(filterState, userID) {
 
 function sendSearchQuery(filterState, userID) {
     var query = translateToSQL(filterState, userID);
-    //make the call to the seach api
-    console.log("Made the query: " + query);
 
     var userID = -1;
     if(cookies.get('UserID')) userID = cookies.get('UserID');
 
     var result = sqlSearch(userID, query);
-    console.log("RESULTS: " + JSON.stringify(result));
     return result;
 }
 
 export default class Search extends React.Component {
 
     state = {
-        isOpen: false,
+        isFilterOpen: false,
+        isSaveOpen: false,
         filterState: initState(),
         paperData: sendSearchQuery(initState(), -1)
     }
 
+    updateHistory = (newFitlerState, userID) => {
+        var jsonDict = {owner:userID, is_history:1, query_text:JSON.stringify(newFitlerState), query_type:"JSON"};
+        saveQuery(jsonDict);
+        handleHistory(userID);
+    }
+
     togglePopup = () => {
-        this.setState((prevState) => ({ isOpen: !prevState.isOpen }));
+        this.setState((prevState) => ({ isFilterOpen: !prevState.isFilterOpen }));
+    }
+    toggleSavePopup = () => {
+        this.setState((prevState) => ({ isSaveOpen: !prevState.isSaveOpen }));
+    }
+
+    handleQuerySave = (queryName) => {
+        var owner = cookies.get('UserID');
+        var query_text = JSON.stringify(this.state.filterState);
+        var query_type = "JSON"; //will need to change when we add advanced queries
+        var is_history = 0;
+        var jsonDict = {owner:owner, name:queryName, query_text:query_text, 
+            query_type:query_type, is_history:is_history};
+
+        saveQuery(jsonDict);
+
+        this.toggleSavePopup();
     }
     handleFilterSave = (newFitlerState) => {
         this.setState((prevState) => ({ filterState: newFitlerState }));
@@ -185,26 +206,32 @@ export default class Search extends React.Component {
         var userID = -1;
         if(cookies.get('UserID')) userID = cookies.get('UserID');
         this.setState({ paperData: sendSearchQuery(newFitlerState, userID) });
-
-        // console.log("NEW STATE " + JSON.stringify(newFitlerState));
         this.togglePopup();
+
+        if(userID != -1) {
+            this.updateHistory(newFitlerState, userID);
+        }
     }
 
     render() {
-        const { isOpen, filterState, paperData } = this.state;
+        const { isFilterOpen, isSaveOpen, filterState, paperData } = this.state;
         return (<div id="searchContainer">
             <h1 id="title">Search</h1>
             <div id="searchBody">
-                {isOpen && <Filter
+                {isFilterOpen && <Filter
                     handleClose={this.togglePopup}
                     tagData={tagData}
                     filterState={filterState}
                     handleSave={this.handleFilterSave}
                 />}
+                {isSaveOpen && <QueryPopup 
+                    handleClose = {this.toggleSavePopup}
+                    handleSave = {this.handleQuerySave}
+                />}
                 <div className="box" id="leftBox">
 
                     <Table class="tagElement" id="tagTable" columns={columnsTags} 
-                        data={paperData} loadFilter={this.togglePopup} />
+                        data={paperData} loadFilter={this.togglePopup} saveQuery={this.toggleSavePopup} />
 
                 </div>
 

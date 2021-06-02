@@ -1,9 +1,10 @@
 import React from "react";
 import { useState } from 'react';
 import { useTable, useFilters, useSortBy, usePagination } from "react-table";
+import { cookies } from "../api";
 import './Table.css';
 
-export default function Table({ columns, data, loadFilter }) {
+export default function Table({ columns, data, loadFilter, saveQuery }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -38,6 +39,12 @@ export default function Table({ columns, data, loadFilter }) {
     return (
         <>
         <div>
+        <input
+            type="button"
+            value="Save Query"
+            disabled={!cookies.get('UserID')}
+            onClick={saveQuery}
+        />
         <input
             type="button"
             value="Filter"
