@@ -31,7 +31,7 @@ export default function Table({ columns, data, loadFilter }) {
 
     const handleFilterChange = e => {
         const value = e.target.value || undefined;
-        setFilter("text", value);
+        setFilter("paper_id", value);
         setFilterInput(value);
     };
 
@@ -45,7 +45,7 @@ export default function Table({ columns, data, loadFilter }) {
         />
         <input
             value={filterInput}
-            id="tagsSearchBar"
+            id="searchSearchBar"
             onChange={handleFilterChange}
             placeholder={"Search name"}
         />

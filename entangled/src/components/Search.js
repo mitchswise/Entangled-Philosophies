@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import Filter from './Filter.js';
-import { cookies, getTags } from '../api.js'
+import { cookies, getTags, getUserInfo, sqlSearch } from '../api.js'
 import Table from "./Table.js";
 import './Search.css';
 
 const columnsTags = [
     {
-        Header: "Tag",
-        accessor: "text"
-    },
-    {
-        Header: "Category",
-        accessor: "catText"
+        Header: "Paper IDs",
+        accessor: "paper_id"
     }
+    // {
+    //     Header: "Category",
+    //     accessor: "catText"
+    // }
 ];
 
 //loads all available tags for a user
@@ -57,11 +57,123 @@ function initState() {
     return initState;
 }
 
+//checks if the string consists of only digits
+function isDigit(val) {
+    return /^\d+$/.test(val);
+}
+
+function makeSelectAND(tagIDs, userID) {
+    var numSections = 0;
+    var selectQuery = "(SELECT paper_id FROM paper_tags WHERE";
+    for(let index = 0; index < tagIDs.length; index++) {
+        var curTag = tagIDs[index];
+        if(numSections > 0) selectQuery += " AND";
+        numSections++;
+
+        var tagQuery = " paper_id IN (SELECT paper_id FROM paper_tags WHERE ((owner = 0 " +
+        "OR owner = " + userID + ") AND tag_id = " + curTag + "))";
+
+        selectQuery += tagQuery;
+    }
+    selectQuery += ")";
+
+    return selectQuery;
+}
+
+function makeSelectOR(tagIDs, userID) {
+    var numSections = 0;
+    var selectQuery = "(SELECT paper_id FROM paper_tags WHERE";
+    for(let index = 0; index < tagIDs.length; index++) {
+        var curTag = tagIDs[index];
+        if(numSections > 0) selectQuery += " OR";
+        numSections++;
+
+        var tagQuery = " ((owner = 0 OR owner = " + userID + ") AND tag_id = " + curTag + ")";
+        selectQuery += tagQuery;
+    }
+    selectQuery += ")";
+
+    return selectQuery;
+}
+
+function translateToSQL(filterState, userID) {
+    var query = "SELECT DISTINCT paper_id FROM paper_tags";
+    var numSections = 0, totalTagsUsed = 0;
+    for(const index in filterState) {
+        const curSection = filterState[index];
+
+        var toInclude = [], toExclude = [];
+        
+        for(const ids in curSection) {
+            if(!isDigit(ids)) continue;
+
+            if(curSection[ids] == 1) {
+                toInclude.push(ids);
+            }
+            else if(curSection[ids] == 2) {
+                toExclude.push(ids);
+            }
+        }
+
+        if(toInclude.length == 0 && toExclude.length == 0) continue;
+
+        totalTagsUsed += toInclude.length + toExclude.length;
+
+        if(toInclude.length > 0) {
+            if(numSections == 0) query += " WHERE";
+            else query += " AND";
+            numSections++;
+
+            query += " paper_id IN ";
+
+            if(curSection["include"] === "AND") {
+                query += makeSelectAND(toInclude, userID);
+            }
+            else {
+                query += makeSelectOR(toInclude, userID);
+            }
+        }
+
+        if(toExclude.length > 0) {
+            if(numSections == 0) query += " WHERE";
+            else query += " AND";
+            numSections++;
+
+            query += " paper_id NOT IN ";
+
+            if(curSection["exclude"] === "AND") {
+                query += makeSelectAND(toExclude, userID);
+            }
+            else {
+                query += makeSelectOR(toExclude, userID);
+            }
+        }
+
+    }
+
+    query += ";";
+    return query;
+}
+
+function sendSearchQuery(filterState, userID) {
+    var query = translateToSQL(filterState, userID);
+    //make the call to the seach api
+    console.log("Made the query: " + query);
+
+    var userID = -1;
+    if(cookies.get('UserID')) userID = cookies.get('UserID');
+
+    var result = sqlSearch(userID, query);
+    console.log("RESULTS: " + JSON.stringify(result));
+    return result;
+}
+
 export default class Search extends React.Component {
 
     state = {
         isOpen: false,
-        filterState: initState()
+        filterState: initState(),
+        paperData: sendSearchQuery(initState(), -1)
     }
 
     togglePopup = () => {
@@ -69,11 +181,17 @@ export default class Search extends React.Component {
     }
     handleFilterSave = (newFitlerState) => {
         this.setState((prevState) => ({ filterState: newFitlerState }));
+
+        var userID = -1;
+        if(cookies.get('UserID')) userID = cookies.get('UserID');
+        this.setState({ paperData: sendSearchQuery(newFitlerState, userID) });
+
+        // console.log("NEW STATE " + JSON.stringify(newFitlerState));
         this.togglePopup();
     }
 
     render() {
-        const { isOpen, filterState } = this.state;
+        const { isOpen, filterState, paperData } = this.state;
         return (<div id="searchContainer">
             <h1 id="title">Search</h1>
             <div id="searchBody">
@@ -86,7 +204,7 @@ export default class Search extends React.Component {
                 <div className="box" id="leftBox">
 
                     <Table class="tagElement" id="tagTable" columns={columnsTags} 
-                        data={tagData} loadFilter={this.togglePopup} />
+                        data={paperData} loadFilter={this.togglePopup} />
 
                 </div>
 
