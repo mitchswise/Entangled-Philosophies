@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter, useRowSelect } from "react-table";
-import { cookies, getQueries } from '../api.js'
+import { cookies, getQueries, removeQueries } from '../api.js'
 import { Checkbox } from './Checkbox.js';
 import './Queries.css';
 
@@ -232,7 +232,8 @@ export default class Queries extends React.Component {
             toDelete.push(allSelected[x].id);
         }
         var dict = {delete:toDelete};
-        console.log("Send: " + JSON.stringify(dict));
+        var data = removeQueries(dict);
+        window.location.reload();
     }
 
     render() {

@@ -421,3 +421,20 @@ export function getQueries(userID) {
 		return null;
 	}
 }
+
+export function removeQueries(jsonDict) {
+	var jsonPayload = JSON.stringify(jsonDict);
+	console.log("Sending " + jsonPayload);
+	
+	var url = urlBase + '/removeQueries.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		console.log(">> " + xhr.responseText);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
