@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter } from "react-table";
+import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter, useRowSelect } from "react-table";
 import { cookies, getQueries } from '../api.js'
-import Search from './Search.js';
+import { Checkbox } from './Checkbox.js';
 import './Queries.css';
 
-function QueriesTable({ columns, data, toggleView, setSearchFlag }) {
+function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -19,7 +19,8 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag }) {
         setPageSize,
         pageOptions,
         state,
-        setGlobalFilter
+        setGlobalFilter,
+        selectedFlatRows
     } = useTable({
         columns,
         data
@@ -27,7 +28,25 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag }) {
     useFilters,
     useGlobalFilter,
     useSortBy,
-    usePagination);
+    usePagination,
+    useRowSelect,
+    (hooks) => {
+        hooks.visibleColumns.push((columns) => {
+            return [
+                ...columns,
+                {
+                    id: 'selection',
+                    Header: ({ getToggleAllRowsSelectedProps }) => (
+                        <Checkbox {...getToggleAllRowsSelectedProps()} />
+                    ),
+                    Cell: ({ row }) => (
+                        <Checkbox {...row.getToggleRowSelectedProps()} />
+                    )
+                }
+            ]
+        })
+    }
+    );
 
     const { pageIndex, pageSize, globalFilter } = state;
     const [filterInput, setFilterInput] = useState("");
@@ -48,6 +67,7 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag }) {
             placeholder={"Search"}
         />
         <button id="queriesToggle" onClick={toggleView} >Toggle</button>
+        <button id="queriesToggle" onClick={() => deleteQueries(selectedFlatRows.map((row) => row.original))} >Delete</button>
         
         </div>
         <table {...getTableProps()}>
@@ -76,7 +96,11 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag }) {
                 prepareRow(row);
                 return (
                 <tr {...row.getRowProps()} 
-                        onClick={() => setSearchFlag(row.original)} >
+                        onClick={(e) => {
+                            if(e.target.cellIndex != undefined && e.target.cellIndex != 3) {
+                                setSearchFlag(row.original)
+                            }
+                        }} >
                     {row.cells.map(cell => {
                     return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
                     })}
@@ -85,15 +109,6 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag }) {
             })}
             </tbody>
         </table>
-        <select id="pageNumbers" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
-            {
-                [10, 15, 20].map(pageSize => (
-                    <option key={pageSize} value={pageSize} >
-                        Show {pageSize}
-                    </option>
-                ))
-            }
-        </select>
         <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
         <span id = "pageNumbers">
             Page{' '}
@@ -101,6 +116,16 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag }) {
             {' '}
         </span>
         <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
+        {/* <pre>
+            <code>
+                {JSON.stringify(
+                    {
+                        selectedFlatRows: selectedFlatRows.map((row) => row.original),
+                    },
+                    null, 2
+                )}
+            </code>
+        </pre> */}
     </>
     );
 }
@@ -201,6 +226,15 @@ export default class Queries extends React.Component {
         />
     }
 
+    handleQueryDelete(allSelected) {
+        var toDelete = []
+        for(const x in allSelected) {
+            toDelete.push(allSelected[x].id);
+        }
+        var dict = {delete:toDelete};
+        console.log("Send: " + JSON.stringify(dict));
+    }
+
     render() {
         const { toggleState, savedQueries, savedHistory, redirectToSearch } = this.state;
         return (<div id="searchContainer">
@@ -213,13 +247,15 @@ export default class Queries extends React.Component {
             {this.renderRedirect()}
             {redirectToSearch ? this.loadSearch() : <></>}
             <body>
-                <div id="wrapper">
+                <div id="queryWrapper">
                     {
                         toggleState === false ? 
                             <QueriesTable columns={columnsSavedQuery} data={savedQueries}
-                                toggleView={this.toggleView} setSearchFlag={this.setSearchFlag} />
+                                toggleView={this.toggleView} setSearchFlag={this.setSearchFlag}
+                                deleteQueries={this.handleQueryDelete} />
                         : <QueriesTable columns={columnsHistoryQuery} data={savedHistory}
-                                toggleView={this.toggleView} setSearchFlag={this.setSearchFlag} />
+                                toggleView={this.toggleView} setSearchFlag={this.setSearchFlag} 
+                                deleteQueries={this.handleQueryDelete} />
                     }
                 </div>
             </body>
