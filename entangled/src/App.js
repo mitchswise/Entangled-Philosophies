@@ -46,7 +46,7 @@ function App() {
 		      <Route exact path="/uploadpaper" component={UploadPaper}/>
           <Route exact path="/forgotpass" component={ForgotPass} />
           <Route exact path="/tags" component={Tags} />
-          <Route exact path="/search" component={Search} />
+          <Route exact path="/search" render={(props) => <Search {...props}/>} />
 		      <Route exact path="/settings" component={Settings} />
           <Route exact path="/queries" component={Queries} />
         </Switch>

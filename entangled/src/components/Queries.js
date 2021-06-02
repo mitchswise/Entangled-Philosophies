@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter } from "react-table";
 import { cookies, getQueries } from '../api.js'
+import Search from './Search.js';
 import './Queries.css';
 
-function QueriesTable({ columns, data, toggleView }) {
+function QueriesTable({ columns, data, toggleView, setSearchFlag }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -74,7 +75,8 @@ function QueriesTable({ columns, data, toggleView }) {
             {page.map((row, i) => {
                 prepareRow(row);
                 return (
-                <tr {...row.getRowProps()} >
+                <tr {...row.getRowProps()} 
+                        onClick={() => setSearchFlag(row.original)} >
                     {row.cells.map(cell => {
                     return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
                     })}
@@ -112,7 +114,7 @@ function getQueryData() {
         if(text.length > 80) {
             text = text.substring(0, 80)+"...";
         }
-        data.queries[x].query_text = text;
+        data.queries[x].query_text_fixed = text;
     }
 
     return data.queries;
@@ -149,7 +151,7 @@ const columnsSavedQuery = [
     },
     {
         Header: "Query",
-        accessor: "query_text"
+        accessor: "query_text_fixed"
     }
 ];
 
@@ -160,7 +162,7 @@ const columnsHistoryQuery = [
     },
     {
         Header: "Query",
-        accessor: "query_text"
+        accessor: "query_text_fixed"
     }
 ];
 
@@ -170,7 +172,9 @@ export default class Queries extends React.Component {
     state = {
         savedQueries: getSavedQueries(),
         savedHistory: getSavedHistory(),
-        toggleState: false
+        toggleState: false,
+        redirectToSearch: false,
+        redirectFilter: null
     }
 
     renderRedirect = () => {
@@ -183,8 +187,22 @@ export default class Queries extends React.Component {
         this.setState((prevState) => ({ toggleState: !prevState.toggleState }));
     }
 
+    setSearchFlag = (query) => {
+        this.setState({ redirectFilter: JSON.parse(query.query_text) });
+        this.setState({ redirectToSearch: true });
+    }
+
+    loadSearch = () => {
+        return <Redirect
+            to={{
+                pathname: "/search",
+                state: { filterState: this.state.redirectFilter }
+            }} 
+        />
+    }
+
     render() {
-        const { toggleState, savedQueries, savedHistory } = this.state;
+        const { toggleState, savedQueries, savedHistory, redirectToSearch } = this.state;
         return (<div id="searchContainer">
             <div className="header">
                 {
@@ -193,14 +211,15 @@ export default class Queries extends React.Component {
                 }
             </div>
             {this.renderRedirect()}
+            {redirectToSearch ? this.loadSearch() : <></>}
             <body>
                 <div id="wrapper">
                     {
                         toggleState === false ? 
                             <QueriesTable columns={columnsSavedQuery} data={savedQueries}
-                                toggleView={this.toggleView} />
+                                toggleView={this.toggleView} setSearchFlag={this.setSearchFlag} />
                         : <QueriesTable columns={columnsHistoryQuery} data={savedHistory}
-                                toggleView={this.toggleView} />
+                                toggleView={this.toggleView} setSearchFlag={this.setSearchFlag} />
                     }
                 </div>
             </body>

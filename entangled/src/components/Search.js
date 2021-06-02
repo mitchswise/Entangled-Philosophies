@@ -175,6 +175,13 @@ export default class Search extends React.Component {
         paperData: sendSearchQuery(initState(), -1)
     }
 
+    componentDidMount(props) {
+        console.log("We here");
+        if(this.props.location.state != undefined) {
+            this.handleFilterSave(this.props.location.state.filterState);
+        }
+    }
+
     updateHistory = (newFitlerState, userID) => {
         var jsonDict = {owner:userID, is_history:1, query_text:JSON.stringify(newFitlerState), query_type:"JSON"};
         saveQuery(jsonDict);
@@ -183,6 +190,9 @@ export default class Search extends React.Component {
 
     togglePopup = () => {
         this.setState((prevState) => ({ isFilterOpen: !prevState.isFilterOpen }));
+    }
+    closePopup = () => {
+        this.setState({ isFilterOpen: false });
     }
     toggleSavePopup = () => {
         this.setState((prevState) => ({ isSaveOpen: !prevState.isSaveOpen }));
@@ -206,7 +216,7 @@ export default class Search extends React.Component {
         var userID = -1;
         if(cookies.get('UserID')) userID = cookies.get('UserID');
         this.setState({ paperData: sendSearchQuery(newFitlerState, userID) });
-        this.togglePopup();
+        this.closePopup();
 
         if(userID != -1) {
             this.updateHistory(newFitlerState, userID);
