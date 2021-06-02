@@ -171,15 +171,9 @@ export default class Search extends React.Component {
     state = {
         isFilterOpen: false,
         isSaveOpen: false,
-        filterState: initState(),
-        paperData: sendSearchQuery(initState(), -1)
-    }
-
-    componentDidMount(props) {
-        console.log("We here");
-        if(this.props.location.state != undefined) {
-            this.handleFilterSave(this.props.location.state.filterState);
-        }
+        filterState: !this.props.location.state.filterState ? initState() : this.props.location.state.filterState, 
+        paperData: !this.props.location.state.filterState ? sendSearchQuery(initState(), -1) : 
+            sendSearchQuery(this.props.location.state.filterState, cookies.get('UserID')),
     }
 
     updateHistory = (newFitlerState, userID) => {

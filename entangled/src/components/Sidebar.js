@@ -25,7 +25,7 @@ export default class Sidebar extends React.Component {
             <Link to="/about">About</Link>
           </a>
           <a className="menu-item">
-            <Link to="/search">Search</Link>
+          <Link to={{pathname: "/search", state:{}}}>Search</Link>
           </a>
           <a className="menu-item">
             <Link to="/login">Login</Link>
@@ -47,7 +47,7 @@ export default class Sidebar extends React.Component {
             <Link to="/about">About</Link>
           </a>
           <a className="menu-item">
-            <Link to="/search">Search</Link>
+            <Link to={{pathname: "/search", state:{}}}>Search</Link>
           </a>
           <a className="menu-item">
             <Link to="/tags">Tags</Link>
@@ -59,7 +59,7 @@ export default class Sidebar extends React.Component {
             <Link to="/settings">Settings</Link>
           </a>
           <a className="menu-item">
-            <Link to="/" onClick={logout}>Logout</Link>
+            <Link to={{pathname: "/", state:{}}} onClick={logout}>Logout</Link>
           </a>
         </Menu>
       );
@@ -77,7 +77,7 @@ export default class Sidebar extends React.Component {
             <Link to="/admin">Admin</Link>
           </a>
           <a className="menu-item">
-            <Link to="/search">Search</Link>
+            <Link to={{pathname: "/search", state:{}}}>Search</Link>
           </a>
           <a className="menu-item">
             <Link to="/tags">Tags</Link>
@@ -92,7 +92,7 @@ export default class Sidebar extends React.Component {
             <Link to="/settings">Settings</Link>
           </a>
           <a className="menu-item">
-            <Link to="/" onClick={logout}>Logout</Link>
+            <Link to={{pathname: "/", state:{}}} onClick={logout}>Logout</Link>
           </a>
         </Menu>
       );
