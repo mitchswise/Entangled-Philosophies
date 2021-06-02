@@ -3,7 +3,7 @@
     header("Access-Control-Allow-Origin: *");
     include "database.php";
 
-    $MAX_HISTORY_PER_USER = 2;
+    $MAX_HISTORY_PER_USER = 3;
 
     $inData = json_decode(file_get_contents('php://input'), true);
     $owner = $inData["owner"];
