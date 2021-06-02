@@ -405,3 +405,19 @@ export function handleHistory(userID) {
 		return null;
 	}
 }
+
+export function getQueries(userID) {
+	var jsonDict = {owner:userID};
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/getQueries.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
