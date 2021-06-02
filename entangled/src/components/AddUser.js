@@ -1,5 +1,5 @@
 import React from 'react';
-import {addMetadataTag, tagExists, addTagToPaper, saveQuery, handleHistory } from '../api.js';
+import {addMetadataTag, tagExists, addTagToPaper, saveQuery, handleHistory, getQueries } from '../api.js';
 
 function doTagExists() {
     var tagText = document.getElementById('tagText').value;
@@ -47,6 +47,12 @@ function doHandleHistory() {
     document.getElementById('tagStatus').innerHTML = "Status: " + data.status + " -- " + data.removed_count;
 }
 
+function doGetSavedQueries() {
+    var owner = document.getElementById("gOwner").value;
+    var data = getQueries(owner);
+    console.log(data.queries);
+}
+
 export default class AddUser extends React.Component {
     render() {
         const element = (
@@ -82,6 +88,10 @@ export default class AddUser extends React.Component {
             <h3>Remove overflow history</h3>
             <input id="hOwner" placeholder="owner"></input>
             <button onClick={doHandleHistory}>Submit</button>
+
+            <h3>Get all saved queries</h3>
+            <input id="gOwner" placeholder="owner"></input>
+            <button onClick={doGetSavedQueries}>Submit</button>
 
             <div id = "tagStatus">Tag Status: </div>
 

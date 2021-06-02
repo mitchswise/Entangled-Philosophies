@@ -1,38 +1,39 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { useTable, useFilters, useSortBy, usePagination } from "react-table";
-import { cookies, getTags, getUserInfo, sqlSearch, handleHistory, saveQuery } from '../api.js'
+import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter } from "react-table";
+import { cookies, getQueries } from '../api.js'
 import './Queries.css';
 
-function QueriesTable({ columns, data }) {
+function QueriesTable({ columns, data, toggleView }) {
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
         page,
         prepareRow,
-        setFilter,
         nextPage,
         previousPage,
         canPreviousPage,
         canNextPage,
         setPageSize,
         pageOptions,
-        state
+        state,
+        setGlobalFilter
     } = useTable({
         columns,
         data
     },
     useFilters,
+    useGlobalFilter,
     useSortBy,
     usePagination);
 
-    const { pageIndex, pageSize } = state;
+    const { pageIndex, pageSize, globalFilter } = state;
     const [filterInput, setFilterInput] = useState("");
 
     const handleFilterChange = e => {
         const value = e.target.value || undefined;
-        // setFilter("paper_id", value);
+        setGlobalFilter(value);
         setFilterInput(value);
     };
 
@@ -41,10 +42,11 @@ function QueriesTable({ columns, data }) {
         <div>
         <input
             value={filterInput}
-            id="searchSearchBar"
+            id="queriesSearchBar"
             onChange={handleFilterChange}
-            placeholder={"Search name"}
+            placeholder={"Search"}
         />
+        <button id="queriesToggle" onClick={toggleView} >Toggle</button>
         
         </div>
         <table {...getTableProps()}>
@@ -101,9 +103,74 @@ function QueriesTable({ columns, data }) {
     );
 }
 
+function getQueryData() {
+    if(!cookies.get('UserID')) return [];
+    var data = getQueries(cookies.get('UserID'));
+
+    for(const x in data.queries) {
+        var text = data.queries[x].query_text;
+        if(text.length > 80) {
+            text = text.substring(0, 80)+"...";
+        }
+        data.queries[x].query_text = text;
+    }
+
+    return data.queries;
+}
+const allQueries = getQueryData();
+
+function getSavedQueries() {
+    var allSaved = [];
+    for(const x in allQueries) {
+        if(allQueries[x].is_history == 0) {
+            allSaved.push(allQueries[x]);
+        }
+    }
+    return allSaved;
+}
+function getSavedHistory() {
+    var allHistory = [];
+    for(const x in allQueries) {
+        if(allQueries[x].is_history == 1) {
+            allHistory.push(allQueries[x]);
+        }
+    }
+    return allHistory;
+}
+
+const columnsSavedQuery = [
+    {
+        Header: "Name",
+        accessor: "name"
+    },
+    {
+        Header: "Date",
+        accessor: "date"
+    },
+    {
+        Header: "Query",
+        accessor: "query_text"
+    }
+];
+
+const columnsHistoryQuery = [
+    {
+        Header: "Date",
+        accessor: "date"
+    },
+    {
+        Header: "Query",
+        accessor: "query_text"
+    }
+];
+
+
 export default class Queries extends React.Component {
 
     state = {
+        savedQueries: getSavedQueries(),
+        savedHistory: getSavedHistory(),
+        toggleState: false
     }
 
     renderRedirect = () => {
@@ -112,10 +179,31 @@ export default class Queries extends React.Component {
         }
     }
 
+    toggleView = () => {
+        this.setState((prevState) => ({ toggleState: !prevState.toggleState }));
+    }
+
     render() {
+        const { toggleState, savedQueries, savedHistory } = this.state;
         return (<div id="searchContainer">
-            <h1 id="title">Saved Queries</h1>
+            <div className="header">
+                {
+                    toggleState === false ? <h1 id="title">Saved Queries</h1>
+                    : <h1 id="title">Search History</h1>
+                }
+            </div>
             {this.renderRedirect()}
+            <body>
+                <div id="wrapper">
+                    {
+                        toggleState === false ? 
+                            <QueriesTable columns={columnsSavedQuery} data={savedQueries}
+                                toggleView={this.toggleView} />
+                        : <QueriesTable columns={columnsHistoryQuery} data={savedHistory}
+                                toggleView={this.toggleView} />
+                    }
+                </div>
+            </body>
             
         </div>);
     }
