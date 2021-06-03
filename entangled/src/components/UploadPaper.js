@@ -1,35 +1,9 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import './UploadPaper.css';
-import { cookies, addPaper, tagExists } from '../api.js';
-
-function doAddPaper() {
-	var title = document.getElementById("titleName").value;
-	var author = document.getElementById("authorBox").value;
-	var contributor = document.getElementById("contributor").value;
-	var subject = document.getElementById("subject").value;
-	var date = document.getElementById("date").value;
-	var description = document.getElementById("description").value;
-	var publisher = document.getElementById("publisher").value;
-	var isbn = document.getElementById("isbn").value;
-	var filename = document.getElementById("filename").value;
-	var url;
-
-	if (filename == "") {
-		url = "none";
-	} else {
-		url = "http://chdr.cs.ucf.edu/~entangledPhilosophy/paper/" + document.getElementById("filename").value;
-	}
-
-	var data = addPaper(title, author, url);
-	var id = data.id;
-	document.getElementById("paperStatus").innerHTML = data.status + " id=" + id;
-
-	// Add tags to paper id here
-}
+import { cookies, addPaper, tagExists, addTagToPaper } from '../api.js';
 
 export default class UploadPaper extends React.Component {
-	//state = { tagSelection: null };
 	componentDidMount() {
 		const script = document.createElement("script");
 		script.async = true;
@@ -46,6 +20,7 @@ export default class UploadPaper extends React.Component {
     render() {		
 		let tagsAdded = ""
 		let tagsList = []
+		let tagIDs = []
 		
 		const doAddTag = async e => {
 			var tag = document.getElementById("tagsearch").value;
@@ -57,6 +32,7 @@ export default class UploadPaper extends React.Component {
 			{
 				tagsAdded = tagsAdded + tag + ', ';
 				tagsList.push(tag);
+				tagIDs.push(data.tag_id);
 				document.getElementById("paperStatus").innerHTML = "";
 			}
 			else {
@@ -68,6 +44,47 @@ export default class UploadPaper extends React.Component {
 			document.getElementById("tags").value = tagsAdded;
 			
 			return;
+		}
+		
+		const doAddPaper = async e => {
+			var title = document.getElementById("titleName").value;
+			var author = document.getElementById("authorBox").value;
+			var contributor = document.getElementById("contributor").value;
+			var subject = document.getElementById("subject").value;
+			var date = document.getElementById("date").value;
+			var description = document.getElementById("description").value;
+			var publisher = document.getElementById("publisher").value;
+			var isbn = document.getElementById("isbn").value;
+			var filename = document.getElementById("filename").value;
+			var url;
+			
+			if (title == "") {
+				document.getElementById("paperStatus").innerHTML = "Paper must include a title";
+			}
+			if (filename == "") {
+				url = "none";
+			} else {
+				url = "http://chdr.cs.ucf.edu/~entangledPhilosophy/paper/" + document.getElementById("filename").value;
+			}
+
+			var data = addPaper(title, author, url);
+			var id = data.id;
+			
+			var i;
+			for (i = 0; i < tagIDs.length; i++){
+				data = addTagToPaper(id, tagIDs[i], cookies.get('UserID'));
+				document.getElementById("paperStatus").innerHTML = data.status;
+			}
+			
+			document.getElementById("titleName").innerHTML = "";
+			document.getElementById("authorBox").innerHTML = "";
+			document.getElementById("contributor").innerHTML = "";
+			document.getElementById("subject").innerHTML = "";
+			document.getElementById("date").innerHTML = "";
+			document.getElementById("description").innerHTML = "";
+			document.getElementById("publisher").innerHTML = "";
+			document.getElementById("isbn").innerHTML = "";
+			document.getElementById("filename").innerHTML = "";
 		}
 	
         return <div className="container" ref={el => (this.div = el)}>
