@@ -72,7 +72,7 @@ export default class UploadPaper extends React.Component {
 			
 			var i;
 			for (i = 0; i < tagIDs.length; i++){
-				data = addTagToPaper(id, tagIDs[i], cookies.get('UserID'));
+				data = addTagToPaper(id, tagIDs[i], 0);
 				document.getElementById("paperStatus").innerHTML = data.status;
 			}
 			
