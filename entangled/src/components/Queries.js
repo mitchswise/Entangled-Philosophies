@@ -116,16 +116,6 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
             {' '}
         </span>
         <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
-        {/* <pre>
-            <code>
-                {JSON.stringify(
-                    {
-                        selectedFlatRows: selectedFlatRows.map((row) => row.original),
-                    },
-                    null, 2
-                )}
-            </code>
-        </pre> */}
     </>
     );
 }
