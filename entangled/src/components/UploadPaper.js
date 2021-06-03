@@ -60,6 +60,7 @@ export default class UploadPaper extends React.Component {
 			
 			if (title == "") {
 				document.getElementById("paperStatus").innerHTML = "Paper must include a title";
+				return;
 			}
 			if (filename == "") {
 				url = "none";

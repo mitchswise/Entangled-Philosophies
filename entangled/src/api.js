@@ -2,7 +2,8 @@ import Cookies from 'universal-cookie';
 export const cookies = new Cookies();
 export const supported_languages = ["eng", "ger"];
 
-var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+// var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+var urlBase = 'http://chdr.cs.ucf.edu/~ah458967/Entangled-Philosophies/api';
 
 var xhr;
 
@@ -367,6 +368,70 @@ export function sqlSearch(userID, query) {
 
 	try {
 		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function saveQuery(jsonDict) {
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/saveQuery.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function handleHistory(userID) {
+	var jsonDict = {owner:userID};
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/handleHistory.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function getQueries(userID) {
+	var jsonDict = {owner:userID};
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/getQueries.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function removeQueries(jsonDict) {
+	var jsonPayload = JSON.stringify(jsonDict);
+	console.log("Sending " + jsonPayload);
+	
+	var url = urlBase + '/removeQueries.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		console.log(">> " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
