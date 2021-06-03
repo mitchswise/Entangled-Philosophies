@@ -1,5 +1,5 @@
 import React from 'react';
-import {addMetadataTag, tagExists, addTagToPaper, saveQuery, handleHistory, getQueries } from '../api.js';
+import {addMetadataTag, tagExists, addTagToPaper, saveQuery, handleHistory, getQueries, removePaper } from '../api.js';
 
 function doTagExists() {
     var tagText = document.getElementById('tagText').value;
@@ -53,6 +53,12 @@ function doGetSavedQueries() {
     console.log(data.queries);
 }
 
+function doRemovePaper() {
+	var id = document.getElementById("rem_paper").value;
+	var data = removePaper(id);
+	document.getElementById("rem_status").innerHTML = "Status: " + data.status;
+}
+
 export default class AddUser extends React.Component {
     render() {
         const element = (
@@ -70,7 +76,7 @@ export default class AddUser extends React.Component {
             <input id="userIDATTP" placeholder="user ID"></input>
             <button onClick={doAddTagToPaper}>Submit</button>
 
-            <h3>Test addMetadataTag (assumes you're using a valid metadata title)</h3>
+            <h3>Test addMetadataTag (assumes youre using a valid metadata title)</h3>
             <input id="category" placeholder="category"></input>
             <input id="languageM" placeholder="language"></input>
             <input id="MText" placeholder="text"></input>
@@ -94,6 +100,11 @@ export default class AddUser extends React.Component {
             <button onClick={doGetSavedQueries}>Submit</button>
 
             <div id = "tagStatus">Tag Status: </div>
+
+			<h3>Remove a paper</h3>
+			<input id="rem_paper" placeholder="id"></input>
+			<button onClick={doRemovePaper}>Remove</button>
+			<div id="rem_status">Status: </div>
 
         </div>
         );

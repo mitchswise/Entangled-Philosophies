@@ -65,7 +65,7 @@ export default class UploadPaper extends React.Component {
 			if (filename == "") {
 				url = "none";
 			} else {
-				url = "http://chdr.cs.ucf.edu/~entangledPhilosophy/paper/" + document.getElementById("filename").value;
+				url =  document.getElementById("filename").value;
 			}
 
 			var data = addPaper(title, author, url);

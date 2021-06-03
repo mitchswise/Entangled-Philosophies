@@ -43,11 +43,11 @@ function App() {
           <Route exact path="/login" component={Login} />
           <Route exact path="/adduser" component={AddUser} />
           <Route exact path="/admin" component={Admin} />
-		      <Route exact path="/uploadpaper" component={UploadPaper}/>
+		  <Route exact path="/uploadpaper" component={UploadPaper}/>
           <Route exact path="/forgotpass" component={ForgotPass} />
           <Route exact path="/tags" component={Tags} />
           <Route exact path="/search" component={Search} />
-		      <Route exact path="/settings" component={Settings} />
+		  <Route exact path="/settings" component={Settings} />
           <Route exact path="/queries" component={Queries} />
         </Switch>
       </Router>

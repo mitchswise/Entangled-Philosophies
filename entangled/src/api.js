@@ -298,7 +298,7 @@ export function removePaper(id) {
 	var jsonPayload = '{"id":' + id + '}';
 	
 	var url = urlBase + '/removePaper.php';
-  connect("POST", url);
+ 	connect("POST", url);
 
 	try {
 		xhr.send(jsonPayload);
