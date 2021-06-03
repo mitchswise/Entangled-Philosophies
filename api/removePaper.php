@@ -15,18 +15,20 @@
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_assoc();	
-		$url = '/home/entangledPhilosophy/public_html/paper/' . $row["url"];
-		if (unlink($url)) {
-			$sql = 'DELETE FROM papers WHERE id = ' . $id . ';';
-			$result = $conn->query($sql);
-	
-			if ($conn->affected_rows > 0) {
-				echo '{"status":"success"}';
-			} else {
-				echo '{"status":"' . $conn->error . '"}'; 	
+		if ($row["url"] != 'none') {
+			$url = '/home/entangledPhilosophy/public_html/paper/' . $row["url"];
+			if (!unlink($url)) {
+				echo '{"status":"File not found", "url":"' . $url . '"}';
 			}
+		}
+
+		$sql = 'DELETE FROM papers WHERE id = ' . $id . ';';
+		$result = $conn->query($sql);
+		
+		if ($conn->affected_rows > 0) {
+			echo '{"status":"success"}';
 		} else {
-			echo '{"status":"File not found"}';
+			echo '{"status":"' . $conn->error . '"}'; 	
 		}
 	} else {
 		echo '{"status":"' . $conn->error . '"}'; 	
