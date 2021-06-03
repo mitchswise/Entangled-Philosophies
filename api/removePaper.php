@@ -10,12 +10,24 @@
 
 	$inData = json_decode(file_get_contents('php://input'), true);
 	$id = $inData["id"];
-	
-	$sql = 'DELETE FROM papers WHERE id = ' . $id . ';';
-	$result = $conn->query($sql);
 
-	if ($conn->affected_rows > 0) {
-		echo '{"status":"success"}';
+	$sql = 'SELECT url FROM papers WHERE id = ' . $id . ';';
+	$result = $conn->query($sql);
+	if ($result->num_rows > 0) {
+		$row = $result->fetch_assoc();	
+		$url = '/home/entangledPhilosophy/public_html/paper/' . $row["url"];
+		if (unlink($url)) {
+			$sql = 'DELETE FROM papers WHERE id = ' . $id . ';';
+			$result = $conn->query($sql);
+	
+			if ($conn->affected_rows > 0) {
+				echo '{"status":"success"}';
+			} else {
+				echo '{"status":"' . $conn->error . '"}'; 	
+			}
+		} else {
+			echo '{"status":"File not found"}';
+		}
 	} else {
 		echo '{"status":"' . $conn->error . '"}'; 	
 	}
