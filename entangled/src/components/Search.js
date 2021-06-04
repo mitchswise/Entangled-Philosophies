@@ -9,7 +9,6 @@ const columnsTags = [
     {
         Header: "Name",
         accessor: "title",
-        headerStyle: {textAlign: 'center'}
     },
     {
         Header: "Author",
