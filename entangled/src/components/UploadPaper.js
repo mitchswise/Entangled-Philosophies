@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import './UploadPaper.css';
-import { cookies, addPaper, tagExists, addTagToPaper } from '../api.js';
+import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag } from '../api.js';
 
 export default class UploadPaper extends React.Component {
 	componentDidMount() {
@@ -25,7 +25,7 @@ export default class UploadPaper extends React.Component {
 		const doAddTag = async e => {
 			var tag = document.getElementById("tagsearch").value;
 			
-			var data = tagExists(tag, "eng", cookies.get('UserID'));
+			var data = tagExists(tag, cookies.get('PrefLang'), 0);
 			console.log(data);
 			
 			if (data.tag_id >= 0)
@@ -52,7 +52,10 @@ export default class UploadPaper extends React.Component {
 				"publisher", "rights", "coverage", "isbn", "urlBox"];
 			let metadata_ids = ["title", "author", "contributor", "relation", "subject", "date",
 				"description", "type", "format", "language", "source",
-				"publisher", "rights", "coverage", "isbn", "url"];
+				"publisher", "rights", "coverage", "isbn", "paper_url"];
+			let metadata_categories = ["Title", "Author", "Contributor", "Relation", "Subject", "Date",
+			"Description", "Type", "Format", "Language", "Source",
+			"Publisher", "Rights", "Coverage", "ISBN", "URL"];
 
 			var title = document.getElementById("titleName").value;
 			if (title == "") {
@@ -76,26 +79,59 @@ export default class UploadPaper extends React.Component {
 				}
 			}
 			metadata_dict["url"] = url;
-			console.log("Done! " + JSON.stringify(metadata_dict));
 
 			var data = addPaper(metadata_dict);
 			var id = data.id;
 			
-			// var i;
-			// for (i = 0; i < tagIDs.length; i++){
-			// 	data = addTagToPaper(id, tagIDs[i], 0);
-			// 	document.getElementById("paperStatus").innerHTML = data.status;
-			// }
-			
-			// document.getElementById("titleName").innerHTML = "";
-			// document.getElementById("authorBox").innerHTML = "";
-			// document.getElementById("contributor").innerHTML = "";
-			// document.getElementById("subject").innerHTML = "";
-			// document.getElementById("date").innerHTML = "";
-			// document.getElementById("description").innerHTML = "";
-			// document.getElementById("publisher").innerHTML = "";
-			// document.getElementById("isbn").innerHTML = "";
-			// document.getElementById("filename").innerHTML = "";
+			var i;
+			for (i = 0; i < tagIDs.length; i++){
+				data = addTagToPaper(id, tagIDs[i], 0);
+				document.getElementById("paperStatus").innerHTML = data.status;
+			}
+
+			//add all metadata as tags
+			for(const keyVal in metadata_dict) {
+				if(keyVal === "url") continue;
+				var value = metadata_dict[keyVal];
+				var tag_data = tagExists(value, "met", 0);
+				var tag_id = tag_data.tag_id;
+				if(tag_id == -1) {
+
+					var found_index = -1;
+					for(const index in metadata_ids) {
+						if(metadata_ids[index] == keyVal) {
+							found_index = index;
+							break;
+						}
+					}
+
+					if(found_index != -1) {
+						var curCategory = metadata_categories[found_index];
+						var result = addMetadataTag(curCategory, "eng", value, -1);
+
+						tag_data = tagExists(value, "met", 0);
+						tag_id = tag_data.tag_id;
+					}
+					else {
+						console.log("error?");
+					}
+
+				}
+
+				if(tag_id == -1 || tag_id == undefined) {
+					console.log("Error getting metadata tag " + value + " key = " + keyVal);
+					continue;
+				}
+
+				data = addTagToPaper(id, tag_id, 0);
+			}
+
+			for(const index in field_ids) {
+				document.getElementById(field_ids[index]).innerHTML = "";
+			}
+			document.getElementById("filename").innerHTML = "";
+
+			document.getElementById("paperStatus").innerHTML = "Uploaded Paper";
 		}
 	
         return <div className="container" ref={el => (this.div = el)}>
