@@ -6,24 +6,36 @@
     border-width: 1px;
     border-color: black;
     width: 1100px;
-    Height: 345px;
+    height: 700px;
     top: -100px;
     position: relative;
     text-align: center;
     margin:auto;
+    margin-bottom: 0%;
+    overflow: hidden;
 }
 
 .PaperFields {
-    top: -20px;
     position: relative;
 }
 
 .PaperBoxes {
-
     position: relative;
     width: 350px;
     height:28px;
 
+}
+
+#MetadataFields {
+    margin: 0 auto;
+    width: 700px;
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
+#OtherFields {
+    top: 600px;
+    position: relative;
 }
 
 #uploadBtnTxt {
@@ -61,7 +73,7 @@
     background-color: #f74135;
     border: none;
     top:-564px;
-	left: -36px;
+	left: -46px;
     height:33px;
     width: 33px;
     border-top-style: solid;
@@ -69,6 +81,7 @@
     border-bottom-style: solid;
     border-left-style: solid;
     border-width: 1px;
+    margin-left: 3px;
 }
 
 
@@ -82,204 +95,201 @@
 
 }
 
-#hr{
-    width:100%;
-    top:-602px;
-    color: lightgray;
+#paper_line {
+    width:99.9%;
+    color: rgb(0, 0, 0);
     position: relative;
-
 }
 
 #leftTitle
 {
     position: relative;
     left: -224px;
-    top: 70px;
-
 }
 
 #titleName{
-    top:20px;
+    top:-50px;
 }
 
 #leftAuthor
 {
     position: relative;
     left: -240px;
-    top: 28px;
+    top: -42px;
 
 }
 
 #authorBox{
-    top:-22px;
+    top:-92px;
 }
 
 #leftContributor
 {
     position: relative;
     left: -264px;
-    top: -14px;
+    top: -84px;
 
 }
 
 #contributor{
-    top:-64px;
+    top:-134px;
 }
 
 #leftRelations
 {
     position: relative;
     left: -244px;
-    top: -56px;
+    top: -126px;
 
 }
 
 #relation{
-    top:-106px;
+    top:-176px;
 }
 
 #leftSubject
 {
     position: relative;
     left: -240px;
-    top: -98px;
+    top: -168px;
 
 }
 
 #subject{
-    top:-148px;
+    top:-218px;
 }
 
 #leftDate
 {
     position: relative;
     left: -226px;
-    top: -140px;
+    top: -210px;
 
 }
 
 #date{
-    top:-190px;
+    top:-260px;
 }
 
 #leftDescription
 {
     position: relative;
     left: -264px;
-    top: -182px;
+    top: -252px;
 
 }
 
 #description{
-    top:-232px;
+    top:-302px;
 }
 
 #leftType
 {
     position: relative;
     left: -226px;
-    top: -224px;
+    top: -294px;
 
 }
 
 #type{
-    top:-274px;
+    top:-344px;
 }
 
 #leftFormat
 {
     position: relative;
     left: -240px;
-    top: -266px;
+    top: -336px;
 
 }
 
 #format{
-    top:-316px;
+    top:-386px;
 }
 
 #leftLanguage
 {
     position: relative;
     left: -254px;
-    top: -308px;
+    top: -378px;
 
 }
 
 #languageBox{
-    top:-358px;
+    top:-428px;
 }
 
 #leftSource
 {
     position: relative;
     left: -240px;
-    top: -350px;
+    top: -420px;
 
 }
 
 #sourceBox{
-    top:-400px;
+    top:-470px;
 }
 
 #leftPublisher
 {
     position: relative;
     left: -254px;
-    top: -392px;
+    top: -462px;
 
 }
 
 #publisher{
-    top:-442px;
+    top:-512px;
 }
 
 #leftRights
 {
     position: relative;
     left: -240px;
-    top: -434px;
+    top: -504px;
 
 }
 
 #rights{
-    top:-484px;
+    top:-554px;
 }
 
 #leftCoverage
 {
     position: relative;
     left: -254px;
-    top: -476px;
+    top: -546px;
 
 }
 
 #coverage{
-    top:-526px;
+    top:-596px;
 }
 
 #leftISBN
 {
     position: relative;
     left: -228px;
-    top: -518px;
+    top: -588px;
 
 }
 
 #isbn{
-    top:-568px;
+    top:-638px;
 }
 
 #leftURL
 {
     position: relative;
     left: -224px;
-    top: -560px;
+    top: -630px;
 
 }
 
 #urlBox{
-    top:-610px;
+    top:-680px;
+    margin: 0;
 }
 
 #leftTags
@@ -291,7 +301,7 @@
 
 #tagsearch{
 	top:-564px;
-	left:-15px;
+	left:-37px;
 }
 
 #tags{
@@ -305,10 +315,6 @@
 
 #paperStatus{
 	position: relative;
-	top: -564px;
-}
-
-#registerContainer
-{
-    text-align: center;
+	top: -90px;
+    left: 870px;
 }
