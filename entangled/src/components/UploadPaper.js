@@ -12,7 +12,7 @@ export default class UploadPaper extends React.Component {
 	}
 
 	renderRedirect = () => {
-		if (cookies.get('UserID') == null || cookies.get('PermLvl') < 2) {
+		if (cookies.get('UserID') == null || cookies.get('PermLvl') < 1) {
 			return <Redirect to='/' />
 		}
 	}
