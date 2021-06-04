@@ -1,10 +1,10 @@
 import React from "react";
 import { useState } from 'react';
-import { useTable, useFilters, useSortBy, usePagination } from "react-table";
+import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter } from "react-table";
 import { cookies } from "../api";
 import './Table.css';
 
-export default function Table({ columns, data, loadFilter, saveQuery }) {
+export default function Table({ columns, data, loadFilter, saveQuery, loadPaper }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -18,21 +18,23 @@ export default function Table({ columns, data, loadFilter, saveQuery }) {
         canNextPage,
         setPageSize,
         pageOptions,
-        state
+        state,
+        setGlobalFilter,
     } = useTable({
         columns,
         data
     },
     useFilters,
+    useGlobalFilter,
     useSortBy,
     usePagination);
 
-    const { pageIndex, pageSize } = state;
+    const { pageIndex, pageSize, globalFilter } = state;
     const [filterInput, setFilterInput] = useState("");
 
     const handleFilterChange = e => {
         const value = e.target.value || undefined;
-        setFilter("paper_id", value);
+        setGlobalFilter(value);
         setFilterInput(value);
     };
 
@@ -83,7 +85,8 @@ export default function Table({ columns, data, loadFilter, saveQuery }) {
             {page.map((row, i) => {
                 prepareRow(row);
                 return (
-                <tr {...row.getRowProps()} >
+                <tr {...row.getRowProps()}
+                        onClick={() => loadPaper(row.original)} >
                     {row.cells.map(cell => {
                     return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
                     })}
