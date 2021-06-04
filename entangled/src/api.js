@@ -263,8 +263,8 @@ export function getCategoryTranslation(cat_id) {
 	}
 }
 
-export function addPaper(title, author, url) {
-	var jsonPayload = '{"title":"' + title + '", "author":"' + author + '", "url":"' + url + '"}';
+export function addPaper(metadata_dict) {
+	var jsonPayload = JSON.stringify(metadata_dict);
 
 	var url = urlBase + '/addPaper.php';	
 	connect("POST", url);
