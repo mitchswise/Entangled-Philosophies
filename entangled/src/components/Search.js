@@ -58,6 +58,43 @@ function initState() {
     return initState;
 }
 
+function cleanFilterState(filterState) {
+    //because of saved queries before a category is added,
+    //we need to make sure filter state is up to date with 
+    //all new categories + tags that belong to those new categories
+
+    const newFilter = filterState.slice();
+    var textToFilter = {};
+
+    tagData.forEach((item, index) => {
+        var foundInFilter = false;
+        for(const x in newFilter) {
+            if(newFilter[x].row_name == item.cat_id) {
+                textToFilter[item.catText] = x;
+                foundInFilter = true;
+                break;
+            }
+        }
+        if(!foundInFilter) {
+            var row_state = {};
+            row_state["row_name"] = item.cat_id;
+            row_state["include"] = "OR";
+            row_state["exclude"] = "OR";
+            row_state["_hidden"] = false;
+            row_state["_expand"] = false;
+
+            textToFilter[item.catText] = newFilter.length;
+            newFilter.push(row_state);
+        }
+        const idx = textToFilter[item.catText];
+        if(!(item.tag_id in newFilter[idx])) {
+            newFilter[idx][item.tag_id] = 0;
+        }
+    });
+
+    return newFilter;
+}
+
 //checks if the string consists of only digits
 function isDigit(val) {
     return /^\d+$/.test(val);
@@ -171,9 +208,9 @@ export default class Search extends React.Component {
     state = {
         isFilterOpen: false,
         isSaveOpen: false,
-        filterState: !this.props.location.state.filterState ? initState() : this.props.location.state.filterState, 
+        filterState: !this.props.location.state.filterState ? initState() : cleanFilterState(this.props.location.state.filterState), 
         paperData: !this.props.location.state.filterState ? sendSearchQuery(initState(), -1) : 
-            sendSearchQuery(this.props.location.state.filterState, cookies.get('UserID')),
+            sendSearchQuery(cleanFilterState(this.props.location.state.filterState), cookies.get('UserID')),
     }
 
     updateHistory = (newFitlerState, userID) => {

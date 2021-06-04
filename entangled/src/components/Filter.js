@@ -91,16 +91,24 @@ export default class Popup extends React.Component {
 
         const { filterState } = this.state;
 
+
         //processes all tags that match the current filter
         this.props.tagData.forEach((item, index) => {
+            // console.log("Hello " + item.text);
             if(!this.state.textFilter ||  item.text.toLowerCase().includes(this.state.textFilter)) {
                 if(!(item.catText in categories)) {
                     categories[item.catText] = [];
+
+                    var foundInFilter = false;
                     for(const x in filterState) {
                         if(filterState[x].row_name == item.cat_id) {
                             textToFilter[item.catText] = x;
+                            foundInFilter = true;
                             break;
                         }
+                    }
+                    if(!foundInFilter) {
+                        console.log("Big trouble");
                     }
                 }
                 categories[item.catText].push(item);
@@ -109,6 +117,7 @@ export default class Popup extends React.Component {
 
         //for each category that has some matching tags
         for(const x in categories) {
+            if(!(x in textToFilter)) continue;
 
             var tagList = categories[x];
             const filterIndex = textToFilter[x];
