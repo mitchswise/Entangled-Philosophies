@@ -7,13 +7,18 @@ import './Search.css';
 
 const columnsTags = [
     {
-        Header: "Paper IDs",
-        accessor: "paper_id"
+        Header: "Name",
+        accessor: "title",
+        headerStyle: {textAlign: 'center'}
+    },
+    {
+        Header: "Author",
+        accessor: "author"
+    },
+    {
+        Header: "Language",
+        accessor: "language"
     }
-    // {
-    //     Header: "Category",
-    //     accessor: "catText"
-    // }
 ];
 
 //loads all available tags for a user
@@ -211,6 +216,7 @@ export default class Search extends React.Component {
         filterState: !this.props.location.state.filterState ? initState() : cleanFilterState(this.props.location.state.filterState), 
         paperData: !this.props.location.state.filterState ? sendSearchQuery(initState(), -1) : 
             sendSearchQuery(cleanFilterState(this.props.location.state.filterState), cookies.get('UserID')),
+        paperInformation: undefined
     }
 
     updateHistory = (newFitlerState, userID) => {
@@ -254,8 +260,24 @@ export default class Search extends React.Component {
         }
     }
 
+    loadPaper = (paperInfo) => {
+        this.setState((prevState) => ({ paperInformation: paperInfo }));
+    }
+    closePaper = () => {
+        this.setState((prevState) => ({ paperInformation: undefined }));
+    }
+
+    viewPaper = () => {
+        const { paperInformation } = this.state;
+        return <div>
+            <h1>{paperInformation.title}</h1>
+            <button disabled={true}>Edit Paper</button>
+            <button onClick={this.closePaper}>Close Paper</button>
+        </div>
+    }
+
     render() {
-        const { isFilterOpen, isSaveOpen, filterState, paperData } = this.state;
+        const { isFilterOpen, isSaveOpen, filterState, paperData, paperInformation } = this.state;
         return (<div id="searchContainer">
             <h1 id="title">Search</h1>
             <div id="searchBody">
@@ -272,12 +294,17 @@ export default class Search extends React.Component {
                 <div className="box" id="leftBox">
 
                     <Table class="tagElement" id="tagTable" columns={columnsTags} 
-                        data={paperData} loadFilter={this.togglePopup} saveQuery={this.toggleSavePopup} />
+                        data={paperData} loadFilter={this.togglePopup} saveQuery={this.toggleSavePopup}
+                        loadPaper={this.loadPaper} />
 
                 </div>
 
                 <div className="box" id="rightBox">
 
+                    {
+                        paperInformation !== undefined ? this.viewPaper() : 
+                        <></>
+                    }
 
                 </div>
             </div>
