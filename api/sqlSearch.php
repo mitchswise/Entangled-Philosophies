@@ -20,10 +20,26 @@
         return;
     }
 
-    $arr = array();
+    $query = "SELECT * FROM papers WHERE id = ";
+    $rows_appended = 0;
+    
 	while ($row = $result->fetch_assoc()) {
-		$arr[] = array('paper_id' => $row["paper_id"]);
+        if($rows_appended > 0) $query = $query . " OR ";
+        
+        $query = $query . strval($row["paper_id"]);
+        $rows_appended++;
 	}
+    
+    $result = $conn->query($query);
+    if(!$result) {
+        echo '{"status":"' . $conn->error . '"}';
+        return;
+    }
+
+    $arr = array();
+    while ($row = $result->fetch_assoc()) {
+        $arr[] = $row;
+    }
 
     echo json_encode($arr);
 ?>
