@@ -4,7 +4,7 @@ import { useTable, useFilters, useSortBy, usePagination } from "react-table";
 import { cookies } from "../api";
 import './Table.css';
 
-export default function Table({ columns, data, loadFilter, saveQuery }) {
+export default function Table({ columns, data, loadFilter, saveQuery, loadPaper }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -83,7 +83,8 @@ export default function Table({ columns, data, loadFilter, saveQuery }) {
             {page.map((row, i) => {
                 prepareRow(row);
                 return (
-                <tr {...row.getRowProps()} >
+                <tr {...row.getRowProps()}
+                        onClick={() => loadPaper(row.original)} >
                     {row.cells.map(cell => {
                     return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
                     })}
