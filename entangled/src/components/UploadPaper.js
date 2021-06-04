@@ -47,45 +47,55 @@ export default class UploadPaper extends React.Component {
 		}
 		
 		const doAddPaper = async e => {
+			let field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
+				"description", "type", "format", "languageBox", "sourceBox", 
+				"publisher", "rights", "coverage", "isbn", "urlBox"];
+			let metadata_ids = ["title", "author", "contributor", "relation", "subject", "date",
+				"description", "type", "format", "language", "source",
+				"publisher", "rights", "coverage", "isbn", "url"];
+
 			var title = document.getElementById("titleName").value;
-			var author = document.getElementById("authorBox").value;
-			var contributor = document.getElementById("contributor").value;
-			var subject = document.getElementById("subject").value;
-			var date = document.getElementById("date").value;
-			var description = document.getElementById("description").value;
-			var publisher = document.getElementById("publisher").value;
-			var isbn = document.getElementById("isbn").value;
-			var filename = document.getElementById("filename").value;
-			var url;
-			
 			if (title == "") {
 				document.getElementById("paperStatus").innerHTML = "Paper must include a title";
 				return;
 			}
+			var filename = document.getElementById("filename").value;
+			var url;
+			
 			if (filename == "") {
 				url = "none";
 			} else {
 				url =  document.getElementById("filename").value;
 			}
 
-			var data = addPaper(title, author, url);
+			var metadata_dict = {};
+			for(const index in field_ids) {
+				var value = document.getElementById(field_ids[index]).value;
+				if(value !== "") {
+					metadata_dict[metadata_ids[index]] = value;
+				}
+			}
+			metadata_dict["url"] = url;
+			console.log("Done! " + JSON.stringify(metadata_dict));
+
+			var data = addPaper(metadata_dict);
 			var id = data.id;
 			
-			var i;
-			for (i = 0; i < tagIDs.length; i++){
-				data = addTagToPaper(id, tagIDs[i], 0);
-				document.getElementById("paperStatus").innerHTML = data.status;
-			}
+			// var i;
+			// for (i = 0; i < tagIDs.length; i++){
+			// 	data = addTagToPaper(id, tagIDs[i], 0);
+			// 	document.getElementById("paperStatus").innerHTML = data.status;
+			// }
 			
-			document.getElementById("titleName").innerHTML = "";
-			document.getElementById("authorBox").innerHTML = "";
-			document.getElementById("contributor").innerHTML = "";
-			document.getElementById("subject").innerHTML = "";
-			document.getElementById("date").innerHTML = "";
-			document.getElementById("description").innerHTML = "";
-			document.getElementById("publisher").innerHTML = "";
-			document.getElementById("isbn").innerHTML = "";
-			document.getElementById("filename").innerHTML = "";
+			// document.getElementById("titleName").innerHTML = "";
+			// document.getElementById("authorBox").innerHTML = "";
+			// document.getElementById("contributor").innerHTML = "";
+			// document.getElementById("subject").innerHTML = "";
+			// document.getElementById("date").innerHTML = "";
+			// document.getElementById("description").innerHTML = "";
+			// document.getElementById("publisher").innerHTML = "";
+			// document.getElementById("isbn").innerHTML = "";
+			// document.getElementById("filename").innerHTML = "";
 		}
 	
         return <div className="container" ref={el => (this.div = el)}>
@@ -184,6 +194,12 @@ export default class UploadPaper extends React.Component {
 					 className="PaperBoxes" 
 					 id="isbn"
 					 placeholder="Optional ISBN"
+					 /><br />
+					<h2 id="leftURL">URL</h2>
+                    <input type="text" 
+					 className="PaperBoxes" 
+					 id="urlBox"
+					 placeholder="Optional URL"
 					 /><br />
 					<h2 id="leftTags">Tags</h2>
 					<input type="text" className="PaperBoxes" id="tags" disabled/><br />

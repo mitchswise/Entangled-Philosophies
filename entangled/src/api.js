@@ -2,7 +2,8 @@ import Cookies from 'universal-cookie';
 export const cookies = new Cookies();
 export const supported_languages = ["eng", "ger"];
 
-var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+// var urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+var urlBase = 'http://chdr.cs.ucf.edu/~ah458967/Entangled-Philosophies/api';
 
 var xhr;
 
@@ -263,8 +264,8 @@ export function getCategoryTranslation(cat_id) {
 	}
 }
 
-export function addPaper(title, author, url) {
-	var jsonPayload = '{"title":"' + title + '", "author":"' + author + '", "url":"' + url + '"}';
+export function addPaper(metadata_dict) {
+	var jsonPayload = JSON.stringify(metadata_dict);
 
 	var url = urlBase + '/addPaper.php';	
 	connect("POST", url);
