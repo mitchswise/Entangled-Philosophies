@@ -20,13 +20,13 @@
         return;
     }
 
-    $query = "SELECT * FROM papers WHERE id = ";
+    $query = "SELECT * FROM papers WHERE";
     $rows_appended = 0;
     
 	while ($row = $result->fetch_assoc()) {
-        if($rows_appended > 0) $query = $query . " OR ";
+        if($rows_appended > 0) $query = $query . " OR";
         
-        $query = $query . strval($row["paper_id"]);
+        $query = $query . " id = " . strval($row["paper_id"]);
         $rows_appended++;
 	}
     
