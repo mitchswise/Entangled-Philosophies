@@ -59,7 +59,7 @@
 #upload {
     background-color: #f74135;
     border: none;
-    top:-502px;
+    top:-602px;
     height:36px;
     width: 110px;
     border-top-style: solid;
@@ -67,9 +67,15 @@
     border-bottom-style: solid;
     border-left-style: solid;
     border-width: 1px;
-    /* color: white;
+}
+
+#uploadBtnText {
+    vertical-align:middle;
+    bottom:0px;
+    position: relative;
+    color: white;
     text-decoration: bold;
-    font-size: 14px; */
+    font-size: 14px;
 }
 
 #currentFile {

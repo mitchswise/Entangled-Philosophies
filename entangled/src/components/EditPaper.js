@@ -154,6 +154,9 @@ export default class EditPaper extends React.Component {
                 if (value !== "") {
                     metadata_dict[metadata_ids[index]] = value;
                 }
+                else {
+                    metadata_dict[metadata_ids[index]] = "";
+                }
             }
             metadata_dict["url"] = url;
 
@@ -272,20 +275,21 @@ export default class EditPaper extends React.Component {
                                 {
                                     paperInformation.url !== "none" ?
                                         <div>
-                                            <br/><br/>
+                                            <br/>
                                             <a id="currentFile" href={fileURLBase + paperInformation.url} 
                                                 target="_blank" >Current File: {paperInformation.url}</a>
                                         </div>
                                         : <div>
-                                            <br/><br/>
+                                            <br/>
                                             <a id="currentFile" >Current File: None</a>
                                         </div>
                                 }
-                                <br/><br/>
-                                <input type="submit" name="submit" id="upload" value="Upload" />
+                                <br/>
+                                <input type="submit" name="submit" id="paperSubmit" />
                             </form>
 
-                            {/* <button type="button" className="PaperBoxes" id="upload" onClick={doAddPaper}><div id="uploadBtnTxt">Upload</div></button> */}
+                            <br/>
+                            <button type="button" className="PaperBoxes" id="upload" onClick={doAddPaper}><div id="uploadBtnTxt">Upload</div></button>
 
                         </div>
 
