@@ -6,7 +6,7 @@
     border-width: 1px;
     border-color: black;
     width: 1100px;
-    height: 700px;
+    height: 800px;
     top: -100px;
     position: relative;
     text-align: center;
@@ -59,7 +59,7 @@
 #upload {
     background-color: #f74135;
     border: none;
-    top:-602px;
+    top:-502px;
     height:36px;
     width: 110px;
     border-top-style: solid;
@@ -68,6 +68,17 @@
     border-left-style: solid;
     border-width: 1px;
 }
+
+#currentFile {
+    top:-702px;
+}
+
+
+#uploadForm{
+	position: relative;
+	top: -610px;
+}
+
 
 #addTag {
     background-color: #f74135;
@@ -306,11 +317,6 @@
 
 #tags{
     top:-602px;
-}
-
-#uploadForm{
-	position: relative;
-	top: -610px;
 }
 
 #paperStatus{
