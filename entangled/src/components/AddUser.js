@@ -1,5 +1,5 @@
 import React from 'react';
-import { getPapersTag } from '../api.js';
+import { getPapersTag, editPaper } from '../api.js';
 
 function doGetPapersTag() {
     var paperID = document.getElementById('paperID').value;
@@ -15,6 +15,25 @@ function doGetPapersTag() {
     document.getElementById('tagStatus').innerHTML = "Status: " + result;
 }
 
+function doEditPaper() {
+    console.log("!!");
+    var dict = {}
+    let metadata_ids = ["title", "author", "contributor", "relation", "subject", "date",
+        "description", "type", "format", "language", "source",
+        "publisher", "rights", "coverage", "isbn", "paper_url"];
+
+    for(const index in metadata_ids) {
+        dict[metadata_ids[index]] = "";
+    }
+    dict["title"] = "TempTitle!!";
+    dict["id"] = 226;
+
+    console.log("About to send...");
+
+    var data = editPaper(dict);
+    console.log(JSON.stringify(data));
+}
+
 export default class AddUser extends React.Component {
     render() {
         const element = (
@@ -25,6 +44,8 @@ export default class AddUser extends React.Component {
             <input id="language1" placeholder="language"></input>
             <input id="userID" placeholder="user ID"></input>
             <button onClick={doGetPapersTag}>Submit</button>
+
+            <button onClick={doEditPaper}> Test Edit Paper </button>
             
             <div id="tagStatus">Status: </div>
         </div>

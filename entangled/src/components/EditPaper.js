@@ -145,7 +145,7 @@ export default class EditPaper extends React.Component {
             if (filename == "") {
                 url = "none";
             } else {
-                url = document.getElementById("filename").value;
+                url = filename;
             }
 
             var metadata_dict = {};
@@ -269,10 +269,23 @@ export default class EditPaper extends React.Component {
                                 Upload a file:
 								<input type="file" name="file" id="paperFile" />
                                 <input type="hidden" name="url" id="filename" />
-                                <input type="submit" name="submit" id="paperSubmit" />
+                                {
+                                    paperInformation.url !== "none" ?
+                                        <div>
+                                            <br/><br/>
+                                            <a id="currentFile" href={fileURLBase + paperInformation.url} 
+                                                target="_blank" >Current File: {paperInformation.url}</a>
+                                        </div>
+                                        : <div>
+                                            <br/><br/>
+                                            <a id="currentFile" >Current File: None</a>
+                                        </div>
+                                }
+                                <br/><br/>
+                                <input type="submit" name="submit" id="upload" value="Upload" />
                             </form>
 
-                            <button type="button" className="PaperBoxes" id="upload" onClick={doAddPaper}><div id="uploadBtnTxt">Upload</div></button>
+                            {/* <button type="button" className="PaperBoxes" id="upload" onClick={doAddPaper}><div id="uploadBtnTxt">Upload</div></button> */}
 
                         </div>
 
@@ -280,11 +293,6 @@ export default class EditPaper extends React.Component {
                 </div>
                 <div id="paperStatus"></div>
                 <button onClick={this.props.closeEdit} >Go Back</button>
-                {
-                    paperInformation.url !== "none" ?
-                        <a id="currentFile" href={fileURLBase + paperInformation.url} target="_blank" >Current File: {paperInformation.url}</a>
-                        : <></>
-                }
             </body>
         </div>
     }

@@ -451,3 +451,20 @@ export function getPapersTag(jsonDict) {
 		return null;
 	}
 }
+
+export function editPaper(jsonDict) {
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	console.log("About to send2...");
+	
+	var url = urlBase + '/editPaper.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}

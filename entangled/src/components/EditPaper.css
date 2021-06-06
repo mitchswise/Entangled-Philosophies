@@ -67,6 +67,9 @@
     border-bottom-style: solid;
     border-left-style: solid;
     border-width: 1px;
+    /* color: white;
+    text-decoration: bold;
+    font-size: 14px; */
 }
 
 #currentFile {
