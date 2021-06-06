@@ -3,6 +3,7 @@ import Filter from './Filter.js';
 import { cookies, getTags, getUserInfo, sqlSearch, handleHistory, saveQuery } from '../api.js'
 import Table from "./Table.js";
 import QueryPopup from './saveQueryPopup.js';
+import EditPaper from './EditPaper.js';
 import './Search.css';
 
 const columnsTags = [
@@ -215,7 +216,8 @@ export default class Search extends React.Component {
         filterState: !this.props.location.state.filterState ? initState() : cleanFilterState(this.props.location.state.filterState), 
         paperData: !this.props.location.state.filterState ? sendSearchQuery(initState(), -1) : 
             sendSearchQuery(cleanFilterState(this.props.location.state.filterState), cookies.get('UserID')),
-        paperInformation: undefined
+        paperInformation: undefined,
+        openEditPaper: false
     }
 
     updateHistory = (newFitlerState, userID) => {
@@ -268,15 +270,25 @@ export default class Search extends React.Component {
 
     viewPaper = () => {
         const { paperInformation } = this.state;
+        console.log(JSON.stringify(paperInformation));
         return <div>
             <h1>{paperInformation.title}</h1>
-            <button disabled={true}>Edit Paper</button>
+            <button onClick={() => {this.setState({ openEditPaper: true })}} disabled={!cookies.get('UserID')}>Edit Paper</button>
             <button onClick={this.closePaper}>Close Paper</button>
         </div>
     }
 
+    closeEdit = () => {
+        this.setState({ openEditPaper: false });
+    }
+
     render() {
-        const { isFilterOpen, isSaveOpen, filterState, paperData, paperInformation } = this.state;
+        const { isFilterOpen, isSaveOpen, filterState, 
+            openEditPaper, paperData, paperInformation } = this.state;
+
+        if(openEditPaper) {
+            return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />
+        }
         return (<div id="searchContainer">
             <h1 id="title">Search</h1>
             <div id="searchBody">
