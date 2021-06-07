@@ -2,8 +2,8 @@ import React from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import './EditPaper.css';
 import {
-    cookies, addPaper, tagExists, addTagToPaper,
-    addMetadataTag, getPapersTag, fileURLBase
+    cookies, editPaper, tagExists, addTagToPaper,
+    addMetadataTag, removeTagFromPaper, getPapersTag, fileURLBase
 } from '../api.js';
 
 let field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
@@ -35,6 +35,7 @@ function loadTags(paperInformation) {
     var userID = cookies.get('UserID');
     var prefLang = cookies.get('PrefLang');
     var paperID = paperInformation.id;
+    if(cookies.get('PermLvl') > 0) userID = 0;
 
     var dict = { userID: userID, language: prefLang, paperID: paperID };
     var data = getPapersTag(dict);
@@ -64,9 +65,9 @@ export default class EditPaper extends React.Component {
         }
     }
 
-    addTagToList = (tag, tag_id) => {
+    addTagToList = (tag, tag_id, owner) => {
         const newTags = this.state.currentTags.slice();
-        newTags.push({ text: tag, tag_id: tag_id });
+        newTags.push({ text: tag, tag_id: tag_id, owner:owner });
         this.setState({ currentTags: newTags });
     }
     removeTagFromList = (index) => {
@@ -77,7 +78,8 @@ export default class EditPaper extends React.Component {
     findInList = (obj, currentTags) => {
         var index = -1;
         for (const x in currentTags) {
-            if (currentTags[x]["text"] === obj["text"] && currentTags[x]["tag_id"] == obj["tag_id"]) {
+            if (currentTags[x]["text"] == obj["text"] && currentTags[x]["tag_id"] == obj["tag_id"]
+                && currentTags[x]["owner"] == obj["owner"] ) {
                 index = x;
                 break;
             }
@@ -87,17 +89,19 @@ export default class EditPaper extends React.Component {
 
     render() {
         const { paperInformation, currentTags, curMetadataText } = this.state;
+        var userID = cookies.get('UserID');
+        if(cookies.get('PermLvl') > 0) userID = 0; 
 
         const doAddTag = async e => {
             var tag = document.getElementById("tagsearch").value;
 
-            var data = tagExists(tag, cookies.get('PrefLang'), 0);
+            var data = tagExists(tag, cookies.get('PrefLang'), userID);
 
             if (data.tag_id >= 0) {
-                var obj = { text: tag, tag_id: data.tag_id };
+                var obj = { text: tag, tag_id: data.tag_id, owner:userID };
                 var index = this.findInList(obj, currentTags);
                 if (index === -1) {
-                    this.addTagToList(tag, data.tag_id);
+                    this.addTagToList(tag, data.tag_id, userID);
                 }
                 document.getElementById("paperStatus").innerHTML = "";
             }
@@ -113,10 +117,10 @@ export default class EditPaper extends React.Component {
         const doDeleteTag = async e => {
             var tag = document.getElementById("tagsearch").value;
 
-            var data = tagExists(tag, cookies.get('PrefLang'), 0);
+            var data = tagExists(tag, cookies.get('PrefLang'), userID);
 
             if (data.tag_id >= 0) {
-                var obj = { text: tag, tag_id: data.tag_id };
+                var obj = { text: tag, tag_id: data.tag_id, owner:userID };
                 var index = this.findInList(obj, currentTags);
 
                 if (index > -1) {
@@ -143,7 +147,7 @@ export default class EditPaper extends React.Component {
             var url;
 
             if (filename == "") {
-                url = "none";
+                url = paperInformation.url;
             } else {
                 url = filename;
             }
@@ -159,51 +163,81 @@ export default class EditPaper extends React.Component {
                 }
             }
             metadata_dict["url"] = url;
+            metadata_dict["id"] = paperInformation.id;
 
-            var data = addPaper(metadata_dict);
-            var id = data.id;
+            var data = editPaper(metadata_dict);
+            var id = paperInformation.id;
 
-            var i;
-            // for (i = 0; i < tagIDs.length; i++) {
-            //     data = addTagToPaper(id, tagIDs[i], 0);
-            //     document.getElementById("paperStatus").innerHTML = data.status;
-            // }
+            //delete all tags from the current paper owner by current user
+            // and then add all current tags made by current user
+            const oldTags = loadTags(paperInformation);
+            for(let i = 0; i < oldTags.length; i++) {
+                if(oldTags[i]["owner"] == userID) {
+                    var dict = {tag_id: oldTags[i]["tag_id"], paper_id: paperInformation.id, userID:userID}
+                    removeTagFromPaper(dict);
+                }
+            }
+            for(let i = 0; i < currentTags.length; i++) {
+                if(currentTags[i]["owner"] == userID) {
+                    var paper_id = paperInformation.id
+                    var tag_id = currentTags[i]["tag_id"]
+                    addTagToPaper(paper_id, tag_id, userID);
+                }
+            }
 
-            //add all metadata as tags
-            for (const keyVal in metadata_dict) {
-                if (keyVal === "url") continue;
-                var value = metadata_dict[keyVal];
-                var tag_data = tagExists(value, "met", 0);
-                var tag_id = tag_data.tag_id;
-                if (tag_id == -1) {
+            if(userID == 0) {
+                for(const value in paperInformation) {
+                    if(metadata_ids.indexOf(value) !== -1) {
+                        if(paperInformation[value] != null) {
+                            var tag_data = tagExists(paperInformation[value], "met", 0);
+                            if(tag_data.tag_id >= 0) {
+                                var dict = {userID:0, paper_id: paperInformation.id, tag_id: tag_data.tag_id}
+                                removeTagFromPaper(dict);
+                            }
 
-                    var found_index = -1;
-                    for (const index in metadata_ids) {
-                        if (metadata_ids[index] == keyVal) {
-                            found_index = index;
-                            break;
                         }
                     }
-
-                    if (found_index != -1) {
-                        var curCategory = metadata_categories[found_index];
-                        var result = addMetadataTag(curCategory, "eng", value, -1);
-
-                        tag_data = tagExists(value, "met", 0);
-                        tag_id = tag_data.tag_id;
-                    }
-                    else {
-                        console.log("error?");
-                    }
-
                 }
 
-                if (tag_id == -1 || tag_id == undefined) {
-                    console.log("Error getting metadata tag " + value + " key = " + keyVal);
-                    continue;
-                }
+            }
 
-                data = addTagToPaper(id, tag_id, 0);
+            if(userID == 0) {
+                //add all metadata as tags
+                for (const keyVal in metadata_dict) {
+                    if(metadata_ids.indexOf(keyVal) < 0 || metadata_dict[keyVal] === "") continue;
+                    var value = metadata_dict[keyVal];
+                    var tag_data = tagExists(value, "met", 0);
+                    var tag_id = tag_data.tag_id;
+                    if (tag_id == -1) {
+    
+                        var found_index = -1;
+                        for (const index in metadata_ids) {
+                            if (metadata_ids[index] == keyVal) {
+                                found_index = index;
+                                break;
+                            }
+                        }
+    
+                        if (found_index != -1) {
+                            var curCategory = metadata_categories[found_index];
+                            var result = addMetadataTag(curCategory, "eng", value, -1);
+    
+                            tag_data = tagExists(value, "met", 0);
+                            tag_id = tag_data.tag_id;
+                        }
+                        else {
+                            console.log("error?");
+                        }
+    
+                    }
+    
+                    if (tag_id == -1 || tag_id == undefined) {
+                        console.log("Error getting metadata tag " + value + " key = " + keyVal);
+                        continue;
+                    }
+    
+                    data = addTagToPaper(id, tag_id, 0);
+                }
             }
 
             for (const index in field_ids) {
@@ -232,6 +266,7 @@ export default class EditPaper extends React.Component {
                 id={field_ids[index]}
                 value={curMetadataText[index]}
                 placeholder={placeholderValue}
+                disabled={cookies.get('PermLvl') < 1}
                 onChange={doUpdateArr.bind(this, index)} />
 
             metadata.push(header);
