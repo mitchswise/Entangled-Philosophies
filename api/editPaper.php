@@ -12,7 +12,7 @@
 
     if($inData["url"] != "none") { //a file is being added
         $query = "SELECT url FROM papers WHERE id = " . $inData["id"] . ";";
-        $result = $query->conn($query);
+        $result = $conn->query($query);
         if(!$result) {
             echo '{"status":"' . $conn->error . '", "query":"' . $query . '"}';
             return;
