@@ -6,13 +6,18 @@
     border-width: 1px;
     border-color: black;
     width: 1100px;
-    height: 800px;
+    height: 750px;
     top: -100px;
     position: relative;
     text-align: center;
+    display: inline-block;
     margin:auto;
     margin-bottom: 0%;
     overflow: hidden;
+}
+
+#editPaperWrapper {
+    text-align: center;
 }
 
 .PaperFields {
@@ -24,6 +29,44 @@
     width: 350px;
     height:28px;
 
+}
+
+.editSaveButtons {
+    border-radius: 10px;
+    border: none;
+    color: white;
+    width: 100px;
+    height: 30px;
+    top: -200px;
+    left: 600px;
+    max-height: 60%;
+    /* text-align: center; */
+    margin-left: 10px;
+    text-decoration: none;
+    /* display: inline-block; */
+    font-size: 16px;
+}
+
+#bottomRowButtons {
+    top: -75px;
+    left: 210px;
+    /* display: inline-block; */
+    position: relative;
+}
+
+#deletePaperButton {
+    margin-bottom: -8px;
+    margin-left: 400px;
+    top: -10px;
+    left: -100px;
+}
+
+#editSaveButton {
+    background-color: #229acf;
+}
+
+#editCancelButton {
+    background-color: #fd1200;
 }
 
 #MetadataFields {

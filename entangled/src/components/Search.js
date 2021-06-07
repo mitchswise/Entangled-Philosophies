@@ -270,7 +270,7 @@ export default class Search extends React.Component {
 
     viewPaper = () => {
         const { paperInformation } = this.state;
-        console.log(JSON.stringify(paperInformation));
+        // console.log(JSON.stringify(paperInformation));
         return <div>
             <h1>{paperInformation.title}</h1>
             <button onClick={() => {this.setState({ openEditPaper: true })}} disabled={!cookies.get('UserID')}>Edit Paper</button>
@@ -278,7 +278,16 @@ export default class Search extends React.Component {
         </div>
     }
 
-    closeEdit = () => {
+    closeEdit = (didDelete, didUpdate) => {
+        console.log(didDelete + " " + didUpdate)
+        if(didUpdate || didDelete) {
+            var userID = -1;
+            if(cookies.get('UserID')) userID = cookies.get('UserID');
+            this.setState((prevState) => ({ paperData: sendSearchQuery(prevState.filterState, userID) }));
+        }
+        if(didDelete) {
+            this.setState((prevState) => ({ paperInformation: undefined }));
+        }
         this.setState({ openEditPaper: false });
     }
 
