@@ -26,18 +26,60 @@ div.header {
     top:-62px;
 }
 
+.rightBoxPaperInfo {
+    position: relative;
+    margin-top: 60px;
+}
+
+
+#closePaperButton{
+    height:34px;
+    position: absolute;
+    top: 0px;
+    border-top: none !important;
+    border: 1px solid black;
+    right:80.3%;
+    left:79px;
+    border-left:none !important;
+    border-radius: 0px;
+}
+
+#closePaperButton:hover{
+    background-color: #ddd;
+
+}
+
+#editPaperButton:hover {
+    background-color: #ddd;
+}
+
+#editPaperButton{
+    height:34px;
+    position: absolute;
+    top: 0px;
+    border-top: none !important;
+    border: 1px solid black;
+    left:-2px;
+    border-radius: 0px;
+
+}
+
+.rightBoxPaperInfo h3 {
+    margin-top:30px;
+}
+
 #leftBox, #rightBox {
     /* display: inline-block;    */
     min-height: 350px; 
 } 
 
 #leftBox {
-    margin-left: 1%;
+    margin-left: 4%;
     float: left;
     /* top:-355px; */
 }
 #rightBox {
-    margin-right: 1%;
+    margin-right: 4%;
     float: right;
 }
 

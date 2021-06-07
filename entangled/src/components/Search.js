@@ -270,11 +270,18 @@ export default class Search extends React.Component {
 
     viewPaper = () => {
         const { paperInformation } = this.state;
-        // console.log(JSON.stringify(paperInformation));
         return <div>
-            <h1>{paperInformation.title}</h1>
-            <button onClick={() => {this.setState({ openEditPaper: true })}} disabled={!cookies.get('UserID')}>Edit Paper</button>
-            <button onClick={this.closePaper}>Close Paper</button>
+            <div class="rightBoxPaperInfo">
+                <h2>Title</h2>         
+                <p>{paperInformation.title}</p>
+                <h2>Author</h2>
+                <p>{paperInformation.author}</p>
+                <h2>Language</h2>
+                <p>{paperInformation.language}</p>             
+            </div>
+            
+            <button id="editPaperButton" onClick={() => {this.setState({ openEditPaper: true })}} disabled={!cookies.get('UserID')}>Edit Paper</button>
+            <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
         </div>
     }
 

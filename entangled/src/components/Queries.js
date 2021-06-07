@@ -59,7 +59,7 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
 
     return (
         <>
-        <div>
+        <div id = "queryTopBar">
         <input
             value={filterInput}
             id="queriesSearchBar"
@@ -67,7 +67,7 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
             placeholder={"Search"}
         />
         <button id="queriesToggle" onClick={toggleView} >Toggle</button>
-        <button id="queriesToggle" onClick={() => deleteQueries(selectedFlatRows.map((row) => row.original))} >Delete</button>
+        <button id="queriesDelete" onClick={() => deleteQueries(selectedFlatRows.map((row) => row.original))} >Delete</button>
         
         </div>
         <table {...getTableProps()}>
@@ -109,6 +109,7 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
             })}
             </tbody>
         </table>
+        <div id="queriesBottom">
         <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
         <span id = "pageNumbers">
             Page{' '}
@@ -116,6 +117,7 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
             {' '}
         </span>
         <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
+        </div>
     </>
     );
 }

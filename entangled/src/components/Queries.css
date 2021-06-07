@@ -1,42 +1,78 @@
 #queryWrapper {
-    width: 50%;
-    margin: 0 auto;
+  width: 50%;
+  margin: 0 auto;
 }
 
 table {
-  font-family: Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  width: 95%;
-  top: 0px;
+font-family: Arial, Helvetica, sans-serif;
+border-collapse: collapse;
+width: 95%;
+top: 0px;
 }
-  
+
 table td, table th {
-  border: 1px solid #ddd;
-  padding: 8px;
+border: 1px solid #ddd;
+padding: 8px;
 }
-  
+
 table tr:nth-child(even){background-color: #f2f2f2;}
 
 table tr:hover {background-color: #ddd;}
-  
+
 table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: center;
-  background-color: #ff5959;
-  color: white;
+padding-top: 12px;
+padding-bottom: 12px;
+text-align: center;
+background-color: #ff5959;
+color: white;
 }
 
+
+
 #queriesToggle {
-    width:12%;
-    height:40px;
-    left:0px;
-    position: relative;
+  height:37px;
+  left:-1px;
+  position: relative;
+  border-radius: 0px;
+  border-left: none;
+  border: 1px solid black;
+
+}
+
+#queriesDelete{
+  height:37px;
+  left:-1px;
+  border: 1px solid black;
+  position: relative;
+  border-left:none;
+}
+
+#queriesDelete:hover {
+  background-color: #ddd;
+}
+
+#queriesToggle:hover {
+background-color: #ddd;
 }
 
 #queriesSearchBar {
-    height:31px;
-    position: relative;
-    width:60%;
-    left:1px;
+  height:31px;
+  position: relative;
+  width:88.25%;
+  
+}
+
+#queryTopBar{
+width:100%;
+}
+
+#pageNumbers{
+margin:10px;
+height:34px;
+left:342px;
+}
+
+#queriesBottom{
+
+width: 100%;
 }

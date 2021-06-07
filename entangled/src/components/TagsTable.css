@@ -17,24 +17,21 @@ table tr:hover {background-color: #ddd;}
 table th {
   padding-top: 12px;
   padding-bottom: 12px;
-  text-align: center;
+  text-align: left;
   background-color: #ff5959;
   color: white;
 }
 
 #tagsSearchBar {
   height:31px;
-  top:-5px;
   position: relative;
   width:70%;
   left:1px;
 }
 
 #tagsAddButton {
-  width:12%;
   height:37px;
   left:0px;
-  top:-5px;
   position: relative;
 }
 
