@@ -9,10 +9,11 @@ function doGetPapersTag() {
     var dict = {paperID:paperID, userID:userID, language:language};
     var data = getPapersTag(dict);
     var result = "";
-    for(const index in data.tags) {
-        result += data.tags[index]["tag_id"] + " : " + data.tags[index]["text"] + " , ";
-    }
-    document.getElementById('tagStatus').innerHTML = "Status: " + result;
+    console.log(JSON.stringify(data.tags));
+    // for(const index in data.tags) {
+    //     result += data.tags[index]["tag_id"] + " : " + data.tags[index]["text"] + " , ";
+    // }
+    // document.getElementById('tagStatus').innerHTML = "Status: " + result;
 }
 
 function doEditPaper() {
@@ -45,7 +46,7 @@ export default class AddUser extends React.Component {
             <input id="userID" placeholder="user ID"></input>
             <button onClick={doGetPapersTag}>Submit</button>
 
-            <button onClick={doEditPaper}> Test Edit Paper </button>
+            {/* <button onClick={doEditPaper}> Test Edit Paper </button> */}
             
             <div id="tagStatus">Status: </div>
         </div>
