@@ -25,11 +25,21 @@
 		$sql = 'DELETE FROM papers WHERE id = ' . $id . ';';
 		$result = $conn->query($sql);
 		
-		if ($conn->affected_rows > 0) {
-			echo '{"status":"success"}';
-		} else {
-			echo '{"status":"' . $conn->error . '"}'; 	
+		if ($conn->affected_rows == 0) {
+			echo '{"status":"' . $conn->error . '"}'; 
+			return;
 		}
+
+		$sql = "DELETE FROM paper_tags WHERE paper_id = " . $id . ";";
+		$result = $conn->query($sql);
+
+		if(!$result) {
+			echo '{"status":"' . $conn->error . '"}'; 
+		}
+		else {
+			echo '{"status":"success"}'; 
+		}
+
 	} else {
 		echo '{"status":"' . $conn->error . '"}'; 	
 	}

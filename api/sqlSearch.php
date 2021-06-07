@@ -20,15 +20,22 @@
         return;
     }
 
-    $query = "SELECT * FROM papers WHERE";
+    $query = "SELECT * FROM papers";
     $rows_appended = 0;
     
 	while ($row = $result->fetch_assoc()) {
+        if($rows_appended == 0) $query = $query . " WHERE";
         if($rows_appended > 0) $query = $query . " OR";
         
         $query = $query . " id = " . strval($row["paper_id"]);
         $rows_appended++;
 	}
+
+    if($rows_appended == 0) {
+        $arr = array();
+        echo json_encode($arr);
+        return;
+    }
     
     $result = $conn->query($query);
     if(!$result) {

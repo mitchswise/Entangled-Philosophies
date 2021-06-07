@@ -83,7 +83,15 @@ export default function Table({ columns, data, loadTag, addTags, toggleView }) {
             })}
             </tbody>
         </table>
-        <select id="pageNumbers" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
+     
+        <button class="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
+        <span class = "pageNumbers">
+            Page{' '}
+            {pageIndex + 1} / {pageOptions.length}
+            {' '}
+        </span>
+        <button class="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
+        <select class="pageNumbers" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
             {
                 [10, 15, 20].map(pageSize => (
                     <option key={pageSize} value={pageSize} >
@@ -92,13 +100,6 @@ export default function Table({ columns, data, loadTag, addTags, toggleView }) {
                 ))
             }
         </select>
-        <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
-        <span id = "pageNumbers">
-            Page{' '}
-            {pageIndex + 1} / {pageOptions.length}
-            {' '}
-        </span>
-        <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
     </>
     );
 }

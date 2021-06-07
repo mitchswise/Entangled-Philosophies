@@ -40,14 +40,14 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper 
 
     return (
         <>
-        <div>
-        <input
+        <div class="leftBoxTop">
+        <input id="saveQuery"
             type="button"
             value="Save Query"
             disabled={!cookies.get('UserID')}
             onClick={saveQuery}
         />
-        <input
+        <input id="Filter"
             type="button"
             value="Filter"
             onClick={loadFilter}
@@ -95,7 +95,16 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper 
             })}
             </tbody>
         </table>
-        <select id="pageNumbers" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
+        <div id="prevNextBox">
+        
+        <button class="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
+        <span class = "pageNumbers">
+            Page{' '}
+            {pageIndex + 1} / {pageOptions.length}
+            {' '}
+        </span>
+        <button class="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>  
+        <select class="pageNumbers" id="showNumber" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
             {
                 [10, 15, 20].map(pageSize => (
                     <option key={pageSize} value={pageSize} >
@@ -104,13 +113,8 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper 
                 ))
             }
         </select>
-        <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
-        <span id = "pageNumbers">
-            Page{' '}
-            {pageIndex + 1} / {pageOptions.length}
-            {' '}
-        </span>
-        <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
+          </div>
+
     </>
     );
 }
