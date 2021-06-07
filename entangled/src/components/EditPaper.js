@@ -267,7 +267,7 @@ export default class EditPaper extends React.Component {
             var header = <h2 id={header_ids[index]}>{curHeader}</h2>
             var placeholderValue = "Optional " + metadata_categories[index];
             var input = <input
-                className="PaperBoxes"
+                className="editPaperBoxes"
                 id={field_ids[index]}
                 value={curMetadataText[index]}
                 placeholder={placeholderValue}
@@ -285,8 +285,8 @@ export default class EditPaper extends React.Component {
             {this.renderRedirect()}
             <body>
                 <div id="editPaperWrapper">
-                    <div className="PaperBox">
-                        <div className="PaperFields">
+                    <div className="editPaperBox">
+                        <div className="editPaperFields">
                             <div id="MetadataFields">
                                 {metadata}
 
@@ -295,17 +295,17 @@ export default class EditPaper extends React.Component {
 
                             <div id="OtherFields">
                                 <h2 id="leftTags">Tags</h2>
-                                <input type="text" className="PaperBoxes" id="tags" disabled
+                                <input type="text" className="editPaperBoxes" id="tags" disabled
                                     value={currentTags.map(item => item.text).join(", ")} /><br />
                                 <button type="button"
-                                    className="PaperBoxes"
+                                    className="editPaperBoxes"
                                     id="addTag"
                                     onClick={doAddTag}><div id="addTagBtnTxt">+</div></button>
                                 <button type="button"
-                                    className="PaperBoxes"
+                                    className="editPaperBoxes"
                                     id="addTag"
                                     onClick={doDeleteTag}><div id="addTagBtnTxt">-</div></button>
-                                <input type="text" className="PaperBoxes" id="tagsearch" /><br />
+                                <input type="text" className="editPaperBoxes" id="tagsearch" /><br />
 
                                 <br /><br /><br />
 

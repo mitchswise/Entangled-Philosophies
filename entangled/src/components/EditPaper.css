@@ -1,4 +1,4 @@
-.PaperBox {
+.editPaperBox {
     border-top-style: solid;
     border-right-style: solid;
     border-bottom-style: solid;
@@ -20,11 +20,11 @@
     text-align: center;
 }
 
-.PaperFields {
+.editPaperFields {
     position: relative;
 }
 
-.PaperBoxes {
+.editPaperBoxes {
     position: relative;
     width: 350px;
     height:28px;
