@@ -6,11 +6,10 @@
     border-width: 1px;
     border-color: black;
     width: 1100px;
-    height: 750px;
+    height: 700px;
     top: -100px;
     position: relative;
     text-align: center;
-    display: inline-block;
     margin:auto;
     margin-bottom: 0%;
     overflow: hidden;
@@ -123,6 +122,7 @@
 
 #currentFile {
     top:-702px;
+    z-index: 2;
 }
 
 

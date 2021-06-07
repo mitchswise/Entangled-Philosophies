@@ -150,7 +150,7 @@ export default class EditPaper extends React.Component {
             var url;
 
             if (filename == "") {
-                url = paperInformation.url;
+                url = "none";
             } else {
                 url = filename;
             }
@@ -289,7 +289,6 @@ export default class EditPaper extends React.Component {
                         <div className="editPaperFields">
                             <div id="MetadataFields">
                                 {metadata}
-
                             </div>
                             <hr id="paper_line"></hr>
 
@@ -311,34 +310,32 @@ export default class EditPaper extends React.Component {
 
                                 <form id="uploadForm" method="post" enctype="multipart/form-data">
                                     Upload a file:
-								<input type="file" name="file" id="paperFile" />
+								    <input type="file" name="file" id="paperFile" />
                                     <input type="hidden" name="url" id="filename" />
-                                    {
-                                        paperInformation.url !== "none" ?
-                                            <div>
-                                                <br />
-                                                <a id="currentFile" href={fileURLBase + paperInformation.url}
-                                                    target="_blank" >Current File: {paperInformation.url}</a>
-                                            </div>
-                                            : <div>
-                                                <br />
-                                                <a id="currentFile" >Current File: None</a>
-                                            </div>
-                                    }
-                                    <br />
                                     <input type="submit" name="submit" id="paperSubmit" />
                                 </form>
-
                             </div>
+                            {
+                                paperInformation.url !== "none" ?
+                                    <div>
+                                        <br />
+                                        <a id="currentFile" href={fileURLBase + paperInformation.url}
+                                            target="_blank" >Current File: {paperInformation.url}</a>
+                                    </div>
+                                    : <div>
+                                        <br />
+                                        <a id="currentFile" >Current File: None</a>
+                                    </div>
+                            }
 
                         </div>
                     </div>
                     <div id="bottomRowButtons">
                         <button type="button" className="editSaveButtons" id="editSaveButton" onClick={doAddPaper}>Save</button>
-                        <button type="button" className="editSaveButtons" id="editCancelButton" 
+                        <button type="button" className="editSaveButtons" id="editCancelButton"
                             onClick={() => this.props.closeEdit(false, false)}>Cancel</button>
-                        <img src={trashCan}  id="deletePaperButton" onClick={() => {
-                            if(cookies.get('PermLvl') < 1) {
+                        <img src={trashCan} id="deletePaperButton" onClick={() => {
+                            if (cookies.get('PermLvl') < 1) {
                                 window.alert("Regular users can't delete papers.")
                             }
                             else if (window.confirm("Are you sure you want to delete this paper? This action is irreversible!")) {
