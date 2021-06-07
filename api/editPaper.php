@@ -32,6 +32,6 @@
         return;
     }
 
-    echo '{"status":' . $conn->affected_rows . '}';
+    echo '{"status":' . $conn->affected_rows . ', "query":"' . $query . '"}';
 
 ?>

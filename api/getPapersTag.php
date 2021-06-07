@@ -23,22 +23,38 @@
         return;
     }
 
-    //select text, tag_id where (tag_id = x AND (language = pref OR language = def)) OR ...
+    $tag_to_owner = array();
+    
+    
     $query = "SELECT text, tag_id from tags_translation WHERE ";
     $tags_appended = 0;
-
+    
     while($row = $result->fetch_assoc()) {
+        $tag = $row["tag_id"];
+        $owner = $row["owner"];
+        if(array_key_exists($tag, $tag_to_owner)) {
+            if($owner > 0) $tag_to_owner[$tag] = $owner;
+        }
+        else {
+            $tag_to_owner[$tag] = $owner;
+        }
+        
         if($tags_appended > 0) $query = $query . " OR ";
-
+        
         $next_term = "(tag_id = " . $row["tag_id"] . " AND (language = '" . $language . "' OR language='def'))";
         $query = $query . $next_term;
         $tags_appended++;
     }
-
+    
     $result = $conn->query($query);
+    if(!$result) {
+        echo '{"status":"' . $conn->error . '", "query":"' . $query . '"}';
+        return;
+    }
+    
     $arr = array();
     while($row = $result->fetch_assoc()) {
-        $arr[] = $row;
+        $arr[] =  array('text' => $row["text"], 'tag_id' => $row["tag_id"], 'owner' => $tag_to_owner[$row["tag_id"]]);
     }
     echo '{"tags":' . json_encode($arr) . '}';
 ?>
