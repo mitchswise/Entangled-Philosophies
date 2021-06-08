@@ -5,16 +5,20 @@ import { dSettings } from '../dictionary.js';
 
 
 export default class Settings extends React.Component {
+	state = {
+		lang: 'eng'
+	}
+	
     render() {
-		let lang = 'ger';
+		const { lang } = this.state;
 		let chooseLang = dSettings(10, lang);
 		
 		const doEnglish = async e => {
-			lang = 'eng';
+			this.setState({ lang: 'eng' });
 		}
 		
 		const doGerman = async e => {
-			lang = 'ger';
+			this.setState({ lang: 'ger' });
 		}
 		
         return <div className = "container">
