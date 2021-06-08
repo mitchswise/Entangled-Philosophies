@@ -24,13 +24,6 @@ function App() {
       {/* <h1 id="entangledPhilosophies">Entangled Philosophies</h1> */}
 
 
-      <div class="dropdown" id="dropdowncontainer">
-        <button class="dropbtn" id="dropdown">Choose Language</button>
-        <div class="dropdown-content">
-          <button type="submit" id="englishButton">English</button>
-          <button type="submit" id="germanButton">German</button>
-        </div>
-      </div>
 
       <Router basename={'/~entangledPhilosophy/Entangled-Philosophies/entangled/build'}>
         <Sidebar outerContainerId={'outer-container'} />

@@ -130,11 +130,23 @@
     top: -18px;
 }
 
+#dropdown
+{
+	left: -520px;
+	top: -56px;
+}
+
+.dropdown-content
+{
+	left: -525px;
+	top: -20px;
+}
+
 #dropDownContainer
 {
    position: relative;
-   left:-1750px;
-   top:0px;
+   left:-520px;
+   top:-48px;
 
 }
 
