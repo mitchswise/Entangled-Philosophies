@@ -44,7 +44,6 @@
         $tagID_to_catID += [$row["id"] => $row["category_id"]];
 	}
     
-    // echo '{"status":"hi"}';
     //select all tags this user can see
     $query = "SELECT tag_id, text, owner FROM tags_translation WHERE (owner = 0 AND (language = '" . $language . 
     "' OR language='met')) OR (owner = " . $userID . " AND language = 'def');";
