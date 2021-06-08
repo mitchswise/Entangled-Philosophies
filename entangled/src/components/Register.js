@@ -10,10 +10,10 @@ function validateEmail(mail) {
 
 function doAddUser(preferredLanguage) {
     if(!preferredLanguage) {
-        document.getElementById("addUserStatus").innerHTML = ("Please set your preferred language.");    
+        document.getElementById("registerUserStatus").innerHTML = ("Please set your preferred language.");    
         return;
     }
-    document.getElementById("addUserStatus").innerHTML = ("");
+    document.getElementById("registerUserStatus").innerHTML = ("");
     var firstPass = document.getElementById("password").value;
     var secondPass = document.getElementById("password2").value;
     var username = document.getElementById("username").value;
@@ -21,36 +21,36 @@ function doAddUser(preferredLanguage) {
     var language = preferredLanguage;
 
     if (!username) {
-        document.getElementById("addUserStatus").innerHTML = ("Enter a username.");
+        document.getElementById("registerUserStatus").innerHTML = ("Enter a username.");
         return;
     }
     if (!firstPass) {
-        document.getElementById("addUserStatus").innerHTML = ("Enter a password.");
+        document.getElementById("registerUserStatus").innerHTML = ("Enter a password.");
         return;
     }
     if (!secondPass) {
-        document.getElementById("addUserStatus").innerHTML = ("Confirm your password.");
+        document.getElementById("registerUserStatus").innerHTML = ("Confirm your password.");
         return;
     }
 
     if (firstPass != secondPass) {
-        document.getElementById("addUserStatus").innerHTML = ("Passwords do not match");
+        document.getElementById("registerUserStatus").innerHTML = ("Passwords do not match");
         return;
     }
     if (!validateEmail(email)) {
-        document.getElementById("addUserStatus").innerHTML = ("Invalid email");
+        document.getElementById("registerUserStatus").innerHTML = ("Invalid email");
         return;
     }
 
     var response = addUser(username, email, firstPass, language);
     if (response.status != "success") {
-        document.getElementById("addUserStatus").innerHTML = ("Error: " + response.status);
+        document.getElementById("registerUserStatus").innerHTML = ("Error: " + response.status);
         return;
     }
 
     sendActivation(username);
 
-    document.getElementById("addUserStatus").innerHTML = ("Account created! Check your email for verification before logging in.");
+    document.getElementById("registerUserStatus").innerHTML = ("Account created! Check your email for verification before logging in.");
     document.getElementById("password").value = "";
     document.getElementById("password2").value = "";
     document.getElementById("username").value = "";
@@ -122,7 +122,7 @@ export default class Register extends React.Component {
                 </div>
 
             </div>
-            <br /><div id="addUserStatus"></div>
+            <br /><div id="registerUserStatus"></div>
             </>
         );
         return element;

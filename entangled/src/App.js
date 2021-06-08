@@ -16,6 +16,7 @@ import Settings from './components/Settings.js';
 import Queries from './components/Queries.js';
 import Logo from './components/logo.JPG';
 import Logo2 from './components/mag_glass.JPG';
+import { cookies } from './api.js';
 
 function App() {
   return (
@@ -24,14 +25,17 @@ function App() {
       <img src={Logo2} id="logo2" />
       {/* <h1 id="entangledPhilosophies">Entangled Philosophies</h1> */}
 
-
-      <div class="dropdown" id="dropdowncontainer">
-        <button class="dropbtn" id="dropdown">Choose Language</button>
-        <div class="dropdown-content">
-          <button type="submit" id="englishButton">English</button>
-          <button type="submit" id="germanButton">German</button>
-        </div>
-      </div>
+      {
+        !cookies.get('UserID') ? //only runs if there is no user logged in
+          <div class="dropdown" id="dropdowncontainer">
+            <button class="dropbtn" id="dropdown">Choose Language</button>
+            <div class="dropdown-content">
+              <button type="submit" id="englishButton">English</button>
+              <button type="submit" id="germanButton">German</button>
+            </div>
+          </div>
+        : <></>
+      }
 
       <Router basename={'/~entangledPhilosophy/Entangled-Philosophies/entangled/build'}>
         <Sidebar outerContainerId={'outer-container'} />

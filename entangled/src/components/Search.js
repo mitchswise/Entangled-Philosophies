@@ -28,7 +28,17 @@ function getTagData() {
     if (cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
     var result = getTags(userID, prefLang);
 
-    return result.tags;
+    let metadata_ignore = ["17", "23", "32"];
+    var tagsList = []
+
+    for(const index in result.tags) {
+        const entry = result.tags[index];
+        if(!(metadata_ignore.includes(entry["cat_id"])) && entry["frequency"] !== "0") {
+            tagsList.push(entry);
+        }
+    }
+
+    return tagsList;
 }
 const tagData = getTagData();
 
@@ -280,7 +290,8 @@ export default class Search extends React.Component {
                 <p>{paperInformation.language}</p>             
             </div>
             
-            <button id="editPaperButton" onClick={() => {this.setState({ openEditPaper: true })}} disabled={!cookies.get('UserID')}>Edit Paper</button>
+            <button id="editPaperButton" onClick={() => {this.setState({ openEditPaper: true })}}
+                disabled={!cookies.get('UserID') || cookies.get('PermLvl') < 1}>Edit Paper</button>
             <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
         </div>
     }

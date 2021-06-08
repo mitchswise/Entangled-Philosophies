@@ -176,6 +176,7 @@ export function getTags(userID, language) {
 
 	try {
 		xhr.send(jsonPayload);
+		// console.log(xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {

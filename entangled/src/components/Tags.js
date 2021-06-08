@@ -16,6 +16,10 @@ const columnsTags = [
     {
         Header: "Category",
         accessor: "catText"
+    },
+    {
+        Header: "Papers Tagged",
+        accessor: "frequency"
     }
 ];
 
@@ -29,8 +33,18 @@ const columnsCategories = [
 //loads all available tags for a user
 function getTagData() {
     if(!cookies.get('UserID')) return [];
-    var result = getTags(cookies.get('UserID'), "eng");
-    return result.tags;
+    var prefLang = cookies.get('PrefLang');
+    var result = getTags(cookies.get('UserID'), prefLang);
+
+    var tagsList = []
+    for(const index in result.tags) {
+        const entry = result.tags[index];
+        if(entry["is_metadata"] === "0") {
+            tagsList.push(entry);
+        }
+    }
+
+    return tagsList;
 }
 
 //loads all available categories for a user
