@@ -23,13 +23,6 @@ body {
     float:left;
 }
 
-.dropbtn{
-    display:none;
-}
-
-
-
-
 #tagsPageStatus {
     position: relative;
     top: 45%;
