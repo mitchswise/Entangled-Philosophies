@@ -28,7 +28,17 @@ function getTagData() {
     if (cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
     var result = getTags(userID, prefLang);
 
-    return result.tags;
+    let metadata_ignore = ["17", "23", "32"];
+    var tagsList = []
+
+    for(const index in result.tags) {
+        const entry = result.tags[index];
+        if(!(metadata_ignore.includes(entry["cat_id"])) && entry["frequency"] !== "0") {
+            tagsList.push(entry);
+        }
+    }
+
+    return tagsList;
 }
 const tagData = getTagData();
 
