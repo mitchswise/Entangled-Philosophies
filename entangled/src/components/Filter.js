@@ -184,7 +184,7 @@ export default class Popup extends React.Component {
                     <p>{x}</p>
                 </div>
                 <div id="rightcolumnFilter"> 
-                    <button onClick={() => this.flipExpand(filterIndex)} id="viewRow">
+                    <button onClick={() => this.flipExpand(filterIndex)} disabled={tagList.length <= TAG_LIMIT} id="viewRow">
                         {isExpanded ? "Shrink" : "Expand" }
                     </button>
                     <button onClick={() => this.setAllTags(filterIndex, 1)} id="viewRow">All</button>
@@ -278,16 +278,19 @@ export default class Popup extends React.Component {
                             <button id="addDynamicFilter"
                                 onClick={() => this.changeForceState(1)}
                                 style={
-                                    // forced_state === 1 ? { border: "2px solid #00ff0d", borderRadius: "5px", outline: 'none' } :
-                                    forced_state === 1 ? { backgroundColor: "rgb(133,133,133)", borderRadius: "5px", outline: 'none' } :
-                                    {}
-                                } >+</button>
-                            <button id="remDynamicFilter"
+                                    forced_state !== 1 ? { backgroundColor: '#f73535'}
+                                    : { backgroundColor: '#833535' }
+                                }>
+                                <div id="addDynamicFilterText">+</div>
+                            </button>
+                            <button id="addDynamicFilter"
                                 onClick={() => this.changeForceState(2)}
                                 style={
-                                    forced_state === 2 ? { border: "2px solid #ff0000", borderRadius: "5px", outline: 'none' } :
-                                    {}
-                                } >-</button>
+                                    forced_state !== 2 ? { backgroundColor: '#f73535'}
+                                    : { backgroundColor: '#833535' }
+                                }>
+                                <div id="addDynamicFilterText">-</div>
+                            </button>
                         </div>
                         <div id="rightcolumnFilter">
                             <button onClick={() => this.setAllView(false)} id="viewRow" >Show All</button>

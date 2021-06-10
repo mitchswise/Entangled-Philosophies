@@ -35,13 +35,34 @@
 
 #tagsDynamicFilter {
     border: solid 1px;
-    height: 25px;
+    height: 26px;
     position: relative;
     width: 50%;
 }
 
-#addDynamicFilter, #remDynamicFilter {
+/* #addDynamicFilter, #remDynamicFilter {
     height: 100%;
+} */
+
+#addDynamicFilter {
+    border: none;
+    height:30px;
+    width: 30px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+    margin-left: 3px;
+}
+
+#addDynamicFilterText {
+    vertical-align:middle;
+    bottom:0px;
+    position: relative;
+    color: white;
+    text-decoration: bold;
+    font-size: 14px;
 }
 
 #topBar {
@@ -102,6 +123,7 @@
     position: relative;
     left: 10%;
     float: left;
+    align-content: center;
 }
 
 #addTagFilter {
