@@ -1,8 +1,22 @@
-import React, { useState } from "react";
-import { Dropdown, Selection } from 'react-dropdown-now';
+import React from "react";
+import { tagFilter } from '../api.js';
 import './Filter.css';
 
 const TAG_LIMIT = 10; //Only TAG_LIMIT tags per category unless 'expand' is hit
+
+function getValidTags(forced_tags) {
+    var tagArray = forced_tags.map(item => parseInt(item.id));
+    var dict = {tags:tagArray};
+    var data = tagFilter(dict);
+
+    var array = [];
+    for(const index in data.tags) {
+        array.push(parseInt(data.tags[index][0]));   
+    }
+    // console.log("Wha? " + JSON.stringify(data.tags))
+    // console.log("Hmm " + JSON.stringify(array));
+    return array;
+}
 
 export default class Popup extends React.Component {
     state = {
@@ -11,7 +25,8 @@ export default class Popup extends React.Component {
         textFilter: undefined,
         filterState: JSON.parse(JSON.stringify(this.props.filterState)),
         forced_tags: [],
-        forced_state: 0
+        forced_state: 0,
+        validTags: getValidTags([])
     }
 
     displayIt = (element) => {
@@ -49,16 +64,24 @@ export default class Popup extends React.Component {
                     if(forced_state === 1) {
                         if(forced_tags.indexOf(tagName) === -1) {
                             const newForcedTags = this.state.forced_tags.slice();
-                            newForcedTags.push(tagName);
+                            newForcedTags.push({name: tagName, id:id});
                             this.setState({ forced_tags: newForcedTags });
+                            this.setState({ validTags: getValidTags(newForcedTags) });
                         }
                     }
                     else {
-                        var index = forced_tags.indexOf(tagName)
+                        var index = -1;
+                        for(const idx in forced_tags) {
+                            if(forced_tags[idx].id == id) {
+                                index = idx;
+                                break;
+                            }
+                        }
                         if(index !== -1) {
                             const newForcedTags = this.state.forced_tags.slice();
                             newForcedTags.splice(index, 1);
                             this.setState({ forced_tags: newForcedTags });
+                            this.setState({ validTags: getValidTags(newForcedTags) });
                         }
                     }
                     this.setState({ forced_state: 0 });
@@ -117,7 +140,7 @@ export default class Popup extends React.Component {
         this.state.itemList = [];
         var textToFilter = {};
 
-        const { filterState } = this.state;
+        const { filterState, validTags } = this.state;
 
 
         //processes all tags that match the current filter
@@ -193,6 +216,8 @@ export default class Popup extends React.Component {
                     var tag_id = curTag.tag_id;
     
                     if(curTags < TAG_LIMIT || isExpanded) {
+                        // console.log("? " + JSON.stringify(validTags) + " AND " + tag_id);
+                        if(validTags.indexOf(parseInt(tag_id)) === -1) continue;
                         curTags++;
 
                         const buttonState = filterState[filterIndex][tag_id];
@@ -247,12 +272,14 @@ export default class Popup extends React.Component {
                         </div>
                         <div id="middlecolumnFilter">
                             <input id="tagsDynamicFilter" 
-                                disabled={true} value={forced_tags.join(", ")}
+                            //currentTags.map(item => item.text).join(", ")
+                                disabled={true} value={forced_tags.map(item => item.name).join(", ")}
                                 placeholder="Tag Filtering..." ></input>
                             <button id="addDynamicFilter"
                                 onClick={() => this.changeForceState(1)}
                                 style={
-                                    forced_state === 1 ? { border: "2px solid #00ff0d", borderRadius: "5px", outline: 'none' } :
+                                    // forced_state === 1 ? { border: "2px solid #00ff0d", borderRadius: "5px", outline: 'none' } :
+                                    forced_state === 1 ? { backgroundColor: "rgb(133,133,133)", borderRadius: "5px", outline: 'none' } :
                                     {}
                                 } >+</button>
                             <button id="remDynamicFilter"
