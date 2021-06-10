@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Dropdown, Selection } from 'react-dropdown-now';
 import './Filter.css';
 
 const TAG_LIMIT = 10; //Only TAG_LIMIT tags per category unless 'expand' is hit
@@ -8,7 +9,13 @@ export default class Popup extends React.Component {
         itemList: [],
         someBool: false,
         textFilter: undefined,
-        filterState: JSON.parse(JSON.stringify(this.props.filterState))
+        filterState: JSON.parse(JSON.stringify(this.props.filterState)),
+        forced_tags: [],
+        forced_state: 0
+    }
+
+    displayIt = (element) => {
+        console.log(element)
     }
 
     resetFilter() {
@@ -26,15 +33,36 @@ export default class Popup extends React.Component {
         this.setState((prevState) => ({ filterState: newFilter }));
     }
 
-    buttonClick = e => {
+    buttonClick = (e) => {
         var id = e.target.id;
-        const { filterState } = this.state;
+        var tagName = e.target.attributes.value.value
+        const { filterState, forced_state, forced_tags } = this.state;
         for(const category in filterState) {
             if(id in filterState[category]) {
-                const newFilter = filterState.slice(); //copy of state
-                newFilter[category][id] = (newFilter[category][id]+1)%3;
-
-                this.setState((prevState) => ({ filterState: newFilter }));
+                if(forced_state === 0) {
+                    const newFilter = filterState.slice(); //copy of state
+                    newFilter[category][id] = (newFilter[category][id]+1)%3;
+    
+                    this.setState((prevState) => ({ filterState: newFilter }));
+                }
+                else {
+                    if(forced_state === 1) {
+                        if(forced_tags.indexOf(tagName) === -1) {
+                            const newForcedTags = this.state.forced_tags.slice();
+                            newForcedTags.push(tagName);
+                            this.setState({ forced_tags: newForcedTags });
+                        }
+                    }
+                    else {
+                        var index = forced_tags.indexOf(tagName)
+                        if(index !== -1) {
+                            const newForcedTags = this.state.forced_tags.slice();
+                            newForcedTags.splice(index, 1);
+                            this.setState({ forced_tags: newForcedTags });
+                        }
+                    }
+                    this.setState({ forced_state: 0 });
+                }
                 break;
             }
         }
@@ -174,7 +202,7 @@ export default class Popup extends React.Component {
                                 buttonState == 1 ? { backgroundColor: '#337ab7', color: 'white', borderRadius: 2 } : 
                                 { backgroundColor: '#b73333', color: 'white', borderRadius: 2 }
                             }
-                            onClick={this.buttonClick} >{curTag.text}</button>)
+                            onClick={this.buttonClick} value={curTag.text} >{curTag.text}</button>)
                     }
                 }
             }
@@ -192,7 +220,19 @@ export default class Popup extends React.Component {
         this.props.handleClose();
     }
 
+    changeForceState = (newState) => {
+        const { forced_state } = this.state;
+        if(forced_state > 0) {
+            this.setState({ forced_state: 0 });
+        }
+        else {
+            this.setState({ forced_state: newState });
+        }
+    }
+
     render() {
+        const { forced_tags, forced_state } = this.state;
+
         return (
             <div className="popup-box">
                 {this.loadData()}
@@ -204,6 +244,23 @@ export default class Popup extends React.Component {
                                 onChange={this.updateFilter}
                                 placeholder={"Search..."}
                             />
+                        </div>
+                        <div id="middlecolumnFilter">
+                            <input id="tagsDynamicFilter" 
+                                disabled={true} value={forced_tags.join(", ")}
+                                placeholder="Tag Filtering..." ></input>
+                            <button id="addDynamicFilter"
+                                onClick={() => this.changeForceState(1)}
+                                style={
+                                    forced_state === 1 ? { border: "2px solid #00ff0d", borderRadius: "5px", outline: 'none' } :
+                                    {}
+                                } >+</button>
+                            <button id="remDynamicFilter"
+                                onClick={() => this.changeForceState(2)}
+                                style={
+                                    forced_state === 2 ? { border: "2px solid #ff0000", borderRadius: "5px", outline: 'none' } :
+                                    {}
+                                } >-</button>
                         </div>
                         <div id="rightcolumnFilter">
                             <button onClick={() => this.setAllView(false)} id="viewRow" >Show All</button>

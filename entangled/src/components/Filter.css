@@ -33,6 +33,17 @@
     width: 200%;
 }
 
+#tagsDynamicFilter {
+    border: solid 1px;
+    height: 25px;
+    position: relative;
+    width: 50%;
+}
+
+#addDynamicFilter, #remDynamicFilter {
+    height: 100%;
+}
+
 #topBar {
     width: 100%;
     min-height: 25px;
@@ -77,9 +88,31 @@
 }
 
 #leftcolumnFilter {
+    /* width: 30%; */
     margin: auto;
     margin-left: 0%;
     float: left;
+}
+
+#middlecolumnFilter {
+    width: 40%;
+    height: 100%;
+    margin: auto;
+    margin-left: 0%;
+    position: relative;
+    left: 10%;
+    float: left;
+}
+
+#addTagFilter {
+    width: 30%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    float: left;
+    margin-right: 7px;
+    align-items: center;
+    justify-content: center;
 }
 
 #rightcolumnFilter {
@@ -128,4 +161,47 @@
 
 #filterCancelButton {
     background-color: #fd1200;
+}
+
+.show:hover ul.list-categories{
+    max-height: inherit;
+    opacity: 1;
+}
+
+.show:hover {
+    background: rgb(199, 199, 199);
+    border-radius: 10px;
+}
+
+.show {
+    float: right;
+}
+
+.list-categories li:hover {
+    color: red;
+    background: gainsboro;
+}
+
+.list-categories li {
+    text-align: center;
+    padding: 5px 0 5px 0;
+    font-size: 15px;
+    text-decoration: none;
+    border-radius: 15px;
+    margin: 0 15px 0 15px;
+    font-weight: bold;
+    display: block;
+}
+
+.list-categories{
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    max-height: 0px;
+    opacity: 0;
+    overflow: hidden;
+    transition: opacity 300ms ease;
+    position: absolute;
+    left: 0; top: 100%;
+    width: 100%;
 }
