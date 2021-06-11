@@ -9,18 +9,28 @@
 	}
 
 	$inData = json_decode(file_get_contents('php://input'), true);
-	$title = $inData["title"];
-	$author = $inData["author"];
-	$url = $inData["url"];
-	
-	$sql = 'INSERT INTO papers (title, author, url) VALUES ("' .
-		$title . '", "' . $author . '", "' . $url . '")';
-	$result = $conn->query($sql);
+
+	$query = "INSERT INTO papers ";
+	$columns_insert = "";
+	$columns_values = "";
+
+	foreach($inData as $inData_key => $inData_value) {
+		if(strlen($columns_insert) > 0) {
+			$columns_insert = $columns_insert . ", ";
+			$columns_values = $columns_values . ", ";
+		}
+
+		$columns_insert = $columns_insert . $inData_key;
+		$columns_values = $columns_values . "'" . $inData_value . "'";
+	}
+
+	$query = $query . "(" . $columns_insert . ") VALUES (" . $columns_values . ");";
+	$result = $conn->query($query);
 
 	if ($conn->affected_rows > 0) {
 		$new_id = $conn->insert_id;
 		echo '{"status":"success", "id":' . $new_id . '}';
 	} else {
-		echo '{"status":"' . $conn->error . '", "id":-1}'; 	
+		echo '{"status":"' . $conn->error . '", "id":-1}';
 	}
 ?>

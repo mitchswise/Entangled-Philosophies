@@ -31,12 +31,12 @@
     position: relative;
 }
 
-#addUserStatus {
+#registerUserStatus {
     color: red;
     text-align: center;
     text-decoration: bold;
     font-size: 18px;
-    top: -60px;
+    top: -50px;
     position: relative;
     margin: auto;
 }

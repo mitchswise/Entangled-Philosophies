@@ -10,13 +10,37 @@
 
 	$inData = json_decode(file_get_contents('php://input'), true);
 	$id = $inData["id"];
-	
-	$sql = 'DELETE FROM papers WHERE id = ' . $id . ';';
-	$result = $conn->query($sql);
 
-	if ($conn->affected_rows > 0) {
-		echo '{"status":"success"}';
+	$sql = 'SELECT url FROM papers WHERE id = ' . $id . ';';
+	$result = $conn->query($sql);
+	if ($result->num_rows > 0) {
+		$row = $result->fetch_assoc();
+		if ($row["url"] != 'none') {
+			$url = '/home/entangledPhilosophy/public_html/paper/' . $row["url"];
+			if (!unlink($url)) {
+				echo '{"status":"File not found", "url":"' . $url . '"}';
+			}
+		}
+
+		$sql = 'DELETE FROM papers WHERE id = ' . $id . ';';
+		$result = $conn->query($sql);
+
+		if ($conn->affected_rows == 0) {
+			echo '{"status":"' . $conn->error . '"}';
+			return;
+		}
+
+		$sql = "DELETE FROM paper_tags WHERE paper_id = " . $id . ";";
+		$result = $conn->query($sql);
+
+		if(!$result) {
+			echo '{"status":"' . $conn->error . '"}';
+		}
+		else {
+			echo '{"status":"success"}';
+		}
+
 	} else {
-		echo '{"status":"' . $conn->error . '"}'; 	
+		echo '{"status":"' . $conn->error . '"}';
 	}
 ?>

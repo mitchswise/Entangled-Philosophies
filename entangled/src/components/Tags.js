@@ -1,7 +1,7 @@
 import React from "react";
-import { Redirect } from 'react-router-dom'; 
-import { getTags, addTag, removeTag, getTagTranslation, 
-    getCats, addCategory, removeCategory, getCategoryTranslation, 
+import { Redirect } from 'react-router-dom';
+import { getTags, addTag, removeTag, getTagTranslation,
+    getCats, addCategory, removeCategory, getCategoryTranslation,
     cookies, supported_languages } from '../api.js';
 import Table from "./TagsTable";
 import './Tags.css';
@@ -16,6 +16,10 @@ const columnsTags = [
     {
         Header: "Category",
         accessor: "catText"
+    },
+    {
+        Header: "Papers Tagged",
+        accessor: "frequency"
     }
 ];
 
@@ -31,7 +35,16 @@ function getTagData() {
     if(!cookies.get('UserID')) return [];
     var prefLang = cookies.get('PrefLang');
     var result = getTags(cookies.get('UserID'), prefLang);
-    return result.tags;
+
+    var tagsList = []
+    for(const index in result.tags) {
+        const entry = result.tags[index];
+        if(entry["is_metadata"] === "0") {
+            tagsList.push(entry);
+        }
+    }
+
+    return tagsList;
 }
 
 //loads all available categories for a user
@@ -73,7 +86,7 @@ function doAddTag(edit_tag) {
 
             if(!tag_translate) {
                 document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
-                return; 
+                return;
             }
 
             translations[curLang] = tag_translate;
@@ -122,7 +135,7 @@ function doAddCat(edit_cat) {
 
             if(!tag_translate) {
                 document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
-                return; 
+                return;
             }
 
             translations[curLang] = tag_translate;
@@ -151,7 +164,7 @@ function UserEdit({ rowInfo, toggleState }) {
         var cat = translations.def;
         return <div>
             <h1 id="editTagHeader">Edit Category</h1>
-            <input type="text" className="inputBoxes" id="defBox" placeholder={cat} />
+            <input type="text" className="taginputBoxes" id="defBox" placeholder={cat} />
             <button id="editCatButtons" onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
             <button id="editCatButtons" onClick={() => doRemoveCat(rowInfo)} >Delete</button>
         </div>
@@ -160,8 +173,8 @@ function UserEdit({ rowInfo, toggleState }) {
     var category = rowInfo.catText;
     return <div>
         <h1 id="editTagHeader">Edit Tag</h1>
-        <input type="text" className="inputBoxes" id="defBox" placeholder={tagName} />
-        <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder={category} />
+        <input type="text" className="taginputBoxes" id="defBox" placeholder={tagName} />
+        <input type="text" className="taginputBoxes" id="tagCategoryBox" placeholder={category} />
         <button id="editTagButtons" onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
         <button id="editTagButtons" onClick={() => doRemoveTag(rowInfo)} >Delete</button>
     </div>
@@ -170,15 +183,15 @@ function UserEdit({ rowInfo, toggleState }) {
 function UserAdd({ toggleState }) {
     if(toggleState) {
         return <div>
-            <h1 id="editTagHeader">Add Category</h1>
-            <input type="text" className="inputBoxes" id="defBox" placeholder="Category name" />
+            <h1 id="editTagHeader2">Add Category</h1>
+            <input type="text" className="taginputBoxes" id="defBox" placeholder="Category name" />
             <button id="addCatButtons" onClick={() => doAddCat(-1)}>Save</button>
         </div>
     }
-    return <div> 
+    return <div>
         <h1 id="editTagHeader">Add Tag</h1>
-        <input type="text" className="inputBoxes" id="defBox" placeholder="tag name" />
-        <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder="tag category" />
+        <input type="text" className="taginputBoxes" id="defBox" placeholder="tag name" />
+        <input type="text" className="taginputBoxes" id="tagCategoryBox" placeholder="tag category" />
         <button id="addTagButtons" onClick={() => doAddTag(-1)}>Save</button>
     </div>
 }
@@ -190,10 +203,12 @@ function AdminEdit({ rowInfo, toggleState }) {
         var cat_ger = translations.ger;
         return <div>
             <h1 id="editTagHeader">Edit Category</h1>
-            <input type="text" className="inputBoxes" id="engBox" placeholder={cat_eng} />
-            <input type="text" className="inputBoxes" id="gerBox" placeholder={cat_ger} />
-            <button id="editCatButtonsAdmin" onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
-            <button id="editCatButtonsAdmin" onClick={() => doRemoveCat(rowInfo)} >Delete</button>
+            <h4 class="rightBoxText" id="rightBoxTextCategory">English Category</h4>
+            <input type="text" className="taginputBoxes" id="engBox" placeholder={cat_eng} />
+            <h4 class="rightBoxText" id="rightBoxTextCategory">German Category</h4>
+            <input type="text" className="taginputBoxes" id="gerBox" placeholder={cat_ger} />
+            <button class="editCatButtonsAdmin" onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
+            <button class="editCatButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveCat(rowInfo)} >Delete</button>
         </div>
     }
 
@@ -205,28 +220,36 @@ function AdminEdit({ rowInfo, toggleState }) {
 
     return <div>
         <h1 id="editTagHeader">Edit Tag</h1>
-        <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder={category} />
-        <input type="text" className="inputBoxes" id="engBox" placeholder={tag_eng} />
-        <input type="text" className="inputBoxes" id="gerBox" placeholder={tag_ger} />
-        <button id="editTagButtonsAdmin" onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
-        <button id="editTagButtonsAdmin" onClick={() => doRemoveTag(rowInfo)} >Delete</button>
+        <h4 class="rightBoxText" id="rightBoxTextCategory">Tag Category</h4>
+        <input type="text" className="taginputBoxes" id="tagCategoryBox" placeholder={category} />
+        <h4 class="rightBoxText" id="rightBoxTextCategory">English Tag</h4>
+        <input type="text" className="taginputBoxes" id="engBox" placeholder={tag_eng} />
+        <h4 class="rightBoxText" id="rightBoxTextCategory">German Tag</h4>
+        <input type="text" className="taginputBoxes" id="gerBox" placeholder={tag_ger} />
+        <button class="editTagButtonsAdmin" onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
+        <button class="editTagButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveTag(rowInfo)} >Delete</button>
     </div>
 }
 
 function AdminAdd({ toggleState }) {
     if(toggleState) {
         return <div>
-            <h1 id="editTagHeader">Add Category</h1>
-            <input type="text" className="inputBoxes" id="engBox" placeholder="English category" />
-            <input type="text" className="inputBoxes" id="gerBox" placeholder="German category" />
+            <h1 id="editTagHeader2">Add Category</h1>
+            <h4 class="rightBoxText2" id="rightBoxTextEnglish">English Category</h4>
+            <input type="text" className="taginputBoxesToggled" id="engBox2" placeholder="English Category" />
+            <h4 class="rightBoxText2" id="rightBoxTextGerman">German Category</h4>
+            <input type="text" className="taginputBoxesToggled" id="gerBox2" placeholder="German Category" />
             <button id="addCatButtonsAdmin" onClick={() => doAddCat(-1)}>Save</button>
         </div>
     }
     return <div>
         <h1 id="editTagHeader">Add Tag</h1>
-        <input type="text" className="inputBoxes" id="tagCategoryBox" placeholder="tag category" />
-        <input type="text" className="inputBoxes" id="engBox" placeholder="English tag" />
-        <input type="text" className="inputBoxes" id="gerBox" placeholder="German tag" />
+        <h4 class="rightBoxText" id="rightBoxTextCategory">Tag Category</h4>
+        <input type="text" className="taginputBoxes" id="tagCategoryBox" placeholder="Tag Category" />
+        <h4 class="rightBoxText" id="rightBoxTextEnglishTag">English Tag</h4>
+        <input type="text" className="taginputBoxes" id="engBox" placeholder="English Tag" />
+        <h4 class="rightBoxText" id="rightBoxTextGermanTag">German Tag</h4>
+        <input type="text" className="taginputBoxes" id="gerBox" placeholder="German Tag" />
         <button id="addTagButtonsAdmin" onClick={() => doAddTag(-1)}>Save</button>
     </div>
 }
@@ -254,9 +277,9 @@ export default class Tags extends React.Component {
 
     //clear input boxes when switching between row entries
     elementClear = () => {
-        const inputBoxes = ["tagCategoryBox", "engBox", "gerBox", "defBox"];
-        for(const tag in inputBoxes) {
-            var element = inputBoxes[tag];
+        const taginputBoxes = ["tagCategoryBox", "engBox", "gerBox", "defBox"];
+        for(const tag in taginputBoxes) {
+            var element = taginputBoxes[tag];
             if(document.getElementById(element) != null) {
                 document.getElementById(element).value = "";
             }
@@ -267,7 +290,7 @@ export default class Tags extends React.Component {
     toggleView = () => {
         this.setState((prevState) => ({ toggleState: !prevState.toggleState }));
     }
-    
+
     //When a user/admin clicks an entry and wants to edit it.
     loadTag = (rowInformation) => {
         this.setState({ rowInfo: rowInformation });
@@ -290,7 +313,7 @@ export default class Tags extends React.Component {
         if(cookies.get('PermLvl') < 1) { //regular user
             this.setState({ tagAdditionState: 2 })
         }
-        else { //admin 
+        else { //admin
             this.setState({ tagAdditionState: 1 })
         }
     }
@@ -311,10 +334,10 @@ export default class Tags extends React.Component {
                         <div id="leftcolumn">
                             {
                                 toggleState === false ?
-                                <Table class="tagElement" id="tagTable" columns={columnsTags} 
+                                <Table class="tagElement" id="tagTable" columns={columnsTags}
                                 data={tagData} loadTag={this.loadTag} addTags={this.makeTagAddInputBoxes}
                                 toggleView={this.toggleView} /> :
-                                <Table class="tagElement" id="tagTable" columns={columnsCategories} 
+                                <Table class="tagElement" id="tagTable" columns={columnsCategories}
                                 data={categoryData} loadTag={this.loadTag} addTags={this.makeTagAddInputBoxes}
                                 toggleView={this.toggleView} />
                             }

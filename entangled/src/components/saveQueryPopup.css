@@ -1,0 +1,61 @@
+/* Popup style */
+.popup-box {
+    position: fixed;
+    background: #00000050;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    opacity: 1;
+    z-index: 1;
+}
+  
+.queryBox {
+    position: relative;
+    width: 20%;
+    margin: 0 auto;
+    height: 25%;
+    margin-top: calc(100vh - 85vh - 20px);
+    background: #fff;
+    border-radius: 4px;
+    padding: 20px;
+    border: 1px solid #999;
+    overflow: auto;
+}
+
+#querySaveButton {
+    background-color: #229acf;
+}
+
+#queryCancelButton {
+    background-color: #fd1200;
+}
+
+.bottomSaveButtons {
+    border-radius: 10px;
+    border: none;
+    color: white;
+    width: 100px;
+    height: 40px;
+    max-height: 60%;
+    text-align: center;
+    margin-left: 10px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+}
+
+#querySearchBar {
+    height: 25px;
+    position: relative;
+    width: 75%;
+}
+
+#bottomSaveBar {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    width: 95%;
+    bottom: 10px;
+}
