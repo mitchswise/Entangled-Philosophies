@@ -481,3 +481,20 @@ export function removeTagFromPaper(jsonDict) {
 		return null;
 	}
 }
+
+export function tagFilter(jsonDict) {
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/tagFilter.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		console.log("--> " + xhr.responseText);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		console.log("E " + err)
+		return null;
+	}
+}
