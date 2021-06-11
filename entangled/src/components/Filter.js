@@ -293,6 +293,7 @@ export default class Popup extends React.Component {
                             </button>
                         </div>
                         <div id="rightcolumnFilter">
+                            <button disabled={true}>Custom</button>
                             <button onClick={() => this.setAllView(false)} id="viewRow" >Show All</button>
                             <button onClick={() => this.setAllView(true)} id="viewRow" >Hide All</button>
                             <button onClick={() => this.resetFilter()} id="viewRow" >Reset</button>
