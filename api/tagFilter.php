@@ -26,7 +26,7 @@
 
     $result = $conn->query($query);
     if(!$result) {
-        echo '{"status":"' . $conn->error . '"}';
+        echo '{"status":"' . $conn->error . ' 1"}';
         return;
     }
 
@@ -39,13 +39,13 @@
 
     while($row = $result->fetch_assoc()) {
         if($papers_added > 0) $query = $query . " OR";
-        $query = $query . " (paper_id = " . $row["paper_id"] . " AND (owner = 0 OR owner = " . $user_id . ")";
+        $query = $query . " (paper_id = " . $row["paper_id"] . " AND (owner = 0 OR owner = " . $user_id . "))";
         $papers_added++;
     }
 
     $result = $conn->query($query);
     if(!$result) {
-        echo '{"status":"' . $conn->error . '"}';
+        echo '{"status":"' . $conn->error . ' 2"}';
         return;
     }
 
