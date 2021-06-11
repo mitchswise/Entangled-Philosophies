@@ -52,6 +52,9 @@ export default class Sidebar extends React.Component {
           <a className="menu-item">
             <Link to="/tags">Tags</Link>
           </a>
+		  <a className="menu-item">
+			<Link to="/settings">Settings</Link>
+		  </a>
           <a className="menu-item">
             <Link to="/queries">Saved Queries</Link>
           </a>

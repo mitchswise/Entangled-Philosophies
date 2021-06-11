@@ -1,70 +1,104 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import './Admin.css';
 import {setPerms} from '../api.js';
 import {getPerms} from '../api.js';
 import {getAdmins, cookies} from '../api.js';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
-function doSetPerms() {
-    var username = document.getElementById("username").value;
-    var permission_level = document.getElementById("permission_level").value;
-	var data = setPerms(username, permission_level);
-	document.getElementById("ansField_adminPage").innerHTML = data.status;
-}
 
-function doGetPerms() {
-	var username = document.getElementById("usernameGet").value;
-	var data = getPerms(username);
-	document.getElementById("permLevel").innerHTML = data.permission_level;
-}
+const Admin = () => {
+	const history = useHistory([]);
+	const [redirectState, setRedirectState] = useState(false);
+	const [adminList, setAdminList] = useState();
+	//const [permissionLvlMsg, setPermissionLvlMsg] = useState("");
 
-function doGetAdmins() {
-	var data = getAdmins();
-	var arr = data.admins;
-	var outputString = "";
-	var i;
-	for (i = 0; i < arr.length; i++) {
-		outputString += "<ul> username: " + arr[i].username + ", id: " + arr[i].id + "</ul>";
+	useEffect(() => {
+		if(!cookies.get('UserID') || cookies.get('PermLvl') < 1) {
+			setRedirectState(true);
+		}
+	});
+	useEffect(() => {
+		if(redirectState){
+			history.push({pathname: '/'})
+		}
+	});
+	useEffect(() => {
+		var data = getAdmins();
+		var arr = data.admins;
+		return doGetAdmins(arr);
+	}, []);
+
+	const doSetPerms = () => {
+		var username = document.getElementById("username").value;
+		//var permission_level = document.getElementById("permission_level").value;
+		var permission_level = 1;
+		var data = setPerms(username, permission_level);
+		document.getElementById("ansField_adminPage").innerHTML = data.status;
+		history.go(0);
+	};
+	
+	// const doGetPerms = (props) => {
+	// 	var username = props;
+	// 	var data = getPerms(username);
+	// 	document.getElementById("permLevel").innerHTML = data.permission_level;
+	// 	setPermissionLvlMsg(username + " has a permission level of " + data.permission_level);
+	// };
+
+	const handleRemove = (props) => {
+		setPerms(props, 0);
+		history.go(0);
 	}
-	document.getElementById("adminList").innerHTML = outputString;
-}
 
-export default class Login extends React.Component {
+	const doGetAdmins = (props) =>  {
+		var data = getAdmins();
+		var arr = data.admins;
+		console.log(arr.length);
+		const list = [];
+		const k = props.length - 1;
+        for (let i = k; i >= 0; i--) {
+            list.push({
+                username: props[i].username,
+				id: props[i].id,
+				num: k-i,
+			});
+		}
+		setAdminList(list.map((array) => {
+            return (
+				//<ul onClick={() => doGetPerms(array.username)} key={array.id}>
+				<details>
+				<summary>
+                    {array.username} - {array.id}
+                </summary>
+					<p>
+					<button onClick={() => handleRemove(array.username)}>
+						Remove {array.username}
+					</button>
+					</p>
+				</details>
+            );
+        }))
+	};
 
-	renderRedirect = () => {
-        if(!cookies.get('UserID') || cookies.get('PermLvl') < 1) {
-            return <Redirect to = '/' />
-        }
-    }
-
-    render() {
-        return <div className="container">
+        return (<div className="container">
             <div className="header">
                 <h1 id="title">Add Admin</h1>
             </div>
             <div class="AdminBox">
-				{this.renderRedirect()}
 
 				<div class="AddAdminBox">
 				<h2>Username</h2>
                 <input type="text" class="inputBoxes" id="username" /><br />
-				<h2>Permission Level</h2>
-                <input type="text" class="inputBoxes" id="permission_level" /><br />
-                <button type="button" id="btn" onClick={doSetPerms}><div id="btnTxt">Set Permission Level</div></button>
+                <button type="button" id="btn" onClick={doSetPerms}><div id="btnTxt">Add Admin</div></button>
                 <div id="ansField_adminPage"></div><br/><br/>
-
-				<h2>Username</h2>
-				<input type="text" class="inputBoxes" id="usernameGet"/><br/>
-				<button type="button" id="btn" onClick={doGetPerms}><div id="btnTxt">Get Permission Level</div></button>
-				<div id="permLevel"></div><br/><br/>
 				</div>
 
 				<div class="UserListBox">
-					<button type="button" id="btn" onClick={doGetAdmins}><div id="btnTxt">Get All Admins</div></button>
-					<div id="adminList"></div><br/>
+					<h2>Admins</h2>
+					<div id="adminList">{adminList}</div><br/>
 				</div>
 
             </div>
-        </div>
+        </div>)
     }
-}
+
+export default Admin;
