@@ -13,25 +13,14 @@
     $paper_id = $inData["paper_id"];
     $tag_id = $inData["tag_id"];
     $userID = $inData["userID"]; //0 if admin, > 0 otherwise
-
-    $query = "SELECT * FROM paper_tags WHERE paper_id = " . $paper_id . " AND tag_id = " . $tag_id .
-        " AND owner = " . $userID . ";";
-    $result = $conn->query($query);
-
-    if($result->num_rows > 0) { 
-        echo '{"status":"Adding duplicate tag to paper"}';
-        return;
-    }
-
-    $query = "INSERT INTO paper_tags (paper_id, tag_id, owner) VALUES (" . 
-        $paper_id . ", " . $tag_id . ", " . $userID . ");";
+    
+    $query = "DELETE FROM paper_tags WHERE paper_id = " . $paper_id . " AND tag_id = " . $tag_id . " AND owner = " . $userID . ";";
     $result = $conn->query($query);
 
     if(!$result) {
-        echo '{"status":"' . $conn->error . '", "query":"' . $query . '"}';
-    }
-    else {
-        echo '{"status":"Successfully added tag to paper"}';
+        echo '{"status":"' . $conn->error . '"}';
+        return;
     }
 
+    echo '{"status":"success"}';
 ?>

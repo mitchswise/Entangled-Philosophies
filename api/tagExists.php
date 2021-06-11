@@ -20,7 +20,7 @@
 
         if($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            echo '{"tag_id":' . $row["tag_id"] . '}';
+            echo '{"tag_id":' . $row["tag_id"] . ', "owner":' . $userID . '}';
             return;
         }
     }
@@ -30,7 +30,7 @@
 
     if($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        echo '{"tag_id":' . $row["tag_id"] . '}';
+        echo '{"tag_id":' . $row["tag_id"] . ', "owner": 0}';
         return;
     }
 

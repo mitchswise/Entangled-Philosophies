@@ -1,14 +1,37 @@
-import React, { useState } from "react";
+import React from "react";
+import { cookies, tagFilter } from '../api.js';
 import './Filter.css';
 
 const TAG_LIMIT = 10; //Only TAG_LIMIT tags per category unless 'expand' is hit
+
+function getValidTags(forced_tags) {
+    var userID = 0;
+    if(cookies.get('UserID')) userID = cookies.get('UserID');
+
+    var tagArray = forced_tags.map(item => parseInt(item.id));
+    var dict = {tags:tagArray, userID:userID};
+    var data = tagFilter(dict);
+
+    var array = [];
+    for(const index in data.tags) {
+        array.push(parseInt(data.tags[index][0]));   
+    }
+    return array;
+}
 
 export default class Popup extends React.Component {
     state = {
         itemList: [],
         someBool: false,
         textFilter: undefined,
-        filterState: JSON.parse(JSON.stringify(this.props.filterState))
+        filterState: JSON.parse(JSON.stringify(this.props.filterState)),
+        forced_tags: [],
+        forced_state: 0,
+        validTags: getValidTags([])
+    }
+
+    displayIt = (element) => {
+        console.log(element)
     }
 
     resetFilter() {
@@ -26,15 +49,44 @@ export default class Popup extends React.Component {
         this.setState((prevState) => ({ filterState: newFilter }));
     }
 
-    buttonClick = e => {
+    buttonClick = (e) => {
         var id = e.target.id;
-        const { filterState } = this.state;
+        var tagName = e.target.attributes.value.value
+        const { filterState, forced_state, forced_tags } = this.state;
         for(const category in filterState) {
             if(id in filterState[category]) {
-                const newFilter = filterState.slice(); //copy of state
-                newFilter[category][id] = (newFilter[category][id]+1)%3;
-
-                this.setState((prevState) => ({ filterState: newFilter }));
+                if(forced_state === 0) {
+                    const newFilter = filterState.slice(); //copy of state
+                    newFilter[category][id] = (newFilter[category][id]+1)%3;
+    
+                    this.setState((prevState) => ({ filterState: newFilter }));
+                }
+                else {
+                    if(forced_state === 1) {
+                        if(forced_tags.indexOf(tagName) === -1) {
+                            const newForcedTags = this.state.forced_tags.slice();
+                            newForcedTags.push({name: tagName, id:id});
+                            this.setState({ forced_tags: newForcedTags });
+                            this.setState({ validTags: getValidTags(newForcedTags) });
+                        }
+                    }
+                    else {
+                        var index = -1;
+                        for(const idx in forced_tags) {
+                            if(forced_tags[idx].id == id) {
+                                index = idx;
+                                break;
+                            }
+                        }
+                        if(index !== -1) {
+                            const newForcedTags = this.state.forced_tags.slice();
+                            newForcedTags.splice(index, 1);
+                            this.setState({ forced_tags: newForcedTags });
+                            this.setState({ validTags: getValidTags(newForcedTags) });
+                        }
+                    }
+                    this.setState({ forced_state: 0 });
+                }
                 break;
             }
         }
@@ -89,18 +141,26 @@ export default class Popup extends React.Component {
         this.state.itemList = [];
         var textToFilter = {};
 
-        const { filterState } = this.state;
+        const { filterState, validTags } = this.state;
+
 
         //processes all tags that match the current filter
         this.props.tagData.forEach((item, index) => {
+            // console.log("Hello " + item.text);
             if(!this.state.textFilter ||  item.text.toLowerCase().includes(this.state.textFilter)) {
                 if(!(item.catText in categories)) {
                     categories[item.catText] = [];
+
+                    var foundInFilter = false;
                     for(const x in filterState) {
                         if(filterState[x].row_name == item.cat_id) {
                             textToFilter[item.catText] = x;
+                            foundInFilter = true;
                             break;
                         }
+                    }
+                    if(!foundInFilter) {
+                        console.log("Big trouble");
                     }
                 }
                 categories[item.catText].push(item);
@@ -109,6 +169,7 @@ export default class Popup extends React.Component {
 
         //for each category that has some matching tags
         for(const x in categories) {
+            if(!(x in textToFilter)) continue;
 
             var tagList = categories[x];
             const filterIndex = textToFilter[x];
@@ -124,7 +185,7 @@ export default class Popup extends React.Component {
                     <p>{x}</p>
                 </div>
                 <div id="rightcolumnFilter"> 
-                    <button onClick={() => this.flipExpand(filterIndex)} id="viewRow">
+                    <button onClick={() => this.flipExpand(filterIndex)} disabled={tagList.length <= TAG_LIMIT} id="viewRow">
                         {isExpanded ? "Shrink" : "Expand" }
                     </button>
                     <button onClick={() => this.setAllTags(filterIndex, 1)} id="viewRow">All</button>
@@ -156,6 +217,8 @@ export default class Popup extends React.Component {
                     var tag_id = curTag.tag_id;
     
                     if(curTags < TAG_LIMIT || isExpanded) {
+                        // console.log("? " + JSON.stringify(validTags) + " AND " + tag_id);
+                        if(validTags.indexOf(parseInt(tag_id)) === -1) continue;
                         curTags++;
 
                         const buttonState = filterState[filterIndex][tag_id];
@@ -165,7 +228,7 @@ export default class Popup extends React.Component {
                                 buttonState == 1 ? { backgroundColor: '#337ab7', color: 'white', borderRadius: 2 } : 
                                 { backgroundColor: '#b73333', color: 'white', borderRadius: 2 }
                             }
-                            onClick={this.buttonClick} >{curTag.text}</button>)
+                            onClick={this.buttonClick} value={curTag.text} >{curTag.text}</button>)
                     }
                 }
             }
@@ -183,7 +246,19 @@ export default class Popup extends React.Component {
         this.props.handleClose();
     }
 
+    changeForceState = (newState) => {
+        const { forced_state } = this.state;
+        if(forced_state > 0) {
+            this.setState({ forced_state: 0 });
+        }
+        else {
+            this.setState({ forced_state: newState });
+        }
+    }
+
     render() {
+        const { forced_tags, forced_state } = this.state;
+
         return (
             <div className="popup-box">
                 {this.loadData()}
@@ -196,7 +271,30 @@ export default class Popup extends React.Component {
                                 placeholder={"Search..."}
                             />
                         </div>
+                        <div id="middlecolumnFilter">
+                            <input id="tagsDynamicFilter" 
+                            //currentTags.map(item => item.text).join(", ")
+                                disabled={true} value={forced_tags.map(item => item.name).join(", ")}
+                                placeholder="Tag Filtering..." ></input>
+                            <button id="addDynamicFilter"
+                                onClick={() => this.changeForceState(1)}
+                                style={
+                                    forced_state !== 1 ? { backgroundColor: '#f73535'}
+                                    : { backgroundColor: '#833535' }
+                                }>
+                                <div id="addDynamicFilterText">+</div>
+                            </button>
+                            <button id="addDynamicFilter"
+                                onClick={() => this.changeForceState(2)}
+                                style={
+                                    forced_state !== 2 ? { backgroundColor: '#f73535'}
+                                    : { backgroundColor: '#833535' }
+                                }>
+                                <div id="addDynamicFilterText">-</div>
+                            </button>
+                        </div>
                         <div id="rightcolumnFilter">
+                            <button disabled={true}>Custom</button>
                             <button onClick={() => this.setAllView(false)} id="viewRow" >Show All</button>
                             <button onClick={() => this.setAllView(true)} id="viewRow" >Hide All</button>
                             <button onClick={() => this.resetFilter()} id="viewRow" >Reset</button>
