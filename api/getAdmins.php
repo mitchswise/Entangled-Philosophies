@@ -16,5 +16,5 @@
 	while ($row = $result->fetch_assoc()) {
 		$arr[] = array('username' => $row["username"], 'id' => $row["id"]);
 	}
-	echo '{"admins":' . json_encode($json) . '}';
+	echo '{"admins":' . json_encode($arr) . '}';
 ?>
