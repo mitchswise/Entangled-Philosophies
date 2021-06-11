@@ -10,6 +10,7 @@
 	}
 
     $inData = json_decode(file_get_contents('php://input'), true);
+    $user_id = $inData["userID"];
 
     //first get all valid papers
     $query = "SELECT DISTINCT paper_id FROM paper_tags";
@@ -18,7 +19,8 @@
     if($arr_len > 0) $query = $query . " WHERE";
     for($idx = 0; $idx < $arr_len; $idx++) {
         if($idx > 0) $query = $query . " AND";
-        $next_query = " paper_id IN (SELECT paper_id FROM paper_tags WHERE tag_id = " . $inData["tags"][$idx] . ")";
+        $next_query = " paper_id IN (SELECT paper_id FROM paper_tags WHERE (tag_id = " . 
+            $inData["tags"][$idx] . " AND (owner = 0 OR owner = " . $user_id .  ")))";
         $query = $query . $next_query;
     }
 
@@ -37,7 +39,7 @@
 
     while($row = $result->fetch_assoc()) {
         if($papers_added > 0) $query = $query . " OR";
-        $query = $query . " paper_id = " . $row["paper_id"];
+        $query = $query . " (paper_id = " . $row["paper_id"] . " AND (owner = 0 OR owner = " . $user_id . ")";
         $papers_added++;
     }
 

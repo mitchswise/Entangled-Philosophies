@@ -1,20 +1,21 @@
 import React from "react";
-import { tagFilter } from '../api.js';
+import { cookies, tagFilter } from '../api.js';
 import './Filter.css';
 
 const TAG_LIMIT = 10; //Only TAG_LIMIT tags per category unless 'expand' is hit
 
 function getValidTags(forced_tags) {
+    var userID = 0;
+    if(cookies.get('UserID')) userID = cookies.get('UserID');
+
     var tagArray = forced_tags.map(item => parseInt(item.id));
-    var dict = {tags:tagArray};
+    var dict = {tags:tagArray, userID:userID};
     var data = tagFilter(dict);
 
     var array = [];
     for(const index in data.tags) {
         array.push(parseInt(data.tags[index][0]));   
     }
-    // console.log("Wha? " + JSON.stringify(data.tags))
-    // console.log("Hmm " + JSON.stringify(array));
     return array;
 }
 
