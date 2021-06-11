@@ -208,11 +208,11 @@ function translateToSQL(filterState, userID) {
     return query;
 }
 
-function sendSearchQuery(filterState, userID) {
-    var query = translateToSQL(filterState, userID);
-
+function sendSearchQuery(filterState) {
     var userID = -1;
     if(cookies.get('UserID')) userID = cookies.get('UserID');
+    var query = translateToSQL(filterState, userID);
+
 
     var result = sqlSearch(userID, query);
     return result;
@@ -220,12 +220,29 @@ function sendSearchQuery(filterState, userID) {
 
 export default class Search extends React.Component {
 
+    getExistingFilter = () => {
+        if(!this.props.location || !this.props.location.state
+                || !this.props.location.state.filterState) {
+            return initState();
+        }
+        return cleanFilterState(this.props.location.state.filterState);
+    }
+    getExistingPaperData = () => {
+        if(!this.props.location || !this.props.location.state
+                || !this.props.location.state.filterState) {
+            return sendSearchQuery(initState());
+        }
+        return sendSearchQuery(cleanFilterState(this.props.location.state.filterState));
+    }
+
     state = {
         isFilterOpen: false,
         isSaveOpen: false,
-        filterState: !this.props.location.state.filterState ? initState() : cleanFilterState(this.props.location.state.filterState), 
-        paperData: !this.props.location.state.filterState ? sendSearchQuery(initState(), -1) : 
-            sendSearchQuery(cleanFilterState(this.props.location.state.filterState), cookies.get('UserID')),
+        filterState: this.getExistingFilter(),
+        paperData: this.getExistingPaperData(),
+        // filterState: !this.props.location.state.filterState ? initState() : cleanFilterState(this.props.location.state.filterState), 
+        // paperData: !this.props.location.state.filterState ? sendSearchQuery(initState()) : 
+        //     sendSearchQuery(cleanFilterState(this.props.location.state.filterState)),
         paperInformation: undefined,
         openEditPaper: false
     }
@@ -263,7 +280,7 @@ export default class Search extends React.Component {
 
         var userID = -1;
         if(cookies.get('UserID')) userID = cookies.get('UserID');
-        this.setState({ paperData: sendSearchQuery(newFitlerState, userID) });
+        this.setState({ paperData: sendSearchQuery(newFitlerState) });
         this.closePopup();
 
         if(userID != -1) {
@@ -301,7 +318,7 @@ export default class Search extends React.Component {
         if(didUpdate || didDelete) {
             var userID = -1;
             if(cookies.get('UserID')) userID = cookies.get('UserID');
-            this.setState((prevState) => ({ paperData: sendSearchQuery(prevState.filterState, userID) }));
+            this.setState((prevState) => ({ paperData: sendSearchQuery(prevState.filterState) }));
         }
         if(didDelete) {
             this.setState((prevState) => ({ paperInformation: undefined }));
@@ -312,6 +329,7 @@ export default class Search extends React.Component {
     render() {
         const { isFilterOpen, isSaveOpen, filterState, 
             openEditPaper, paperData, paperInformation } = this.state;
+            console.log("?? " + filterState)
 
         if(openEditPaper) {
             return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />

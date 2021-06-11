@@ -36,6 +36,15 @@
         return;
     }
 
+    //remove all entries from paper_tags
+    $query = "DELETE FROM paper_tags WHERE tag_id = " . $tag_id . ";";
+    $result = $conn->query($query);
+    if(!$result) {
+        $message = '{"status":"' . $conn->error . '"}';
+        echo $message;
+        return;
+    }
+
     //remove tag entry from table
     $query = "DELETE FROM tags WHERE id = " . $tag_id . ";";
     $result = $conn->query($query);
