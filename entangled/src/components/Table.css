@@ -1,53 +1,117 @@
 table {
-    font-family: Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 95%;
-    top: 0px;
-  }
-    
-  table td, table th {
-    border: 1px solid #ddd;
-    padding: 8px;
-  }
-    
-  table tr:nth-child(even){background-color: #f2f2f2;}
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100% !important;
+  top: 0px;
+}
   
-  table tr:hover {background-color: #ddd;}
-    
-  table th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #ff5959;
-    color: white;
-  }
+table td, table th {
+  border: none !important;
+  padding: 8px;
+}
   
-  #tagsSearchBar {
-    height:31px;
-    top:-5px;
-    position: relative;
-    width:70%;
-    left:1px;
-  }
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
   
-  #tagsAddButton {
-    width:12%;
-    height:37px;
-    left:0px;
-    top:-5px;
-    position: relative;
-  }
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #ff5959;
+  color: white;
+  top: -2px;
+  position: relative;
+}
+
+.leftBoxTop{
+    width: 100%;
+    height:36px;
+}
+
+#tagsSearchBar {
+  height:34px;
+  position: relative;
+  width:79.53%;
+  top:1px;
+  border:none;
+  float:left;
+  border-radius: 0px;
+}
+
+#saveQuery{
+  float: left;
+  border: none;
+  height:100%;
+  border-radius: 0px !important; 
+  border-right:none !important;
+}
+
+
+
+#saveQuery:hover{
+  background-color: #ddd;
+}
+
+#Filter:hover{
+  background-color: #ddd;
+}
+
+#Filter{
+  float:left;
+  border-top:none;
+  border-bottom:none;
+  height:100%;
+  left:1px;
+  position: relative;
+  border-left:1px solid black;
+  border-radius: 0px !important;
+}
+
+#tagsAddButton {
+  width:10%;
+  height:34px;
+  left:0px;
+  position: relative;
+  border-radius: 0px;
+  float:right;
+  border:none;
+  border-left:1px solid black;
+}
+
+#tagsAddButton:hover {
   
-  #pageNumbers {
-    position: relative;
-    top: 3%;
-    left: 25%;
-  }
-  #pagePrevious {
-    left: 10%;
-  }
-  
-  #pageNext {
-    left: 90%;
-  }
-  
+  background-color: #ddd;
+
+
+}
+
+#searchSearchBar{
+  float:left;
+  border:none;
+  height:100%;
+  position: relative;
+  width:80%;
+  margin:0;
+  padding:0;
+  padding-left: 10px;
+}
+
+
+#pageNumbers {
+  position: relative;
+  top: 3%;
+  left: 25%;
+}
+#pagePrevious {
+  left: 10%;
+}
+
+#pageNext {
+  left: 90%;
+}
+
+.pageNumbers {
+  margin:10px;
+  height:30px;
+}

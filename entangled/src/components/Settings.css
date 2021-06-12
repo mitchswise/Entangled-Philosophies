@@ -1,34 +1,35 @@
 .SettingsBox {
-    border-top-style: solid;
-    border-right-style: solid;
-    border-bottom-style: solid;
-    border-left-style: solid;
-    border-width: 1px;
+    position: relative;
+    top: -50px;
+    border-style: solid;
     border-color: black;
-    width: 1100px;
-    Height: 545px;
-    top: -140px;
-    position: relative;
-    text-align: center;
-    margin:auto;
+    border-width: 1px;
+    width: 85%;
+    height: 525px;
+    margin: auto;
+
 }
 
-
-#password{
-    top: -24px;
+.SettingsLeft {
+    border-style: none;
+    border-color: black;
+    border-width: 1px;
+    width: 45%;
+    height: 600px;
+    padding:20px;
+    float: left;
+    text-align: right;
 }
 
-#password2{
-    top:-46px;
-}
-
-#email{
-    top:-70px;
-}
-
-.SettingsFields {
-    top: -20px;
-    position: relative;
+.SettingsRight {
+    border-style: none;
+    border-color: black;
+    border-width: 1px;
+    width: 45%;
+    height: 600px;
+    padding:20px;
+    float: right;
+    text-align: left;
 }
 
 #addUserStatus {
@@ -41,13 +42,18 @@
     margin: auto;
 }
 
-.inputBoxes {
-
-    position: relative;
-    width: 350px;
-    height:28px;
-
+details {
+    width: 300px;
+    padding:3px;
+    border-width: 1px;
+    font-size: 18px;
+    border-style: solid;
+    border-color: black;
+    text-align: center;
+    position: block;
+    float:right;
 }
+
 
 #settingsBtnTxt {
     vertical-align:middle;
@@ -77,20 +83,7 @@
 
 }
 
-#leftUsername
-{
-    position: relative;
-    top: 50px;
-    left: -280px;
 
-}
-
-#leftEmail
-{
-    position: relative;
-    top: 20px;
-    left: -280px;
-}
 
 #hr{
     width:100%;
@@ -100,57 +93,112 @@
 
 }
 
-#language 
-{
-    position: relative;
-    left: -330px;
-    top: 0px;
-}
 
-#leftPassword
-{
-    position: relative;
-    left: -280px;
-    top: 28px;
-
-}
-
-#leftConfirmPassword
-{
-    position: relative;
-    left: -329px;
-    top: 6px;
-
-}
-
-#leftEmail
-{
-    position: relative;
-    left: -260px;
-    top: -18px;
-}
-
-#dropdown
-{
-	left: -520px;
-	top: -56px;
-}
-
-.dropdown-content
-{
-	left: -525px;
-	top: -20px;
-}
-
-#dropDownContainer
-{
-   position: relative;
-   left:-520px;
-   top:-48px;
-
+.dropDownContainer {
+    float: right;
+    margin: 0px;
+    padding: 0px;
 }
 
 #registerContainer
 {
     text-align: center;
+}
+
+.inputRow {
+    position: block;
+    width: 60%;
+    height: 50px;
+    padding: 20px;
+    text-align: right;
+    margin: auto;
+}
+
+.inputRow h2{
+    float:left;
+    margin: 0px;
+    padding: 0px
+}
+
+.inputRow input{
+    float: right;
+    width: 300px;
+    padding: 3px;
+    border-color: black;
+    border-radius: 0px;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 18px;
+}
+
+.inputRow #password {
+    width: 297px;
+    padding: 0px 0px 0px 0px;
+    margin: 10px 0px 0px 0px;
+    float:left;
+}
+
+p{
+    padding:0px;
+    margin: 0px;
+}
+
+
+.cookies{
+    padding: 10px;
+    font-size: 18px;
+}
+#OptIn{
+    width:30px;
+}
+
+#OptOut{
+    width:30px;
+}
+
+label {
+    float: right;
+}
+
+.dropdown button{
+    width: 310px;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    padding: 3px;
+    font-size: 18px;
+    text-align: center;
+    position: relative;
+}
+
+.dropdown-content {
+    width: 100%;
+    text-align: center;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+#save {
+    background-color: #f74135;
+    border: none;
+    height:36px;
+    width: 110px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+}
+
+#saveBtnTxt {
+    vertical-align:middle;
+    bottom:0px;
+    position: relative;
+    color: white;
+    text-decoration: bold;
+    font-size: 14px;
 }

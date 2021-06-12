@@ -1,4 +1,4 @@
-.PaperBox {
+.editPaperBox {
     border-top-style: solid;
     border-right-style: solid;
     border-bottom-style: solid;
@@ -12,18 +12,60 @@
     text-align: center;
     margin:auto;
     margin-bottom: 0%;
-    /*overflow: hidden;*/
+    overflow: hidden;
 }
 
-.PaperFields {
+#editPaperWrapper {
+    text-align: center;
+}
+
+.editPaperFields {
     position: relative;
 }
 
-.PaperBoxes {
+.editPaperBoxes {
     position: relative;
     width: 350px;
     height:28px;
 
+}
+
+.editSaveButtons {
+    border-radius: 10px;
+    border: none;
+    color: white;
+    width: 100px;
+    height: 30px;
+    top: -200px;
+    left: 600px;
+    max-height: 60%;
+    /* text-align: center; */
+    margin-left: 10px;
+    text-decoration: none;
+    /* display: inline-block; */
+    font-size: 16px;
+}
+
+#bottomRowButtons {
+    top: -75px;
+    left: 210px;
+    /* display: inline-block; */
+    position: relative;
+}
+
+#deletePaperButton {
+    margin-bottom: -8px;
+    margin-left: 400px;
+    top: -10px;
+    left: -100px;
+}
+
+#editSaveButton {
+    background-color: #229acf;
+}
+
+#editCancelButton {
+    background-color: #fd1200;
 }
 
 #MetadataFields {
@@ -68,6 +110,27 @@
     border-left-style: solid;
     border-width: 1px;
 }
+
+#uploadBtnText {
+    vertical-align:middle;
+    bottom:0px;
+    position: relative;
+    color: white;
+    text-decoration: bold;
+    font-size: 14px;
+}
+
+#currentFile {
+    top:-702px;
+    z-index: 2;
+}
+
+
+#uploadForm{
+	position: relative;
+	top: -610px;
+}
+
 
 #addTag {
     background-color: #f74135;
@@ -306,11 +369,6 @@
 
 #tags{
     top:-602px;
-}
-
-#uploadForm{
-	position: relative;
-	top: -610px;
 }
 
 #paperStatus{

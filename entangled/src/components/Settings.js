@@ -8,51 +8,83 @@ export default class Settings extends React.Component {
 	state = {
 		lang: 'eng'
 	}
-	
+
     render() {
 		const { lang } = this.state;
-		let chooseLang = dSettings(10, lang);
-		
+
 		const doEnglish = async e => {
 			this.setState({ lang: 'eng' });
 		}
-		
+
 		const doGerman = async e => {
 			this.setState({ lang: 'ger' });
 		}
-		
+
         return <div className = "container">
-        <div className="header">                       
+        <div className="header">
              <h1 id="title">{dSettings(9, lang)}</h1>
         </div>
 
         <div className="SettingsBox">
                 <div className="SettingsFields">
-                    <h2 id="leftUsername">{dSettings(1, lang)}</h2>
-                    <input type="text" className="inputBoxes" id="username" /><br />
-                    <h2 id="leftEmail">{dSettings(2, lang)}</h2>
-                    <input type="text" className="inputBoxes" id="email" /><br />
-                    <h2 id="leftPassword">{dSettings(3, lang)}</h2>
-                    <button type="button" className="inputBoxes" id="settings"><div id="settingsBtnTxt">{dSettings(4, lang)}</div></button>
+                        <div class="inputRow">
+                            <h2>{dSettings(1, lang)}</h2>
+                            <input type="text" id="username" placeholder="Example Username" disabled/>
+                        </div>
 
-                    <h2 id="language">{dSettings(5, lang)}</h2>
+                        <div class="inputRow">
+                            <h2>{dSettings(2, lang)}</h2>
+                            <details>
+                                <summary>
+                                    Change Email
+                                </summary>
+                                <p>
+                                    <input type="text" id="password" placeholder="New Email"/>
+                                    <button>Save Changes</button>
+                                </p>
+                            </details>
+                        </div>
 
-                    <div class="dropdown" id="dropdowncontainer">
-						<button class="dropbtn" id="dropdown">{chooseLang}</button>
-						<div class="dropdown-content">
-							<button type="submit" id="englishButton" onClick={doEnglish}>English</button>
-							<button type="submit" id="germanButton" onClick={doGerman}>Deutsch</button>
-						</div>
-					</div>
+                        <div class="inputRow">
+                            <h2>{dSettings(3, lang)}</h2>
+                            <details>
+                                <summary>
+                                    Change Password
+                                </summary>
+                                <p>
+                                    <input type="password" id="password" placeholder="New Password"/>
+                                    <button>Save Changes</button>
+                                </p>
+                            </details>
+                        </div>
 
-                    <div>
-                        <h2>{dSettings(6, lang)}</h2>
-                        <input type="radio" value="OptIn" name="cookieService" /> {dSettings(7, lang)}
-                        <input type="radio" value="OptOut" name="cookieService" /> {dSettings(8, lang)}
+                        <div class="inputRow">
+                            <h2>{dSettings(5, lang)}</h2>
+                            <div class="dropDownContainer">
+                                    <div class="dropdown" id="test">
+                                        <button>{dSettings(10, lang)}</button>
+                                        <div class="dropdown-content" id="dropdownRegister">
+																					<button type="submit" id="englishButton" onClick={doEnglish}>English</button>
+																					<button type="submit" id="germanButton" onClick={doGerman}>Deutsch</button>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+
+                        <div class="inputRow">
+                        <h2>Cookies</h2>
+                        <div class="cookies">
+                        <input type="radio" id="OptIn" value="OptIn" name="cookieService" />
+                        <label for="OptIn">Opt In</label> <br></br>
+                        <input type="radio" id="OptOut" value="OptOut" name="cookieService" />
+                        <label for="OptOut">Opt Out</label> <br></br>
+                        </div>
+                        </div>
                     </div>
-
+                    <div class="button">
+                            <button type="button" className="inputBoxes" id="save"><div id="saveBtnTxt">Save Changes</div></button>
+                    </div>
                 </div>
-        </div>
         </div>
     }
 }

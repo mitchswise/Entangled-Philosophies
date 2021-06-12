@@ -24,17 +24,14 @@ table th {
 
 #tagsSearchBar {
   height:31px;
-  top:-5px;
   position: relative;
   width:70%;
   left:1px;
 }
 
 #tagsAddButton {
-  width:12%;
   height:37px;
   left:0px;
-  top:-5px;
   position: relative;
 }
 
