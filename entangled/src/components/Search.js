@@ -213,7 +213,6 @@ function sendSearchQuery(filterState) {
     if(cookies.get('UserID')) userID = cookies.get('UserID');
     var query = translateToSQL(filterState, userID);
 
-
     var result = sqlSearch(userID, query);
     return result;
 }
@@ -240,9 +239,6 @@ export default class Search extends React.Component {
         isSaveOpen: false,
         filterState: this.getExistingFilter(),
         paperData: this.getExistingPaperData(),
-        // filterState: !this.props.location.state.filterState ? initState() : cleanFilterState(this.props.location.state.filterState), 
-        // paperData: !this.props.location.state.filterState ? sendSearchQuery(initState()) : 
-        //     sendSearchQuery(cleanFilterState(this.props.location.state.filterState)),
         paperInformation: undefined,
         openEditPaper: false
     }
@@ -314,7 +310,6 @@ export default class Search extends React.Component {
     }
 
     closeEdit = (didDelete, didUpdate) => {
-        console.log(didDelete + " " + didUpdate)
         if(didUpdate || didDelete) {
             var userID = -1;
             if(cookies.get('UserID')) userID = cookies.get('UserID');

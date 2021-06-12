@@ -19,15 +19,23 @@ function getValidTags(forced_tags) {
     return array;
 }
 
+function parseCustomQuery(equation) {
+    console.log("! " + equation);
+
+    //if token = (
+    
+
+}
+
 export default class Popup extends React.Component {
     state = {
         itemList: [],
-        someBool: false,
         textFilter: undefined,
         filterState: JSON.parse(JSON.stringify(this.props.filterState)),
         forced_tags: [],
         forced_state: 0,
-        validTags: getValidTags([])
+        validTags: getValidTags([]),
+        isCustomSearch: false
     }
 
     displayIt = (element) => {
@@ -256,8 +264,28 @@ export default class Popup extends React.Component {
         }
     }
 
+    toggleCustomSearch = () => {
+        this.setState((prevState) => ({ isCustomSearch: !prevState.isCustomSearch }));
+    }
+
     render() {
-        const { forced_tags, forced_state } = this.state;
+        const { forced_tags, forced_state, isCustomSearch } = this.state;
+
+        if(isCustomSearch) {
+            return (
+            <div className="popup-box">
+                <div className="filterBox">
+                    <input
+                        id="customSearchBar"
+                        placeholder={"Custom Query..."}
+                    />
+                    <button onClick={this.toggleCustomSearch}>Go Back</button>
+                    <button onClick={() => parseCustomQuery( document.getElementById("customSearchBar").value )} >Save</button>
+                    <button>Cancel</button>
+                </div>
+            </div>
+            );
+        }
 
         return (
             <div className="popup-box">
@@ -273,7 +301,6 @@ export default class Popup extends React.Component {
                         </div>
                         <div id="middlecolumnFilter">
                             <input id="tagsDynamicFilter" 
-                            //currentTags.map(item => item.text).join(", ")
                                 disabled={true} value={forced_tags.map(item => item.name).join(", ")}
                                 placeholder="Tag Filtering..." ></input>
                             <button id="addDynamicFilter"
@@ -294,7 +321,7 @@ export default class Popup extends React.Component {
                             </button>
                         </div>
                         <div id="rightcolumnFilter">
-                            <button disabled={true}>Custom</button>
+                            <button onClick={this.toggleCustomSearch}>Custom</button>
                             <button onClick={() => this.setAllView(false)} id="viewRow" >Show All</button>
                             <button onClick={() => this.setAllView(true)} id="viewRow" >Hide All</button>
                             <button onClick={() => this.resetFilter()} id="viewRow" >Reset</button>

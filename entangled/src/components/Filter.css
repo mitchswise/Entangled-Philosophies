@@ -33,6 +33,10 @@
     width: 200%;
 }
 
+#customSearchBar {
+    width: 100%;
+}
+
 #tagsDynamicFilter {
     border: solid 1px;
     height: 26px;
