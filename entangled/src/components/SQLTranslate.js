@@ -1,6 +1,6 @@
 //Handles translating the Filter into an SQL Query
 
-import { useColumnOrder } from "react-table";
+import { cookies, tagExistsBatch } from "../api.js";
 
 export function isDigit(val) {
     return /^\d+$/.test(val);
@@ -372,15 +372,33 @@ export function parseCustomQuery(equation, userID) {
     }
 
     //VERIFY THAT THESE TAGS tagsList EXIST!
+    var tagsToPass = [];
+    for(const index in tagsList) {
+        var tag = tagsList[index];
+        tagsToPass.push({ text:tag });
+    }
+    var prefLang = "eng";
+    if(cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
+    var jsonDict = {tagsArray:tagsToPass, userID:userID, language:prefLang};
+    var data = tagExistsBatch(jsonDict);
 
-    //replace tag[i] with it's identifier
-    var tagToInt = {};
-    for (const index in tagsList) {
-        if (!(tagsList[index] in tagToInt)) {
-            tagToInt[tagsList[index]] = index;
+    var badTags = [];
+    for(let x in data.tags) {
+        if(data.tags[x] == "-1") {
+            badTags.push(x);
         }
     }
+    if(badTags.length > 0) {
+        result.errorMessage = "The tags [" + badTags.join(", ") + "] do not exist.";
+        return result;
+    }
 
+    var tagToInt = {};
+    for(let x in data.tags) {
+        if(!(x in tagToInt)) {
+            tagToInt[x] = data.tags[x];
+        }
+    }
 
     newExpression = "";
     for (let i = 0; i < equation.length; i++) {
@@ -402,6 +420,9 @@ export function parseCustomQuery(equation, userID) {
 
     var x = parseSubsegment(equation, userID);
     result.errorMessage = x.errorMessage;
+
+    x.finalSQL = x.finalSQL.replace("SELECT", "SELECT DISTINCT");
+
     result.query = x.finalSQL;
     return result;
     // console.log("ERROR: " + x.errorMessage)

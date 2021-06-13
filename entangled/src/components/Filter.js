@@ -20,18 +20,7 @@ function getValidTags(forced_tags) {
     return array;
 }
 
-function parseCustomQueryToSQL(equation) {
-    console.log("! " + equation);
-    var userID = -1;
-    if(cookies.get('UserID')) userID = cookies.get('UserID');
-    
-    equation = "(" + equation + ")";
-    var result = parseCustomQuery(equation, userID);
-    
-    console.log("Finished parsing!");
-    console.log("Error: " + result.errorMessage);
-    console.log("Query: " + result.query);
-}
+
 
 export default class Popup extends React.Component {
     state = {
@@ -42,10 +31,6 @@ export default class Popup extends React.Component {
         forced_state: 0,
         validTags: getValidTags([]),
         isCustomSearch: false
-    }
-
-    displayIt = (element) => {
-        console.log(element)
     }
 
     resetFilter() {
@@ -61,6 +46,28 @@ export default class Popup extends React.Component {
             newFilter[index]["exclude"] = "OR";
         }
         this.setState((prevState) => ({ filterState: newFilter }));
+    }
+
+    parseCustomQueryToSQL(equation) {
+        console.log("! " + equation);
+        var userID = -1;
+        if(cookies.get('UserID')) userID = cookies.get('UserID');
+        
+        equation = "(" + equation + ")";
+        var result = parseCustomQuery(equation, userID);
+        
+        console.log("Finished parsing!");
+        if(result.errorMessage !== undefined) {
+            document.getElementById("customQueryStatus").innerHTML = "Error: " + result.errorMessage;
+            return null;
+        }
+        else {
+            document.getElementById("customQueryStatus").innerHTML = "";
+        }
+        console.log("Error: " + result.errorMessage);
+        console.log("Query: " + result.query);
+
+        this.props.handleSave(undefined, result.query);
     }
 
     buttonClick = (e) => {
@@ -286,8 +293,9 @@ export default class Popup extends React.Component {
                         placeholder={"Custom Query..."}
                     />
                     <button onClick={this.toggleCustomSearch}>Go Back</button>
-                    <button onClick={() => parseCustomQueryToSQL( document.getElementById("customSearchBar").value )} >Save</button>
+                    <button onClick={() => this.parseCustomQueryToSQL( document.getElementById("customSearchBar").value )} >Save</button>
                     <button>Cancel</button>
+                    <div id="customQueryStatus"></div>
                 </div>
             </div>
             );
@@ -337,7 +345,7 @@ export default class Popup extends React.Component {
                         {this.state.itemList}
                     </div>
                     <div id="bottomBar">
-                        <button className="bottomSaveButtons" id="filterSaveButton" onClick={() => this.props.handleSave(this.state.filterState)} >Save</button>
+                        <button className="bottomSaveButtons" id="filterSaveButton" onClick={() => this.props.handleSave(this.state.filterState, undefined)} >Save</button>
                         <button className="bottomSaveButtons" id="filterCancelButton" onClick={this.handleCancel}>Cancel</button>
                     </div>
                 </div>

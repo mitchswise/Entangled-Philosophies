@@ -174,16 +174,26 @@ export default class Search extends React.Component {
 
         this.toggleSavePopup();
     }
-    handleFilterSave = (newFitlerState) => {
-        this.setState((prevState) => ({ filterState: newFitlerState }));
-
+    handleFilterSave = (newFitlerState, customSearchSQL) => {
         var userID = -1;
         if(cookies.get('UserID')) userID = cookies.get('UserID');
-        this.setState({ paperData: sendSearchQuery(newFitlerState) });
-        this.closePopup();
 
-        if(userID != -1) {
-            this.updateHistory(newFitlerState, userID);
+        if(newFitlerState !== undefined) {
+            console.log("Okay..");
+            this.setState((prevState) => ({ filterState: newFitlerState }));
+            this.closePopup();
+            this.setState({ paperData: sendSearchQuery(newFitlerState) });
+            
+            if(userID != -1) {
+                this.updateHistory(newFitlerState, userID);
+            }
+        }
+        else {
+            //custom search!
+            console.log("Okay! " + customSearchSQL);
+            this.closePopup();
+            var newPaperData = sqlSearch(userID, customSearchSQL);
+            this.setState({ paperData: newPaperData });
         }
     }
 
