@@ -1,5 +1,6 @@
 import React from "react";
 import { cookies, tagFilter } from '../api.js';
+import { parseCustomQuery } from './SQLTranslate.js';
 import './Filter.css';
 
 const TAG_LIMIT = 10; //Only TAG_LIMIT tags per category unless 'expand' is hit
@@ -19,12 +20,17 @@ function getValidTags(forced_tags) {
     return array;
 }
 
-function parseCustomQuery(equation) {
+function parseCustomQueryToSQL(equation) {
     console.log("! " + equation);
-
-    //if token = (
+    var userID = -1;
+    if(cookies.get('UserID')) userID = cookies.get('UserID');
     
-
+    equation = "(" + equation + ")";
+    var result = parseCustomQuery(equation, userID);
+    
+    console.log("Finished parsing!");
+    console.log("Error: " + result.errorMessage);
+    console.log("Query: " + result.query);
 }
 
 export default class Popup extends React.Component {
@@ -280,7 +286,7 @@ export default class Popup extends React.Component {
                         placeholder={"Custom Query..."}
                     />
                     <button onClick={this.toggleCustomSearch}>Go Back</button>
-                    <button onClick={() => parseCustomQuery( document.getElementById("customSearchBar").value )} >Save</button>
+                    <button onClick={() => parseCustomQueryToSQL( document.getElementById("customSearchBar").value )} >Save</button>
                     <button>Cancel</button>
                 </div>
             </div>
