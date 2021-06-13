@@ -30,7 +30,8 @@ export default class Popup extends React.Component {
         forced_tags: [],
         forced_state: 0,
         validTags: getValidTags([]),
-        isCustomSearch: false
+        isCustomSearch: false,
+        customSearchQuery: this.props.customQuery
     }
 
     resetFilter() {
@@ -49,14 +50,11 @@ export default class Popup extends React.Component {
     }
 
     parseCustomQueryToSQL(equation) {
-        console.log("! " + equation);
         var userID = -1;
         if(cookies.get('UserID')) userID = cookies.get('UserID');
         
-        equation = "(" + equation + ")";
-        var result = parseCustomQuery(equation, userID);
+        var result = parseCustomQuery("(" + equation + ")", userID);
         
-        console.log("Finished parsing!");
         if(result.errorMessage !== undefined) {
             document.getElementById("customQueryStatus").innerHTML = "Error: " + result.errorMessage;
             return null;
@@ -67,7 +65,7 @@ export default class Popup extends React.Component {
         console.log("Error: " + result.errorMessage);
         console.log("Query: " + result.query);
 
-        this.props.handleSave(undefined, result.query);
+        this.props.handleSave(undefined, equation);
     }
 
     buttonClick = (e) => {
@@ -281,8 +279,12 @@ export default class Popup extends React.Component {
         this.setState((prevState) => ({ isCustomSearch: !prevState.isCustomSearch }));
     }
 
+    handleCustomQuery = (e) => {
+        this.setState((prevState) => ({ customSearchQuery: e.target.value || undefined }));
+    }
+
     render() {
-        const { forced_tags, forced_state, isCustomSearch } = this.state;
+        const { forced_tags, forced_state, isCustomSearch, customSearchQuery } = this.state;
 
         if(isCustomSearch) {
             return (
@@ -290,10 +292,12 @@ export default class Popup extends React.Component {
                 <div className="filterBox">
                     <input
                         id="customSearchBar"
+                        value={customSearchQuery}
+                        onChange={this.handleCustomQuery}
                         placeholder={"Custom Query..."}
                     />
                     <button onClick={this.toggleCustomSearch}>Go Back</button>
-                    <button onClick={() => this.parseCustomQueryToSQL( document.getElementById("customSearchBar").value )} >Save</button>
+                    <button onClick={() => this.parseCustomQueryToSQL( customSearchQuery )}>Save</button>
                     <button>Cancel</button>
                     <div id="customQueryStatus"></div>
                 </div>

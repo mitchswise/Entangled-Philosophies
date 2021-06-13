@@ -4,7 +4,7 @@ import { cookies, getTags, getUserInfo, sqlSearch, handleHistory, saveQuery } fr
 import Table from "./Table.js";
 import QueryPopup from './saveQueryPopup.js';
 import EditPaper from './EditPaper.js';
-import { translateToSQL } from './SQLTranslate.js';
+import { parseCustomQuery, translateToSQL } from './SQLTranslate.js';
 import './Search.css';
 
 const columnsTags = [
@@ -143,11 +143,18 @@ export default class Search extends React.Component {
         filterState: this.getExistingFilter(),
         paperData: this.getExistingPaperData(),
         paperInformation: undefined,
-        openEditPaper: false
+        openEditPaper: false,
+        customQuery: undefined,
+        lastQueryTypeUsed: 0
     }
 
     updateHistory = (newFitlerState, userID) => {
         var jsonDict = {owner:userID, is_history:1, query_text:JSON.stringify(newFitlerState), query_type:"JSON"};
+        saveQuery(jsonDict);
+        handleHistory(userID);
+    }
+    updateCustomHistory = (customSearch, userID) => {
+        var jsonDict = {owner:userID, is_history:1, query_text:customSearch, query_type:"CUSTOM"};
         saveQuery(jsonDict);
         handleHistory(userID);
     }
@@ -183,6 +190,7 @@ export default class Search extends React.Component {
             this.setState((prevState) => ({ filterState: newFitlerState }));
             this.closePopup();
             this.setState({ paperData: sendSearchQuery(newFitlerState) });
+            this.setState({ lastQueryTypeUsed: 0 });
             
             if(userID != -1) {
                 this.updateHistory(newFitlerState, userID);
@@ -191,9 +199,16 @@ export default class Search extends React.Component {
         else {
             //custom search!
             console.log("Okay! " + customSearchSQL);
+            var result = parseCustomQuery("(" + customSearchSQL + ")", userID);
             this.closePopup();
-            var newPaperData = sqlSearch(userID, customSearchSQL);
+            var newPaperData = sqlSearch(userID, result.query);
             this.setState({ paperData: newPaperData });
+            this.setState({ lastQueryTypeUsed: 1 });
+            this.setState({ customQuery: customSearchSQL });
+
+            if(userID != -1) {
+                this.updateCustomHistory(customSearchSQL, userID);
+            }
         }
     }
 
@@ -236,7 +251,8 @@ export default class Search extends React.Component {
 
     render() {
         const { isFilterOpen, isSaveOpen, filterState, 
-            openEditPaper, paperData, paperInformation } = this.state;
+            openEditPaper, paperData, paperInformation,
+            customQuery } = this.state;
 
         if(openEditPaper) {
             return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />
@@ -248,6 +264,7 @@ export default class Search extends React.Component {
                     handleClose={this.togglePopup}
                     tagData={tagData}
                     filterState={filterState}
+                    customQuery={customQuery}
                     handleSave={this.handleFilterSave}
                 />}
                 {isSaveOpen && <QueryPopup 
