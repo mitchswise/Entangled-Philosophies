@@ -28,45 +28,42 @@ div.header {
 
 .rightBoxPaperInfo {
     position: relative;
-    margin-top: 60px;
 }
 
 
 #closePaperButton{
     height:34px;
     position: absolute;
-    top: 0px;
+    top: -19px;
+    left:75px;
     border-top: none !important;
     border: 1px solid black;
-    right:80.3%;
-    left:75px;
-    border-left:none !important;
-    border-radius: 0px;
+    margin:0;
+    border-radius: 4px;
+    border-top-left-radius: 0px;
+
+
 }
 
 #closePaperButton:hover{
     background-color: #ddd;
-
 }
 
-#editPaperButton:hover {
-    background-color: #ddd;
-}
 
 #editPaperButton{
     height:34px;
     position: absolute;
-    top: 0px;
+    top: -19px;
     border-top: none !important;
     border: 1px solid black;
     left:-1px;
-    border-radius: 0px;
+    border-radius: 4px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+
 
 }
 
-.rightBoxPaperInfo h3 {
-    margin-top:30px;
-}
 
 #leftBox, #rightBox {
     /* display: inline-block;    */
@@ -89,3 +86,174 @@ div.header {
     width: 100%;
     height:500px;
 }
+
+#rowOne{
+width: 100%;
+max-height:80px;
+min-height:80px;
+border-bottom: 1px solid black;
+top:-10px;
+position: relative;
+    }
+
+  
+.rowOneColumn{
+    float:left;
+    max-width:50%;
+    min-width:50%;
+}
+
+.rowOneColumn p{
+    position:relative;
+}
+
+#rowTwoMiddle{
+display: block;
+float:left;
+width:100%;
+top:-12px;
+position: relative;
+}
+
+
+#rowTwo{
+width: 100%;
+max-height:80px;
+min-height:80px;
+border-bottom: 1px dashed black;
+position: relative;
+padding-bottom:16px;
+}
+
+.rowTwoColumn{
+    float:left;
+    max-width:33.3%;
+    min-width:33.3%;
+ }
+
+ .rowTwoColumn p{
+     position:relative;
+     margin:0;
+     top:-10px;
+ }
+
+ #rowThreeMiddle{
+     position: relative;
+ }
+
+
+ #rowThree{
+    width: 100%;
+    max-height:140px;
+    min-height:140px;
+    border-bottom: 1px Dashed black;
+    margin-bottom:20px;
+
+    }
+    
+      
+    .rowThreeColumn{
+        float:left;
+        max-width:100%;
+        min-width:100%;
+        text-align: center;
+        
+        
+    }
+
+    
+    .rowThreeColumn p{
+        position:relative;
+        margin:5px;
+        top:50px;
+    }
+
+    #rowFourMiddle{
+        position: relative;
+        top:0px;
+    }
+
+    #rowFour{
+        width: 100%;
+        max-height:150px;
+        min-height:150px;
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+        padding-bottom:10px;
+    }
+
+    .rowFourColumn{
+        float:left;
+        max-width:33.3%;
+        min-width:33.3%;
+    }
+    
+    .rowFourColumn p{
+        position:relative;
+        top:-14px;
+    }
+
+    #rowFourOne{
+        width:100%;
+        position: relative;
+    }
+
+    #rowFourTwo{
+        width:100%;
+        position: relative;
+    }
+
+    #rowFiveMiddle{
+        position: relative;
+    }
+   
+   
+    #rowFive{
+       width: 100%;
+       max-height:50px;
+       min-height:50px;
+       border-bottom: 1px solid black;
+   
+       }
+       
+         
+       .rowFiveColumn{
+           float:left;
+           max-width:25%;
+           min-width:25%;
+           text-align: center;
+           
+           
+       }
+   
+       
+       .rowFiveColumn p{
+           position:relative;
+           margin:5px;
+       }
+    
+        .rowSixColumn{
+            float:left;
+            max-width:50%;
+            min-width:50%;
+            text-align: center;
+        }
+
+        .rowSixColumn button{
+            position: relative;
+            top:20px;
+        }
+    
+        #tagsAdminList{
+            left:10px;
+        }
+
+        #minusButton{
+            position: relative;
+            left:5px;
+        }
+
+        #tagInputButton{
+            position: relative;
+            left:10px;
+        }
