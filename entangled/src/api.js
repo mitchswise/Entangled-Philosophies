@@ -498,3 +498,17 @@ export function tagFilter(jsonDict) {
 		return null;
 	}
 }
+
+export function updateSettings(id, email, language, cookies) {
+	var jsonPayload = '{"id":' + id + ', "email":"' + email + '", "language":"' + language + '", "cookies":' + cookies + '}';
+	var url = urlBase + '/updateSettings.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
