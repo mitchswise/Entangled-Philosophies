@@ -25,11 +25,6 @@ body {
     overflow-y: scroll;
 }
 
-.dropbtn{
-    display:none;
-}
-
-
 #rightcolumn {
  
     border-top-style: solid;
