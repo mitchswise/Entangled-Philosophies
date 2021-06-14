@@ -286,51 +286,53 @@ export default class Popup extends React.Component {
 
     viewCustomRules = () => {
         return (
-            <ul>
-                <li>All tags must be input inbetween a pair of ` characters:
-                    <li>Good Example: `XYZ` is valid</li>
-                    <li>Bad Example: "XYZ" is not valid</li>
-                    <li>Bad Example: XYZ is not valid</li>
-                </li>
-                <li>
-                    Aside from tag input, the only acceptable tokens are:
-                    <li>()</li>
-                    <li>AND</li>
-                    <li>OR</li>
-                    <li>NOT</li>
-                </li>
-                <li>
-                    "NOT" must be followed by an expression (either a (`XYZ` OR `XYZ2`) or a simple `XYZ2`)
-                </li>
-                <li>
-                    "AND" and "OR" must be inbetween 2 valid expressions (`XYZ` AND `XYZ2`) or something like ((`XYZ`) OR (`XYZ2` AND `words`)))
-                </li>
-                <li>
-                    Parantheses and tag identifiers must be non-empty. "()" is invalid and "(``)" is also invalid
-                </li>
-                <li>
-                    Order of operations:
-                    <li>
-                        Expressions in () are resolved first
+            <div id="customRulesDiv">
+                <h1>Rules:</h1>
+                <ul>
+                    <li>All tags must be input inbetween a pair of ` characters:
+                        <li>Good Example: `XYZ` is valid</li>
+                        <li>Bad Example: "XYZ" is not valid</li>
                     </li>
                     <li>
-                        "NOT" comes first. Applies to the term directly to the right of the "NOT" token
+                        Aside from tag input, the only acceptable tokens are:
+                        <li>()</li>
+                        <li>AND</li>
+                        <li>OR</li>
+                        <li>NOT</li>
                     </li>
                     <li>
-                        "AND" comes after "NOT". Takes the intersection of the 2 expressions on its left and right
+                        "NOT" must be followed by an expression (either a (`XYZ` OR `XYZ2`) or a simple `XYZ2`)
                     </li>
                     <li>
-                        "OR" comes last. Takes the union of the 2 expressions on its left and right
+                        "AND" and "OR" must be inbetween 2 valid expressions (`XYZ` AND `XYZ2`) or something like ((`XYZ`) OR (`XYZ2` AND `words`)))
                     </li>
-                </li>
-                <li>
-                    Example valid expressions:
-                    <li>`XYZ`</li>
-                    <li>`XYZ` OR `XYZ2`</li>
-                    <li>(`XYZ` OR `words`) AND `XYZ2`</li>
-                    <li>(`XYZ` AND `XYZ2` OR `words`</li>
-                </li>
-            </ul>
+                    <li>
+                        Parantheses and tag identifiers must be non-empty. "()" is invalid and "(``)" is also invalid
+                    </li>
+                    <li>
+                        Order of operations:
+                        <li>
+                            Expressions in () are resolved first
+                        </li>
+                        <li>
+                            "NOT" comes first. Applies to the term directly to the right of the "NOT" token
+                        </li>
+                        <li>
+                            "AND" comes after "NOT". Takes the intersection of the 2 expressions on its left and right
+                        </li>
+                        <li>
+                            "OR" comes last. Takes the union of the 2 expressions on its left and right
+                        </li>
+                    </li>
+                    <li>
+                        Example valid expressions:
+                        <li>`XYZ`</li>
+                        <li>`XYZ` OR `XYZ2`</li>
+                        <li>(`XYZ` OR `words`) AND `XYZ2`</li>
+                        <li>(`XYZ` AND `XYZ2` OR `words`</li>
+                    </li>
+                </ul>
+            </div>
         )
     }
     toggleRules = () => {
@@ -352,7 +354,7 @@ export default class Popup extends React.Component {
                         />
                         <div id="customQueryStatus"></div>
                         <div id="customQueryRules">
-                            <h1>Rules:</h1>
+                            
                             <button onClick={this.toggleRules}>Show Rules</button>
                             {
                                 this.state.showCustomRules ?
@@ -362,7 +364,7 @@ export default class Popup extends React.Component {
 
                         </div>
                         <div id="customFilterBottomButtons">
-                            <button onClick={this.toggleCustomSearch}>Go Back</button>
+                            <button onClick={this.toggleCustomSearch}>Regular</button>
                             <button className="bottomSaveButtons" id="customFilterSaveButton" onClick={() => this.parseCustomQueryToSQL(customSearchQuery)}>Save</button>
                             <button className="bottomSaveButtons" id="customFilterCancelButton" onClick={this.handleCancel}>Cancel</button>
                         </div>
