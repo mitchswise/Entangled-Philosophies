@@ -296,10 +296,10 @@ export default class Popup extends React.Component {
                         onChange={this.handleCustomQuery}
                         placeholder={"Custom Query..."}
                     />
-                    <button onClick={this.toggleCustomSearch}>Go Back</button>
-                    <button onClick={() => this.parseCustomQueryToSQL( customSearchQuery )}>Save</button>
-                    <button>Cancel</button>
                     <div id="customQueryStatus"></div>
+                    <button onClick={this.toggleCustomSearch}>Go Back</button>
+                    <button className="bottomSaveButtons" id="filterSaveButton" onClick={() => this.parseCustomQueryToSQL( customSearchQuery )}>Save</button>
+                    <button className="bottomSaveButtons" id="filterCancelButton" onClick={this.handleCancel}>Cancel</button>
                 </div>
             </div>
             );
