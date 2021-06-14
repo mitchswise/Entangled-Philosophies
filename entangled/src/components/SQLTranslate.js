@@ -335,6 +335,10 @@ export function parseCustomQuery(equation, userID) {
                     result.errorMessage = "Bad expression detected on closing ')' at index = " + i;
                     return result;
                 }
+                if(i > 0 && equation[i-1] == '(') {
+                    result.errorMessage = "Empty pair of () at index = " + i;
+                    return result;
+                }
                 bracketList.pop();
                 break;
             case 'A':
@@ -372,6 +376,12 @@ export function parseCustomQuery(equation, userID) {
     }
 
     //VERIFY THAT THESE TAGS tagsList EXIST!
+
+    if(tagsList.length === 0) {
+        result.errorMessage = "No tags found in the expression";
+        return result;
+    }
+
     var tagsToPass = [];
     for(const index in tagsList) {
         var tag = tagsList[index];

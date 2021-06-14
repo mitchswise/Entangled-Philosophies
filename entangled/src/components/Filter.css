@@ -188,3 +188,19 @@
 #filterCancelButton {
     background-color: #fd1200;
 }
+
+#customFilterSaveButton {
+    background-color: #229acf;
+}
+
+#customFilterCancelButton {
+    background-color: #fd1200;
+}
+
+#customFilterBottomButtons {
+    width: 90%;
+    justify-content: center;
+    align-content: center;
+    position: absolute;
+    bottom:10px;
+}
