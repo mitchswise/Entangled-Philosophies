@@ -312,7 +312,7 @@ export function parseCustomQuery(equation, userID) {
     console.log("!NewEquation " + equation);
 
     //check for malformed expression
-    var tagIndex = 0;
+    var tagIndex = 0, lastSeen = -1;
     for (let i = 0; i < equation.length; i++) {
         if (equation[i] == ' ') continue;
         if (equation[i] == '`') {
@@ -324,11 +324,13 @@ export function parseCustomQuery(equation, userID) {
                     return result;
                 }
             }
+            lastSeen = 0;
             continue;
         }
         switch (equation[i]) {
             case '(':
                 bracketList.push('(');
+                lastSeen = 1;
                 break;
             case ')':
                 if (bracketList.length == 0 || bracketList[bracketList.length - 1] != '(') {
@@ -340,22 +342,25 @@ export function parseCustomQuery(equation, userID) {
                     return result;
                 }
                 bracketList.pop();
+                lastSeen = 2;
                 break;
             case 'A':
-                if (i + 4 > equation.length || (equation.substring(i, i + 4) !== "AND("
+                if (lastSeen !== 0 || i + 4 > equation.length || (equation.substring(i, i + 4) !== "AND("
                     && equation.substring(i, i + 4) !== "AND`" && equation.substring(i,i+4) !== "ANDN" )) {
                     result.errorMessage = "Failed parse on AND " + i;
                     return result;
                 }
                 i += 2;
+                lastSeen = 3;
                 break;
             case 'O':
-                if (i + 3 > equation.length || (equation.substring(i, i + 3) !== "OR("
+                if (lastSeen !== 0 || i + 3 > equation.length || (equation.substring(i, i + 3) !== "OR("
                     && equation.substring(i, i + 3) !== "OR`" && equation.substring(i,i+3) !== "ORN")) {
                     result.errorMessage = "Failed parse on OR " + i;
                     return result;
                 }
                 i++;
+                lastSeen = 4;
                 break;
             case 'N':
                 if (i + 4 > equation.length || (equation.substring(i, i + 4) !== "NOT("
@@ -364,6 +369,7 @@ export function parseCustomQuery(equation, userID) {
                     return result;
                 }
                 i += 2;
+                lastSeen = 5;
                 break;
             default:
                 result.errorMessage = "Bad expression " + i + " " + equation[i];
@@ -435,7 +441,7 @@ export function parseCustomQuery(equation, userID) {
 
     result.query = x.finalSQL;
     return result;
-    // console.log("ERROR: " + x.errorMessage)
-    // console.log(x.finalSQL);
-    // console.log("FIN");
+    console.log("ERROR: " + x.errorMessage)
+    console.log(x.finalSQL);
+    console.log("FIN");
 }
