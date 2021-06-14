@@ -30,11 +30,12 @@ table th {
 }
 
 
-#tagsSearchBar {
+#tagsTableSearchBar {
   height:31px;
+  border: 1px black;
   position: absolute;
-  width:70%;
-  left:1px;
+  width:85%;
+  left:0%;
 }
 
 #tagstopbar{

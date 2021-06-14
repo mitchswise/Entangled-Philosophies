@@ -16,6 +16,10 @@ const columnsTags = [
     {
         Header: "Category",
         accessor: "catText"
+    },
+    {
+        Header: "Papers Tagged",
+        accessor: "frequency"
     }
 ];
 
@@ -29,14 +33,25 @@ const columnsCategories = [
 //loads all available tags for a user
 function getTagData() {
     if(!cookies.get('UserID')) return [];
-    var result = getTags(cookies.get('UserID'), "eng");
-    return result.tags;
+    var prefLang = cookies.get('PrefLang');
+    var result = getTags(cookies.get('UserID'), prefLang);
+
+    var tagsList = []
+    for(const index in result.tags) {
+        const entry = result.tags[index];
+        if(entry["is_metadata"] === "0") {
+            tagsList.push(entry);
+        }
+    }
+
+    return tagsList;
 }
 
 //loads all available categories for a user
 function getCategoryData() {
     if(!cookies.get('UserID')) return [];
-    var result = getCats(cookies.get('UserID'), "eng");
+    var prefLang = cookies.get('PrefLang');
+    var result = getCats(cookies.get('UserID'), prefLang);
     return result.categories;
 }
 
@@ -79,7 +94,7 @@ function doAddTag(edit_tag) {
     }
 
     //SWITCH to calling settings endpoint when it's done
-    var language = "eng";
+    var language = cookies.get('PrefLang');
 
     var data = addTag(userID, language, translations, edit_tag);
     document.getElementById("tagsPageStatus").innerHTML = data.status;
@@ -89,7 +104,7 @@ function doAddTag(edit_tag) {
 function doRemoveTag(rowInfo) {
     var tagName = rowInfo.text;
     var userID = rowInfo.owner;
-    var language = rowInfo.owner == 0 ? "eng" : "def"; //Switch!
+    var language = rowInfo.owner == 0 ? cookies.get('PrefLang') : "def"; //Switch!
 
     var data = removeTag(tagName, language, userID);
     document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
@@ -135,7 +150,7 @@ function doAddCat(edit_cat) {
 function doRemoveCat(rowInfo) {
     var catName = rowInfo.text;
     var userID = rowInfo.owner;
-    var language = rowInfo.owner == 0 ? "eng" : "def"; //Switch!
+    var language = rowInfo.owner == 0 ? cookies.get('PrefLang') : "def"; //Switch!
 
     var data = removeCategory(catName, language, userID);
     document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;

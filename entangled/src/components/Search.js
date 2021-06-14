@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Filter from './Filter.js';
-import { cookies, getTags, getUserInfo, sqlSearch, handleHistory, saveQuery } from '../api.js'
+import { cookies, getTags, getUserInfo, sqlSearch, handleHistory, saveQuery, fileURLBase } from '../api.js'
 import Table from "./Table.js";
 import QueryPopup from './saveQueryPopup.js';
 import EditPaper from './EditPaper.js';
@@ -250,7 +250,8 @@ export default class Search extends React.Component {
         return <div>
             
             <div class="rightBoxPaperInfo">
-            <button id="editPaperButton" disabled={true}>Edit Paper</button>
+            <button id="editPaperButton" onClick={() => { this.setState({ openEditPaper: true }) }}
+                disabled={!cookies.get('UserID') || cookies.get('PermLvl') < 1}>Edit Paper</button>
             <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
 
             <div id="rowOneMiddle">  
@@ -282,7 +283,7 @@ export default class Search extends React.Component {
                 </div>
 
                 <div class="rowTwoColumn">
-                     <p ><b>Type/Genre:</b> {paperInformation.subject}</p>
+                     <p ><b>Type/Genre:</b> {paperInformation.type}</p>
                 </div>
 
                 <div class="rowTwoColumn">
@@ -295,7 +296,7 @@ export default class Search extends React.Component {
             <div id="rowThree">
 
                 <div class="rowThreeColumn">
-                    <p><b>Description</b> {paperInformation.subject}</p>
+                    <p><b>Description</b> {paperInformation.description}</p>
                 </div>
 
             </div>
@@ -326,11 +327,18 @@ export default class Search extends React.Component {
                 </div>
 
                 <div class="rowFourColumn">
-                     <p ><b>URL:</b> {paperInformation.url}</p>
+                     <p ><b>URL:</b> {paperInformation.paper_url}</p>
                 </div>
 
                 <div class="rowFourColumn">
-                     <p ><b>File Link:</b> {paperInformation.filelink}</p>
+                     <p ><b>File Link:</b> {
+                        paperInformation.url !== "none" ?
+                        <a id="currentFile" href={fileURLBase + paperInformation.url}
+                            target="_blank" >{paperInformation.url}</a>
+                        :
+                        "None"
+                     }</p>
+                     
                 </div>
             </div>
 
