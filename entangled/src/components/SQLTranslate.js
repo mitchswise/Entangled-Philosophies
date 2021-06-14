@@ -342,7 +342,7 @@ export function parseCustomQuery(equation, userID) {
                     return result;
                 }
                 bracketList.pop();
-                lastSeen = 2;
+                lastSeen = 0;
                 break;
             case 'A':
                 if (lastSeen !== 0 || i + 4 > equation.length || (equation.substring(i, i + 4) !== "AND("
