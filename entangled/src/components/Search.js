@@ -248,18 +248,136 @@ export default class Search extends React.Component {
     viewPaper = () => {
         const { paperInformation } = this.state;
         return <div>
+            
             <div class="rightBoxPaperInfo">
-                <h2>Title</h2>
-                <p>{paperInformation.title}</p>
-                <h2>Author</h2>
-                <p>{paperInformation.author}</p>
-                <h2>Language</h2>
-                <p>{paperInformation.language}</p>
+            <button id="editPaperButton" disabled={true}>Edit Paper</button>
+            <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
+
+            <div id="rowOneMiddle">  
+                <h3 id="rowOneGenInfo">General Information</h3>
+                </div> 
+
+                <div id="rowOne">
+
+                 <div class="rowOneColumn">
+                    <p ><b>Title:</b> {paperInformation.title}</p>
+                 </div>
+
+                 <div class="rowOneColumn">
+                    <p ><b>Author:</b> {paperInformation.author}</p>
+                 </div>
+
+                </div>
+
+                <div id="rowTwoMiddle">  
+                <h3 id="rowOneGenInfo">Description Information</h3>
+                </div> 
+
+
+             
+            <div id="rowTwo">
+
+                <div class="rowTwoColumn">
+                    <p ><b>Subject:</b> {paperInformation.subject}</p>
+                </div>
+
+                <div class="rowTwoColumn">
+                     <p ><b>Type/Genre:</b> {paperInformation.subject}</p>
+                </div>
+
+                <div class="rowTwoColumn">
+                     <p ><b>Coverage:</b> {paperInformation.coverage}</p>
+                </div>
+
             </div>
 
-            <button id="editPaperButton" onClick={() => { this.setState({ openEditPaper: true }) }}
-                disabled={!cookies.get('UserID') || cookies.get('PermLvl') < 1}>Edit Paper</button>
-            <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
+             
+            <div id="rowThree">
+
+                <div class="rowThreeColumn">
+                    <p><b>Description</b> {paperInformation.subject}</p>
+                </div>
+
+            </div>
+
+            <div id="rowFour">
+
+                <div id="rowFourMiddle">
+                    <h3>Identifying Information</h3>
+                </div>
+
+            <div id="rowFourOne">
+                <div class="rowFourColumn">
+                    <p ><b>Date:</b> {paperInformation.date}</p>
+                </div>
+
+                <div class="rowFourColumn">
+                     <p ><b>Format:</b> {paperInformation.format}</p>
+                </div>
+
+                <div class="rowFourColumn">
+                     <p ><b>Language:</b> {paperInformation.language}</p>
+                </div>
+            </div>
+
+            <div id="rowFourTwo">
+                <div class="rowFourColumn">
+                    <p ><b>ISBN:</b> {paperInformation.isbn}</p>
+                </div>
+
+                <div class="rowFourColumn">
+                     <p ><b>URL:</b> {paperInformation.url}</p>
+                </div>
+
+                <div class="rowFourColumn">
+                     <p ><b>File Link:</b> {paperInformation.filelink}</p>
+                </div>
+            </div>
+
+            </div>
+
+
+            <div id="rowFiveMiddle">  
+                <h3 id="rowFiveLegalInfo">Legal Information</h3>
+                </div> 
+
+
+             
+            <div id="rowFive">
+
+                <div class="rowFiveColumn">
+                    <p ><b>Source:</b> {paperInformation.source}</p>
+                </div>
+
+                <div class="rowFiveColumn">
+                     <p ><b>Publisher:</b> {paperInformation.publisher}</p>
+                </div>
+
+                <div class="rowFiveColumn">
+                     <p ><b>Rights:</b> {paperInformation.rights}</p>
+                </div>
+
+                <div class="rowFiveColumn">
+                     <p ><b>Relation:</b> {paperInformation.relation}</p>
+                </div>
+
+            </div>
+
+
+            <div class="rowSixColumn">
+                <button type="button">Tags User List</button>
+                <button id="tagsAdminList" type="button">Tags Admin List</button>
+            </div>
+
+            <div class="rowSixColumn">
+                <button type="button">+</button>
+                <button id="minusButton" type="button">-</button>
+                <button id="tagInputButton" type="button">Tag Input</button>
+            </div>
+
+         </div>
+            
+           
         </div>
     }
 

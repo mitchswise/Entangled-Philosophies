@@ -1,8 +1,15 @@
 table {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
-  width: 95%;
+  width: 100% !important;
   top: 0px;
+  margin: 0;
+}
+
+#tagsTable{
+  width: 100% !important;
+  top: 0px;
+  margin: 0;
 }
   
 table td, table th {
@@ -22,11 +29,20 @@ table th {
   color: white;
 }
 
+
 #tagsSearchBar {
   height:31px;
-  position: relative;
+  position: absolute;
   width:70%;
   left:1px;
+}
+
+#tagstopbar{
+  position: sticky;
+  width:100%;
+  display: block;
+  height:34px;
+
 }
 
 #tagsAddButton {
