@@ -15,6 +15,9 @@ export default class QueryPopup extends React.Component {
                             <input id="querySearchBar" placeholder="Query name"
                                 onChange= {(e) => { this.setState({queryName:e.target.value}) }} />
                         </div>
+                        <div>
+                            <p>Saving a {this.props.queryType === 0 ? "Regular" : "Custom"} Query</p>
+                        </div>
                         <div id="bottomSaveBar">
                             <button className="bottomSaveButtons" id="querySaveButton" 
                                 onClick={() => this.props.handleSave(this.state.queryName)}

@@ -191,7 +191,8 @@ export default class Queries extends React.Component {
         savedHistory: getSavedHistory(),
         toggleState: false,
         redirectToSearch: false,
-        redirectFilter: null
+        redirectFilter: undefined,
+        redirectCustomQuery: undefined
     }
 
     renderRedirect = () => {
@@ -205,15 +206,30 @@ export default class Queries extends React.Component {
     }
 
     setSearchFlag = (query) => {
-        this.setState({ redirectFilter: JSON.parse(query.query_text) });
+        if(query.query_type === "JSON") {
+            this.setState({ redirectFilter: JSON.parse(query.query_text) });
+        }
+        else {
+            this.setState({ redirectCustomQuery: query.query_text });   
+        }
         this.setState({ redirectToSearch: true });
     }
 
     loadSearch = () => {
+        var sendState = {};
+        if(this.state.redirectFilter !== undefined) {
+            sendState = { filterState: this.state.redirectFilter };
+        }
+        else {
+            sendState = { customQuery: this.state.redirectCustomQuery };
+        }
+
+        console.log("Redirect? " + JSON.stringify(sendState));
+
         return <Redirect
             to={{
                 pathname: "/search",
-                state: { filterState: this.state.redirectFilter }
+                state: sendState
             }} 
         />
     }

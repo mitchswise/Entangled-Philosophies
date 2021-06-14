@@ -490,11 +490,27 @@ export function tagFilter(jsonDict) {
 
 	try {
 		xhr.send(jsonPayload);
-		console.log("--> " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
-		console.log("E " + err)
+		return null;
+	}
+}
+
+export function tagExistsBatch(jsonDict) {
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/tagExistsBatch.php';
+	connect("POST", url);
+
+	console.log("Sending... " + jsonPayload);
+
+	try {
+		xhr.send(jsonPayload);
+		console.log("Getting... " + xhr.responseText);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
 		return null;
 	}
 }
