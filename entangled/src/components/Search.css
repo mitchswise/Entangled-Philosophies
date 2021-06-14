@@ -198,10 +198,11 @@ padding-bottom:16px;
         position: relative;
     }
 
-    #rowFourTwo{
-        width:100%;
-        position: relative;
-    }
+#rowFourTwo{
+    width:100%;
+    position: relative;
+    top:12px;
+}
 
     #rowFiveMiddle{
         position: relative;
@@ -217,14 +218,13 @@ padding-bottom:16px;
        }
        
          
-       .rowFiveColumn{
-           float:left;
-           max-width:25%;
-           min-width:25%;
-           text-align: center;
-           
-           
-       }
+.rowFiveColumn{
+    float:left;
+    max-width:25%;
+    min-width:25%;
+    text-align: center;
+    max-height:51px;
+}
    
        
        .rowFiveColumn p{
