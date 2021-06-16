@@ -251,7 +251,7 @@ export default class Search extends React.Component {
             
             <div class="rightBoxPaperInfo">
             <button id="editPaperButton" onClick={() => { this.setState({ openEditPaper: true }) }}
-                disabled={!cookies.get('UserID') || cookies.get('PermLvl') < 1}>Edit Paper</button>
+                disabled={!cookies.get('UserID')}>Edit Paper</button>
             <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
 
             <div id="rowOneMiddle">  

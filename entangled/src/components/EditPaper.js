@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import './EditPaper.css';
 import trashCan from '../images/trash.png';
@@ -6,8 +6,14 @@ import trashCan from '../images/trash.png';
 import {
     cookies, editPaper, tagExists, addTagToPaper,
     addMetadataTag, removeTagFromPaper, getPapersTag, fileURLBase,
-    removePaper
+    removePaper, removeFile
 } from '../api.js';
+
+var tagsList = [];	
+var tagIDs = [];
+var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/uploadPaper.php';
+var userID = cookies.get('UserID');
+if (cookies.get('PermLvl') > 0) userID = 0;
 
 let field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
     "description", "type", "format", "languageBox", "sourceBox",
@@ -46,178 +52,89 @@ function loadTags(paperInformation) {
     return data.tags;
 }
 
-export default class EditPaper extends React.Component {
+function doRemoveFile(id, url) {
+	var data = removeFile(id, url);
+	console.log(data);
+}
 
-    state = {
-        paperInformation: this.props.paperInformation,
-        curMetadataText: makeMetadataValues(this.props.paperInformation),
-        currentTags: loadTags(this.props.paperInformation),
+const doAddPaper = async (paperInformation, currentTags, curMetadataText) => {
+   	var title = document.getElementById("titleName").value;
+    if (title == "") {
+    	document.getElementById("paperStatus").innerHTML = "Paper must include a title";
+        return;
+    }
+    var filename = document.getElementById("filename").innerHTML;
+    var url;
 
+    if (filename == "") {
+        url = paperInformation.url;
+    } else {
+        url = filename;
     }
 
-    componentDidMount() {
-        const script = document.createElement("script");
-        script.async = true;
-        script.src = "../src/UploadSubmit.js";
-        this.div.appendChild(script);
+    var metadata_dict = {};
+    for (const index in field_ids) {
+        var value = document.getElementById(field_ids[index]).value;
+        if (value !== "") {
+            metadata_dict[metadata_ids[index]] = value;
+        }
+        else {
+            metadata_dict[metadata_ids[index]] = "";
+        }
     }
+    metadata_dict["url"] = url;
+    metadata_dict["id"] = paperInformation.id;
 
-    renderRedirect = () => {
-        if (cookies.get('UserID') == null) {
-            return <Redirect to='/' />
+    var data = editPaper(metadata_dict);
+    var id = paperInformation.id;
+
+    //delete all tags from the current paper owner by current user
+    // and then add all current tags made by current user
+    const oldTags = loadTags(paperInformation);
+    for (let i = 0; i < oldTags.length; i++) {
+        if (oldTags[i]["owner"] == userID) {
+            var dict = { tag_id: oldTags[i]["tag_id"], paper_id: paperInformation.id, userID: userID }
+            removeTagFromPaper(dict);
+        }
+    }
+    for (let i = 0; i < currentTags.length; i++) {
+        if (currentTags[i]["owner"] == userID) {
+            var paper_id = paperInformation.id
+            var tag_id = currentTags[i]["tag_id"]
+            addTagToPaper(paper_id, tag_id, userID);
         }
     }
 
-    addTagToList = (tag, tag_id, owner) => {
-        const newTags = this.state.currentTags.slice();
-        newTags.push({ text: tag, tag_id: tag_id, owner: owner });
-        this.setState({ currentTags: newTags });
-    }
-    removeTagFromList = (index) => {
-        const newTags = this.state.currentTags.slice();
-        newTags.splice(index, 1);
-        this.setState({ currentTags: newTags });
-    }
-    findInList = (obj, currentTags) => {
-        var index = -1;
-        for (const x in currentTags) {
-            if (currentTags[x]["text"] == obj["text"] && currentTags[x]["tag_id"] == obj["tag_id"]
-                && currentTags[x]["owner"] == obj["owner"]) {
-                index = x;
-                break;
-            }
-        }
-        return index;
-    }
-
-    render() {
-        const { paperInformation, currentTags, curMetadataText } = this.state;
-        var userID = cookies.get('UserID');
-        if (cookies.get('PermLvl') > 0) userID = 0;
-
-        const doAddTag = async e => {
-            var tag = document.getElementById("tagsearch").value;
-
-            var data = tagExists(tag, cookies.get('PrefLang'), userID);
-
-            if (data.tag_id >= 0) {
-                var obj = { text: tag, tag_id: data.tag_id, owner: userID };
-                var index = this.findInList(obj, currentTags);
-                if (index === -1) {
-                    this.addTagToList(tag, data.tag_id, userID);
-                }
-                document.getElementById("paperStatus").innerHTML = "";
-            }
-            else {
-                document.getElementById("paperStatus").innerHTML = "Tag Not Found";
-            }
-
-            document.getElementById("tagsearch").value = '';
-
-            return;
-        }
-
-        const doDeleteTag = async e => {
-            var tag = document.getElementById("tagsearch").value;
-
-            var data = tagExists(tag, cookies.get('PrefLang'), userID);
-
-            if (data.tag_id >= 0) {
-                var obj = { text: tag, tag_id: data.tag_id, owner: userID };
-                var index = this.findInList(obj, currentTags);
-
-                if (index > -1) {
-                    this.removeTagFromList(index);
-                }
-
-                document.getElementById("paperStatus").innerHTML = "";
-            }
-            else {
-                document.getElementById("paperStatus").innerHTML = "Tag Not Found";
-            }
-
-            document.getElementById("tagsearch").value = '';
-            return;
-        }
-
-        const doAddPaper = async e => {
-            var title = document.getElementById("titleName").value;
-            if (title == "") {
-                document.getElementById("paperStatus").innerHTML = "Paper must include a title";
-                return;
-            }
-            var filename = document.getElementById("filename").value;
-            var url;
-
-            if (filename == "") {
-                url = "none";
-            } else {
-                url = filename;
-            }
-
-            var metadata_dict = {};
-            for (const index in field_ids) {
-                var value = document.getElementById(field_ids[index]).value;
-                if (value !== "") {
-                    metadata_dict[metadata_ids[index]] = value;
-                }
-                else {
-                    metadata_dict[metadata_ids[index]] = "";
-                }
-            }
-            metadata_dict["url"] = url;
-            metadata_dict["id"] = paperInformation.id;
-
-            var data = editPaper(metadata_dict);
-            var id = paperInformation.id;
-
-            //delete all tags from the current paper owner by current user
-            // and then add all current tags made by current user
-            const oldTags = loadTags(paperInformation);
-            for (let i = 0; i < oldTags.length; i++) {
-                if (oldTags[i]["owner"] == userID) {
-                    var dict = { tag_id: oldTags[i]["tag_id"], paper_id: paperInformation.id, userID: userID }
-                    removeTagFromPaper(dict);
-                }
-            }
-            for (let i = 0; i < currentTags.length; i++) {
-                if (currentTags[i]["owner"] == userID) {
-                    var paper_id = paperInformation.id
-                    var tag_id = currentTags[i]["tag_id"]
-                    addTagToPaper(paper_id, tag_id, userID);
-                }
-            }
-
-            if (userID == 0) {
-                for (const value in paperInformation) {
-                    if (metadata_ids.indexOf(value) !== -1) {
-                        if (paperInformation[value] != null) {
-                            var tag_data = tagExists(paperInformation[value], "met", 0);
-                            if (tag_data.tag_id >= 0) {
-                                var dict = { userID: 0, paper_id: paperInformation.id, tag_id: tag_data.tag_id }
-                                removeTagFromPaper(dict);
-                            }
-
+    if (userID == 0) {
+        for (const value in paperInformation) {
+            if (metadata_ids.indexOf(value) !== -1) {
+                if (paperInformation[value] != null) {
+                    var tag_data = tagExists(paperInformation[value], "met", 0);
+                    if (tag_data.tag_id >= 0) {
+                            var dict = { userID: 0, paper_id: paperInformation.id, tag_id: tag_data.tag_id }
+                            removeTagFromPaper(dict);
                         }
+
                     }
                 }
-
             }
 
-            if (userID == 0) {
-                //add all metadata as tags
-                for (const keyVal in metadata_dict) {
-                    if (metadata_ids.indexOf(keyVal) < 0 || metadata_dict[keyVal] === "") continue;
-                    var value = metadata_dict[keyVal];
-                    var tag_data = tagExists(value, "met", 0);
-                    var tag_id = tag_data.tag_id;
-                    if (tag_id == -1) {
+        }
 
-                        var found_index = -1;
-                        for (const index in metadata_ids) {
-                            if (metadata_ids[index] == keyVal) {
-                                found_index = index;
-                                break;
+        if (userID == 0) {
+            //add all metadata as tags
+            for (const keyVal in metadata_dict) {
+                if (metadata_ids.indexOf(keyVal) < 0 || metadata_dict[keyVal] === "") continue;
+                var value = metadata_dict[keyVal];
+                var tag_data = tagExists(value, "met", 0);
+                var tag_id = tag_data.tag_id;
+                if (tag_id == -1) {
+
+                    var found_index = -1;
+                    for (const index in metadata_ids) {
+                        if (metadata_ids[index] == keyVal) {
+                            found_index = index;
+                            break;
                             }
                         }
 
@@ -250,14 +167,149 @@ export default class EditPaper extends React.Component {
 
             document.getElementById("paperStatus").innerHTML = "Uploaded Paper";
 
+        }
+
+export default class EditPaper extends React.Component {
+    state = {
+        paperInformation: this.props.paperInformation,
+        curMetadataText: makeMetadataValues(this.props.paperInformation),
+        currentTags: loadTags(this.props.paperInformation),
+		selectedFile: "",
+		isFilePicked: false,
+    }
+
+	changeHandler = (event) => {
+		if (event.target.files[0].type != "application/pdf") {
+			document.getElementById("uploadStatus").innerHTML = "Only PDFs can be uploaded.";
+		} else {
+			this.setState({ selectedFile: event.target.files[0] });
+			this.setState({ isFilePicked: true });
+		}
+	};
+
+	removeUpload = () => {
+		this.setState({ selectedFile: "" });
+		this.setState({ isFilePicked: false });
+		document.getElementById("uploadStatus").innerHTML = "";
+		document.getElementById("fileUpload").value = "";
+	};
+
+	handleSubmission = () => {
+		if (this.state.isFilePicked) {
+			const formData = new FormData();
+
+			formData.append('file', this.state.selectedFile);
+		
+			var jsonObject;		
+
+			fetch(url, {
+				method: 'POST',
+				body: formData
+			}).then(response => response.text())
+			  .then(data => jsonObject = JSON.parse(data))
+			  .then(json => {
+			  	document.getElementById("filename").innerHTML = json.url;
+				document.getElementById("uploadStatus").innerHTML = "Uploaded " + json.url + " with status " + json.status;
+				doAddPaper(this.state.paperInformation, this.state.currentTags, this.state.curMetadataText);
+            	this.props.closeEdit(false, true);
+			  });
+		} else if (window.confirm("Are you sure you want to upload the paper without a file?")) {
+			doAddPaper(this.state.paperInformation, this.state.currentTags, this.state.curMetadataText);	
             this.props.closeEdit(false, true);
+		}
+	};
+
+    renderRedirect = () => {
+        if (cookies.get('UserID') == null) {
+            return <Redirect to='/' />
+        }
+    }
+
+    addTagToList = (tag, tag_id, owner) => {
+        const newTags = this.state.currentTags.slice();
+        newTags.push({ text: tag, tag_id: tag_id, owner: owner });
+        this.setState({ currentTags: newTags });
+    }
+    removeTagFromList = (index) => {
+        const newTags = this.state.currentTags.slice();
+        newTags.splice(index, 1);
+        this.setState({ currentTags: newTags });
+    }
+    findInList = (obj, currentTags) => {
+        var index = -1;
+        for (const x in currentTags) {
+            if (currentTags[x]["text"] == obj["text"] && currentTags[x]["tag_id"] == obj["tag_id"]
+                && currentTags[x]["owner"] == obj["owner"]) {
+                index = x;
+                break;
+            }
+        }
+        return index;
+    }
+
+	remFile = () => {
+		if (window.confirm("Are you sure you want to delete this file? This action is irreversible.")) {
+			let id = this.state.paperInformation.id;
+			let url = this.state.paperInformation.url;
+			doRemoveFile(id, url);
+            var paperInfo = this.state.paperInformation;
+            paperInfo.url = "none";
+            this.setState({ paperInformation: paperInfo });
+		}
+	}
+
+    render() {
+        console.log("Hi " + JSON.stringify(this.props.paperInformation));
+        const doAddTag = async e => {
+            var tag = document.getElementById("tagsearch").value;
+
+            var data = tagExists(tag, cookies.get('PrefLang'), userID);
+
+            if (data.tag_id >= 0) {
+                var obj = { text: tag, tag_id: data.tag_id, owner: userID };
+                var index = this.findInList(obj, this.state.currentTags);
+                if (index === -1) {
+                    this.addTagToList(tag, data.tag_id, userID);
+                }
+                document.getElementById("paperStatus").innerHTML = "";
+            }
+            else {
+                document.getElementById("paperStatus").innerHTML = "Tag Not Found";
+            }
+
+            document.getElementById("tagsearch").value = '';
+
+            return;
+        }
+
+        const doDeleteTag = async e => {
+            var tag = document.getElementById("tagsearch").value;
+
+            var data = tagExists(tag, cookies.get('PrefLang'), userID);
+
+            if (data.tag_id >= 0) {
+                var obj = { text: tag, tag_id: data.tag_id, owner: userID };
+                var index = this.findInList(obj, this.state.currentTags);
+
+                if (index > -1) {
+                    this.removeTagFromList(index);
+                }
+
+                document.getElementById("paperStatus").innerHTML = "";
+            }
+            else {
+                document.getElementById("paperStatus").innerHTML = "Tag Not Found";
+            }
+
+            document.getElementById("tagsearch").value = '';
+            return;
         }
 
 
         let metadata = [];
 
         const doUpdateArr = async (idx, event) => {
-            const nxt = curMetadataText.slice();
+            const nxt = this.state.curMetadataText.slice();
             nxt[idx] = event.target.value;
             this.setState({ curMetadataText: nxt });
         }
@@ -269,7 +321,7 @@ export default class EditPaper extends React.Component {
             var input = <input
                 className="editPaperBoxes"
                 id={field_ids[index]}
-                value={curMetadataText[index]}
+                value={this.state.curMetadataText[index]}
                 placeholder={placeholderValue}
                 disabled={cookies.get('PermLvl') < 1}
                 onChange={doUpdateArr.bind(this, index)} />
@@ -295,7 +347,7 @@ export default class EditPaper extends React.Component {
                             <div id="OtherFields">
                                 <h2 id="leftTags">Tags</h2>
                                 <input type="text" className="editPaperBoxes" id="tags" disabled
-                                    value={currentTags.map(item => item.text).join(", ")} /><br />
+                                    value={this.state.currentTags.map(item => item.text).join(", ")} /><br />
                                 <button type="button"
                                     className="editPaperBoxes"
                                     id="addTag"
@@ -307,20 +359,32 @@ export default class EditPaper extends React.Component {
                                 <input type="text" className="editPaperBoxes" id="tagsearch" /><br />
 
                                 <br /><br /><br />
+									
+								<div id="fileUploadDiv">
+								<input type="file" name="file" id="fileUpload" disabled={cookies.get('PermLvl') < 1} onChange={this.changeHandler} />
+								<input type="hidden" id="filename" />
+								{this.state.isFilePicked ? (
+									<div>
+										<p>Size: {this.state.selectedFile.size}</p>
+									</div>
+								) : (
+									<p>Select a file to show details</p>
+								)}
+								<button type="button" id="clearUploadButton" disabled={cookies.get('PermLvl') < 1} 
+                                    onClick={this.removeUpload}>Remove Upload</button>
+							</div>
 
-                                <form id="uploadForm" method="post" enctype="multipart/form-data">
-                                    Upload a file:
-								    <input type="file" name="file" id="paperFile" />
-                                    <input type="hidden" name="url" id="filename" />
-                                    <input type="submit" name="submit" id="paperSubmit" />
-                                </form>
+	
+								<div id="uploadStatus"></div>
+			
                             </div>
                             {
-                                paperInformation.url !== "none" ?
+                                this.state.paperInformation.url !== "none" ?
                                     <div>
                                         <br />
-                                        <a id="currentFile" href={fileURLBase + paperInformation.url}
-                                            target="_blank" >Current File: {paperInformation.url}</a>
+                                        <a id="currentFile" href={fileURLBase + this.state.paperInformation.url}
+                                            target="_blank" >Current File: {this.state.paperInformation.url}</a>
+										<br /><button type="button" id="removeCurrentFile" onClick={this.remFile}>Remove Current File</button>
                                     </div>
                                     : <div>
                                         <br />
@@ -331,7 +395,7 @@ export default class EditPaper extends React.Component {
                         </div>
                     </div>
                     <div id="bottomRowButtons">
-                        <button type="button" className="editSaveButtons" id="editSaveButton" onClick={doAddPaper}>Save</button>
+                        <button type="button" className="editSaveButtons" id="editSaveButton" onClick={this.handleSubmission}>Save</button>
                         <button type="button" className="editSaveButtons" id="editCancelButton"
                             onClick={() => this.props.closeEdit(false, false)}>Cancel</button>
                         <img src={trashCan} id="deletePaperButton" onClick={() => {
@@ -340,7 +404,7 @@ export default class EditPaper extends React.Component {
                             }
                             else if (window.confirm("Are you sure you want to delete this paper? This action is irreversible!")) {
                                 console.log("Deleting...");
-                                removePaper(paperInformation.id);
+                                removePaper(this.state.paperInformation.id);
                                 this.props.closeEdit(true, false);
                             }
                         }} />

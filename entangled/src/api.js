@@ -528,3 +528,18 @@ export function updateSettings(id, email, language, cookies) {
 		return null;
 	}
 }
+
+export function removeFile(id, url) {
+	var jsonPayload = '{"id":' + id + ', "url":"' + url + '"}';
+
+	var url = urlBase + '/removeFile.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
