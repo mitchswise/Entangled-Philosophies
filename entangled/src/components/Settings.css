@@ -220,3 +220,8 @@ label {
     text-decoration: bold;
     font-size: 14px;
 }
+
+#saveStatus {
+    top:80px;
+    position: relative;
+}
