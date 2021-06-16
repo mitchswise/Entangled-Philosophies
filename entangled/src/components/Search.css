@@ -30,40 +30,53 @@ div.header {
     position: relative;
 }
 
+#buttonRow {
+    height:34px;
+    width:44%;
+    position: fixed;
+    z-index: 1;
+    top:126px;
+    background-color: white;
+    border-bottom: 1px solid black;
+}
 
-#closePaperButton{
+
+
+#closePaperButton {
     height:34px;
     position: absolute;
-    top: -19px;
     left:75px;
     border-top: none !important;
     border: 1px solid black;
     margin:0;
     border-radius: 4px;
     border-top-left-radius: 0px;
+    border-bottom:none;
 
 
 }
 
-#closePaperButton:hover{
+#closePaperButton:hover {
     background-color: #ddd;
 }
 
-
-#editPaperButton{
+#editPaperButton {
     height:34px;
     position: absolute;
-    top: -19px;
     border-top: none !important;
     border: 1px solid black;
     left:-1px;
     border-radius: 4px;
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
-
+    border-bottom-left-radius: 0px;
+    border-bottom:none;
 
 }
 
+#editPaperButton:hover {
+    background-color: #ddd;;
+}
 
 #leftBox, #rightBox {
     /* display: inline-block;    */
@@ -74,186 +87,95 @@ div.header {
     margin-left: 4%;
     float: left;
     /* top:-355px; */
+    max-height:740px;
+
 }
 #rightBox {
     margin-right: 4%;
     float: right;
+    overflow-y: scroll !important;
 }
 
 #searchBody {
-    text-align: center;
     position: relative;
     width: 100%;
     height:500px;
 }
 
-#rowOne{
+#rowOne {
 width: 100%;
-max-height:80px;
-min-height:80px;
-border-bottom: 1px solid black;
-top:-10px;
+height:fit-content;
 position: relative;
-    }
-
-  
-.rowOneColumn{
-    float:left;
-    max-width:50%;
-    min-width:50%;
+padding-bottom:5px;
 }
 
-.rowOneColumn p{
-    position:relative;
+#rowOne h3 {
+padding-top:30px;
+text-align: center;
+text-decoration: underline;
 }
 
-#rowTwoMiddle{
-display: block;
-float:left;
-width:100%;
-top:-12px;
-position: relative;
-}
-
-
-#rowTwo{
-width: 100%;
-max-height:80px;
-min-height:80px;
-border-bottom: 1px dashed black;
-position: relative;
-padding-bottom:16px;
-}
-
-.rowTwoColumn{
-    float:left;
-    max-width:33.3%;
-    min-width:33.3%;
- }
-
- .rowTwoColumn p{
-     position:relative;
-     margin:0;
-     top:-10px;
- }
-
- #rowThreeMiddle{
-     position: relative;
- }
-
-
- #rowThree{
-    width: 100%;
-    max-height:140px;
-    min-height:140px;
-    border-bottom: 1px Dashed black;
-    margin-bottom:20px;
-
-    }
-    
-      
-    .rowThreeColumn{
-        float:left;
-        max-width:100%;
-        min-width:100%;
-        text-align: center;
-        
-        
-    }
-
-    
-    .rowThreeColumn p{
-        position:relative;
-        margin:5px;
-        top:50px;
-    }
-
-    #rowFourMiddle{
-        position: relative;
-        top:0px;
-    }
-
-    #rowFour{
-        width: 100%;
-        max-height:150px;
-        min-height:150px;
-        border-bottom: 1px solid black;
-        border-top: 1px solid black;
-        padding-bottom:10px;
-    }
-
-    .rowFourColumn{
-        float:left;
-        max-width:33.3%;
-        min-width:33.3%;
-    }
-    
-    .rowFourColumn p{
-        position:relative;
-        top:-14px;
-    }
-
-    #rowFourOne{
-        width:100%;
-        position: relative;
-    }
-
-#rowFourTwo{
+#rowOne p {
+    border-bottom:1px solid black;
     width:100%;
-    position: relative;
-    top:12px;
 }
 
-    #rowFiveMiddle{
+#rowTwo h3, #rowThree h3, #rowFour h3 {
+    margin-top:11.82px;
+    margin-bottom:18.720px;
+}
+
+
+#rowTwo {
+    width: 100%;
+    height:fit-content;
+    position: relative;
+    padding-bottom:5px;
+    }
+    
+    #rowTwo h3 {
+    text-align: center;
+    text-decoration: underline;
+    }
+
+    #rowTwo p {
+        border-bottom:1px solid black;
+        width:100%;
+    }
+
+    #rowThree {
+        width: 100%;
+        height:fit-content;
         position: relative;
+        padding-bottom:5px;
+        }
+        
+        #rowThree h3 {
+        text-align: center;
+        text-decoration: underline;
+        }
+    
+        #rowThree p {
+            border-bottom:1px solid black;
+            width:100%;
     }
    
-   
-    #rowFive{
-       width: 100%;
-       max-height:50px;
-       min-height:50px;
-       border-bottom: 1px solid black;
-   
-       }
-       
-         
-.rowFiveColumn{
-    float:left;
-    max-width:25%;
-    min-width:25%;
-    text-align: center;
-    max-height:51px;
-}
-   
-       
-       .rowFiveColumn p{
-           position:relative;
-           margin:5px;
-       }
-    
-        .rowSixColumn{
-            float:left;
-            max-width:50%;
-            min-width:50%;
-            text-align: center;
-        }
 
-        .rowSixColumn button{
-            position: relative;
-            top:20px;
+     #rowFour {
+        width: 100%;
+        height:fit-content;
+        position: relative;
+        padding-bottom:5px;
+        }
+        
+        #rowFour h3 {
+        text-align: center;
+        text-decoration: underline;
         }
     
-        #tagsAdminList{
-            left:10px;
-        }
+        #rowFour p {
+            border-bottom:1px solid black;
+            width:100%;
+    }
 
-        #minusButton{
-            position: relative;
-            left:5px;
-        }
-
-        #tagInputButton{
-            position: relative;
-            left:10px;
-        }
+    
