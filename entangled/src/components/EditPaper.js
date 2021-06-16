@@ -175,7 +175,7 @@ export default class EditPaper extends React.Component {
         curMetadataText: makeMetadataValues(this.props.paperInformation),
         currentTags: loadTags(this.props.paperInformation),
 		selectedFile: "",
-		isFilePicked: false
+		isFilePicked: false,
     }
 
 	changeHandler = (event) => {
@@ -252,6 +252,9 @@ export default class EditPaper extends React.Component {
 			let id = this.state.paperInformation.id;
 			let url = this.state.paperInformation.url;
 			doRemoveFile(id, url);
+            var paperInfo = this.state.paperInformation;
+            paperInfo.url = "none";
+            this.setState({ paperInformation: paperInfo });
 		}
 	}
 
@@ -358,17 +361,17 @@ export default class EditPaper extends React.Component {
                                 <br /><br /><br />
 									
 								<div id="fileUploadDiv">
-								<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
+								<input type="file" name="file" id="fileUpload" disabled={cookies.get('PermLvl') < 1} onChange={this.changeHandler} />
 								<input type="hidden" id="filename" />
 								{this.state.isFilePicked ? (
-									// <></>
 									<div>
 										<p>Size: {this.state.selectedFile.size}</p>
 									</div>
 								) : (
 									<p>Select a file to show details</p>
 								)}
-								<button type="button" id="clearUploadButton" onClick={this.removeUpload}>Remove Upload</button>
+								<button type="button" id="clearUploadButton" disabled={cookies.get('PermLvl') < 1} 
+                                    onClick={this.removeUpload}>Remove Upload</button>
 							</div>
 
 	
