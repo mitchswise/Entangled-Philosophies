@@ -7,6 +7,7 @@ import EditPaper from './EditPaper.js';
 import { parseCustomQuery, translateToSQL } from './SQLTranslate.js';
 import './Search.css';
 
+
 const columnsTags = [
     {
         Header: "Name",
@@ -187,10 +188,10 @@ export default class Search extends React.Component {
 
     handleQuerySave = (queryName) => {
         var owner = cookies.get('UserID');
-        
+
         var query_text = undefined, query_type = undefined;
 
-        if(this.state.lastQueryTypeUsed === 0) {
+        if (this.state.lastQueryTypeUsed === 0) {
             query_text = JSON.stringify(this.state.filterState);
             query_type = "JSON"; //will need to change when we add advanced queries
         }
@@ -247,145 +248,78 @@ export default class Search extends React.Component {
 
     viewPaper = () => {
         const { paperInformation } = this.state;
-        return <div>
-            
+        return <div id="rightBoxWrapper">
+            <div id="buttonRow">
+                <button id="editPaperButton" onClick={() => { this.setState({ openEditPaper: true }) }}
+                    disabled={!cookies.get('UserID')}>Edit Paper</button>
+                <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
+            </div>
             <div class="rightBoxPaperInfo">
-            <button id="editPaperButton" onClick={() => { this.setState({ openEditPaper: true }) }}
-                disabled={!cookies.get('UserID')}>Edit Paper</button>
-            <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
-
-            <div id="rowOneMiddle">  
-                <h3 id="rowOneGenInfo">General Information</h3>
-                </div> 
 
                 <div id="rowOne">
 
-                 <div class="rowOneColumn">
-                    <p ><b>Title:</b> {paperInformation.title}</p>
-                 </div>
+                    <h3>General Information</h3>
 
-                 <div class="rowOneColumn">
-                    <p ><b>Author:</b> {paperInformation.author}</p>
-                 </div>
+                    <p><b>Title:</b> {paperInformation.title}</p>
+
+                    <p><b>Author:</b> {paperInformation.author}</p>
 
                 </div>
 
-                <div id="rowTwoMiddle">  
-                <h3 id="rowOneGenInfo">Description Information</h3>
-                </div> 
+                <div id="rowTwo">
 
+                    <h3>Description Information</h3>
 
-             
-            <div id="rowTwo">
-
-                <div class="rowTwoColumn">
                     <p ><b>Subject:</b> {paperInformation.subject}</p>
-                </div>
 
-                <div class="rowTwoColumn">
-                     <p ><b>Type/Genre:</b> {paperInformation.type}</p>
-                </div>
+                    <p ><b>Type/Genre:</b> {paperInformation.type}</p>
 
-                <div class="rowTwoColumn">
-                     <p ><b>Coverage:</b> {paperInformation.coverage}</p>
-                </div>
+                    <p ><b>Coverage:</b> {paperInformation.coverage}</p>
 
-            </div>
-
-             
-            <div id="rowThree">
-
-                <div class="rowThreeColumn">
                     <p><b>Description</b> {paperInformation.description}</p>
+
                 </div>
 
-            </div>
+                <div id="rowThree">
 
-            <div id="rowFour">
-
-                <div id="rowFourMiddle">
                     <h3>Identifying Information</h3>
-                </div>
 
-            <div id="rowFourOne">
-                <div class="rowFourColumn">
-                    <p ><b>Date:</b> {paperInformation.date}</p>
-                </div>
+                    <p><b>Date:</b> {paperInformation.date}</p>
 
-                <div class="rowFourColumn">
-                     <p ><b>Format:</b> {paperInformation.format}</p>
-                </div>
+                    <p ><b>Format:</b> {paperInformation.format}</p>
 
-                <div class="rowFourColumn">
-                     <p ><b>Language:</b> {paperInformation.language}</p>
-                </div>
-            </div>
+                    <p ><b>Language:</b> {paperInformation.language}</p>
 
-            <div id="rowFourTwo">
-                <div class="rowFourColumn">
                     <p ><b>ISBN:</b> {paperInformation.isbn}</p>
-                </div>
 
-                <div class="rowFourColumn">
-                     <p ><b>URL:</b> {paperInformation.paper_url}</p>
-                </div>
+                    <p ><b>URL:</b> {paperInformation.paper_url}</p>
 
-                <div class="rowFourColumn">
-                     <p ><b>File Link:</b> {
+                    <p ><b>File Link:</b> {
                         paperInformation.url !== "none" ?
-                        <a id="currentFile" href={fileURLBase + paperInformation.url}
-                            target="_blank" >{paperInformation.url}</a>
-                        :
-                        "None"
-                     }</p>
-                     
+                            <a id="currentFile" href={fileURLBase + paperInformation.url}
+                                target="_blank" >{paperInformation.url}</a>
+                            :
+                            "None"
+                    }</p>
+
                 </div>
-            </div>
 
-            </div>
+                <div id="rowFour">
 
+                    <h3>Legal Information</h3>
 
-            <div id="rowFiveMiddle">  
-                <h3 id="rowFiveLegalInfo">Legal Information</h3>
-                </div> 
-
-
-             
-            <div id="rowFive">
-
-                <div class="rowFiveColumn">
                     <p ><b>Source:</b> {paperInformation.source}</p>
-                </div>
 
-                <div class="rowFiveColumn">
-                     <p ><b>Publisher:</b> {paperInformation.publisher}</p>
-                </div>
+                    <p ><b>Publisher:</b> {paperInformation.publisher}</p>
 
-                <div class="rowFiveColumn">
-                     <p ><b>Rights:</b> {paperInformation.rights}</p>
-                </div>
+                    <p ><b>Rights:</b> {paperInformation.rights}</p>
 
-                <div class="rowFiveColumn">
-                     <p ><b>Relation:</b> {paperInformation.relation}</p>
+                    <p id="rowFourRelation"><b>Relation:</b> {paperInformation.relation}</p>
+
                 </div>
 
             </div>
 
-
-            <div class="rowSixColumn">
-                <button type="button">Tags User List</button>
-                <button id="tagsAdminList" type="button">Tags Admin List</button>
-            </div>
-
-            <div class="rowSixColumn">
-                <button type="button">+</button>
-                <button id="minusButton" type="button">-</button>
-                <button id="tagInputButton" type="button">Tag Input</button>
-            </div>
-
-         </div>
-            
-           
         </div>
     }
 
