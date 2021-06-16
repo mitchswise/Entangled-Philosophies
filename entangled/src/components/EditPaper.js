@@ -67,7 +67,7 @@ const doAddPaper = async (paperInformation, currentTags, curMetadataText) => {
     var url;
 
     if (filename == "") {
-        url = "none";
+        url = paperInformation.url;
     } else {
         url = filename;
     }
@@ -256,7 +256,7 @@ export default class EditPaper extends React.Component {
 	}
 
     render() {
-
+        console.log("Hi " + JSON.stringify(this.props.paperInformation));
         const doAddTag = async e => {
             var tag = document.getElementById("tagsearch").value;
 
@@ -357,9 +357,11 @@ export default class EditPaper extends React.Component {
 
                                 <br /><br /><br />
 									
+								<div id="fileUploadDiv">
 								<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
 								<input type="hidden" id="filename" />
 								{this.state.isFilePicked ? (
+									// <></>
 									<div>
 										<p>Size: {this.state.selectedFile.size}</p>
 									</div>
@@ -367,6 +369,8 @@ export default class EditPaper extends React.Component {
 									<p>Select a file to show details</p>
 								)}
 								<button type="button" id="clearUploadButton" onClick={this.removeUpload}>Remove Upload</button>
+							</div>
+
 	
 								<div id="uploadStatus"></div>
 			
@@ -377,7 +381,7 @@ export default class EditPaper extends React.Component {
                                         <br />
                                         <a id="currentFile" href={fileURLBase + this.state.paperInformation.url}
                                             target="_blank" >Current File: {this.state.paperInformation.url}</a>
-										<button type="button" id="removeCurrentFile" onClick={this.remFile}>Remove Current File</button>
+										<br /><button type="button" id="removeCurrentFile" onClick={this.remFile}>Remove Current File</button>
                                     </div>
                                     : <div>
                                         <br />
