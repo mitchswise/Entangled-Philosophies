@@ -23,8 +23,8 @@
         return;
     }
 
-    $tag_to_owner = array();
-    
+    $tag_to_public_owner = array();
+    $tag_to_private_owner = array();
     
     $query = "SELECT text, tag_id from tags_translation WHERE ";
     $tags_appended = 0;
@@ -32,12 +32,8 @@
     while($row = $result->fetch_assoc()) {
         $tag = $row["tag_id"];
         $owner = $row["owner"];
-        if(array_key_exists($tag, $tag_to_owner)) {
-            if($owner > 0) $tag_to_owner[$tag] = $owner;
-        }
-        else {
-            $tag_to_owner[$tag] = $owner;
-        }
+        if($owner == 0) $tag_to_public_owner[$tag] = $owner;
+        else $tag_to_private_owner[$tag] = $owner;
         
         if($tags_appended > 0) $query = $query . " OR ";
         
@@ -54,7 +50,12 @@
     
     $arr = array();
     while($row = $result->fetch_assoc()) {
-        $arr[] =  array('text' => $row["text"], 'tag_id' => $row["tag_id"], 'owner' => $tag_to_owner[$row["tag_id"]]);
+        if(array_key_exists($row["tag_id"], $tag_to_public_owner)) {
+            $arr[] =  array('text' => $row["text"], 'tag_id' => $row["tag_id"], 'owner' => $tag_to_public_owner[$row["tag_id"]]);
+        }
+        if(array_key_exists($row["tag_id"], $tag_to_private_owner)) {
+            $arr[] =  array('text' => $row["text"], 'tag_id' => $row["tag_id"], 'owner' => $tag_to_private_owner[$row["tag_id"]]);
+        }
     }
     echo '{"tags":' . json_encode($arr) . '}';
 ?>

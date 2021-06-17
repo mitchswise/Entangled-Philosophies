@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Filter from './Filter.js';
-import { cookies, getTags, getUserInfo, sqlSearch, handleHistory, saveQuery, fileURLBase } from '../api.js'
+import { cookies, getTags, tagExists, sqlSearch, handleHistory, saveQuery, fileURLBase,
+    removeTagFromPaper, addTagToPaper } from '../api.js'
+import { loadTags } from './EditPaper.js';
 import Table from "./Table.js";
 import QueryPopup from './saveQueryPopup.js';
 import EditPaper from './EditPaper.js';
@@ -162,7 +164,9 @@ export default class Search extends React.Component {
         paperInformation: undefined,
         openEditPaper: false,
         customQuery: this.getExistingCustomQuery(),
-        lastQueryTypeUsed: 0
+        lastQueryTypeUsed: 0,
+        publicTags: [],
+        privateTags: []
     }
 
     updateHistory = (newFitlerState, userID) => {
@@ -241,17 +245,67 @@ export default class Search extends React.Component {
 
     loadPaper = (paperInfo) => {
         this.setState((prevState) => ({ paperInformation: paperInfo }));
+        var currentTags = loadTags(paperInfo);
+        this.setState({ publicTags: currentTags.filter(item => item.owner == 0) });
+        this.setState({ privateTags: currentTags.filter(item => item.owner != 0) });
+        
     }
     closePaper = () => {
         this.setState((prevState) => ({ paperInformation: undefined }));
     }
 
-    viewPaper = () => {
+    updatePrivateTagList = (privateTags, adding) => {
         const { paperInformation } = this.state;
+        var newTagText = document.getElementById("addPaperTags").value;
+        var userID = cookies.get('UserID');
+        var validTag = tagExists(newTagText, cookies.get('PrefLang'), userID);
+        if(validTag.tag_id < 0) {
+            document.getElementById("addPaperTags").value = "";
+            return;
+        }
+        
+        var newTag = { text: newTagText, owner: userID, tag_id:validTag.tag_id };
+        
+        var index = -1;
+        for (const x in privateTags) {
+            if (privateTags[x]["text"] == newTag["text"] && privateTags[x]["tag_id"] == newTag["tag_id"]
+            && privateTags[x]["owner"] == newTag["owner"]) {
+                index = x;
+                break;
+            }
+        }
+        
+        var newPrivateTags = privateTags.slice();
+        
+        if(adding) {
+            if(index == -1) {
+                newPrivateTags.push(newTag);
+                addTagToPaper(paperInformation.id, newTag.tag_id, userID);
+            }
+        }
+        else {
+            if(index != -1) {
+                newPrivateTags.splice(index, 1);
+                var dict = { paper_id: paperInformation.id, tag_id: newTag.tag_id, userID:userID };
+                removeTagFromPaper(dict);
+            }
+        }
+        
+        this.setState({ privateTags: newPrivateTags });
+        document.getElementById("addPaperTags").value = "";
+    }
+
+    viewPaper = () => {
+        const { paperInformation, privateTags, publicTags } = this.state;
+        var userID = 0;
+        if(cookies.get('UserID') && cookies.get('PermLvl') == 0) {
+            userID = cookies.get('UserID');
+        }
+
         return <div id="rightBoxWrapper">
             <div id="buttonRow">
                 <button id="editPaperButton" onClick={() => { this.setState({ openEditPaper: true }) }}
-                    disabled={!cookies.get('UserID')}>Edit Paper</button>
+                    disabled={!cookies.get('UserID') || cookies.get('PermLvl') == 0}>Edit Paper</button>
                 <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
             </div>
             <div class="rightBoxPaperInfo">
@@ -315,6 +369,37 @@ export default class Search extends React.Component {
                     <p ><b>Rights:</b> {paperInformation.rights}</p>
 
                     <p id="rowFourRelation"><b>Relation:</b> {paperInformation.relation}</p>
+
+                </div>
+
+                <div id="rowFive">
+
+                    <h3>Tags</h3>
+
+                    {
+                        userID != 0 ?
+                            <div id="searchTagsContainer">
+                            
+                                <div id="searchTagsDisplay" >
+                                    <h4>Public</h4>
+                                    <input value={publicTags.map(item => item.text).join(", ")} disabled />
+                                    <h4>Private</h4>
+                                    <input value={privateTags.map(item => item.text).join(", ")} disabled />
+                                </div>
+
+                                <div id="searchTagsInput" >
+                                    <button onClick={() => this.updatePrivateTagList(privateTags, true)}  id="addTagSearchBtnText">+</button>
+                                    <button onClick={() => this.updatePrivateTagList(privateTags, false)} id="addTagSearchBtnText">-</button>
+                                    <input type="text" placeholder="Enter a valid tag" id="addPaperTags" />
+                                </div>
+
+                            </div>
+                        :
+                        <div id="searchTagsDisplay" >
+                            <h4>Public</h4>
+                            <input value={publicTags.map(item => item.text).join(", ")} disabled />
+                        </div>
+                    }
 
                 </div>
 

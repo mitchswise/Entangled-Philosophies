@@ -40,11 +40,14 @@ function makeMetadataValues(paperInformation) {
     return curMetadataText;
 }
 
-function loadTags(paperInformation) {
-    var userID = cookies.get('UserID');
-    var prefLang = cookies.get('PrefLang');
-    var paperID = paperInformation.id;
-    if (cookies.get('PermLvl') > 0) userID = 0;
+export function loadTags(paperInformation) {
+    var userID = 0, prefLang = "eng", paperID = paperInformation.id;
+    if(cookies.get('UserID') && cookies.get('PermLvl') == 0) {
+        userID = cookies.get('UserID');
+    }
+    if(cookies.get('PrefLang')) {
+        prefLang = cookies.get('PrefLang');
+    }
 
     var dict = { userID: userID, language: prefLang, paperID: paperID };
     var data = getPapersTag(dict);
