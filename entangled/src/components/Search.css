@@ -103,16 +103,16 @@ div.header {
 }
 
 #rowOne {
-width: 100%;
-height:fit-content;
-position: relative;
-padding-bottom:5px;
+    width: 100%;
+    height:fit-content;
+    position: relative;
+    padding-bottom:5px;
 }
 
 #rowOne h3 {
-padding-top:30px;
-text-align: center;
-text-decoration: underline;
+    padding-top:30px;
+    text-align: center;
+    text-decoration: underline;
 }
 
 #rowOne p {
@@ -131,51 +131,111 @@ text-decoration: underline;
     height:fit-content;
     position: relative;
     padding-bottom:5px;
-    }
-    
-    #rowTwo h3 {
+}
+
+#rowTwo h3 {
     text-align: center;
     text-decoration: underline;
-    }
+}
 
-    #rowTwo p {
-        border-bottom:1px solid black;
-        width:100%;
-    }
+#rowTwo p {
+    border-bottom:1px solid black;
+    width:100%;
+}
 
-    #rowThree {
-        width: 100%;
-        height:fit-content;
-        position: relative;
-        padding-bottom:5px;
-        }
-        
-        #rowThree h3 {
-        text-align: center;
-        text-decoration: underline;
-        }
-    
-        #rowThree p {
-            border-bottom:1px solid black;
-            width:100%;
-    }
-   
+#rowThree {
+    width: 100%;
+    height:fit-content;
+    position: relative;
+    padding-bottom:5px;
+}
 
-     #rowFour {
-        width: 100%;
-        height:fit-content;
-        position: relative;
-        padding-bottom:5px;
-        }
-        
-        #rowFour h3 {
-        text-align: center;
-        text-decoration: underline;
-        }
-    
-        #rowFour p {
-            border-bottom:1px solid black;
-            width:100%;
-    }
+#rowThree h3 {
+    text-align: center;
+    text-decoration: underline;
+}
 
-    
+#rowThree p {
+    border-bottom:1px solid black;
+    width:100%;
+}
+
+
+#rowFour {
+    width: 100%;
+    height:fit-content;
+    position: relative;
+    padding-bottom:5px;
+}
+
+#rowFour h3 {
+    text-align: center;
+    text-decoration: underline;
+}
+
+#rowFour p {
+    border-bottom:1px solid black;
+    width:100%;
+}
+
+#rowFive {
+    width: 100%;
+    height:fit-content;
+    position: relative;
+    padding-bottom:5px;
+}
+
+#rowFive h3 {
+    text-align: center;
+    text-decoration: underline;
+}
+
+#rowFive button {
+    height: 27px;
+    width: 26px;
+    background-color: #f74135;
+    border-color: black;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+    margin-left: 3px;
+}
+
+#addTagSearchBtnText {
+    vertical-align:middle;
+    bottom:0px;
+    position: relative;
+    color: white;
+    text-decoration: bold;
+    font-size: 14px;
+}
+
+#addPaperTags {
+    margin-left: 3px;
+    height: 21px;
+}
+
+#searchTagsContainer {
+    display: grid;
+}
+
+#searchTagsDisplay {
+    display: flex;
+    flex-direction: "row";
+    align-items: center;
+    justify-content: center;
+}
+
+#searchTagsInput {
+    display: flex;
+    flex-direction: "row";
+    align-items: center;
+    justify-content: center;
+}
+
+#searchTagsDisplay h4 {
+    margin-left: 4%;
+    margin-right: 1%;
+}
