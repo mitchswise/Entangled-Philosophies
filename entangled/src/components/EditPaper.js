@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import './EditPaper.css';
 import trashCan from '../images/trash.png';
@@ -9,7 +9,7 @@ import {
     removePaper, removeFile
 } from '../api.js';
 
-var tagsList = [];	
+var tagsList = [];
 var tagIDs = [];
 var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/uploadPaper.php';
 var userID = cookies.get('UserID');
@@ -42,10 +42,10 @@ function makeMetadataValues(paperInformation) {
 
 export function loadTags(paperInformation) {
     var userID = 0, prefLang = "eng", paperID = paperInformation.id;
-    if(cookies.get('UserID') && cookies.get('PermLvl') == 0) {
+    if (cookies.get('UserID') && cookies.get('PermLvl') == 0) {
         userID = cookies.get('UserID');
     }
-    if(cookies.get('PrefLang')) {
+    if (cookies.get('PrefLang')) {
         prefLang = cookies.get('PrefLang');
     }
 
@@ -56,14 +56,14 @@ export function loadTags(paperInformation) {
 }
 
 function doRemoveFile(id, url) {
-	var data = removeFile(id, url);
-	console.log(data);
+    var data = removeFile(id, url);
+    console.log(data);
 }
 
 const doAddPaper = async (paperInformation, currentTags, curMetadataText) => {
-   	var title = document.getElementById("titleName").value;
+    var title = document.getElementById("titleName").value;
     if (title == "") {
-    	document.getElementById("paperStatus").innerHTML = "Paper must include a title";
+        document.getElementById("paperStatus").innerHTML = "Paper must include a title";
         return;
     }
     var filename = document.getElementById("filename").innerHTML;
@@ -114,113 +114,113 @@ const doAddPaper = async (paperInformation, currentTags, curMetadataText) => {
                 if (paperInformation[value] != null) {
                     var tag_data = tagExists(paperInformation[value], "met", 0);
                     if (tag_data.tag_id >= 0) {
-                            var dict = { userID: 0, paper_id: paperInformation.id, tag_id: tag_data.tag_id }
-                            removeTagFromPaper(dict);
-                        }
-
+                        var dict = { userID: 0, paper_id: paperInformation.id, tag_id: tag_data.tag_id }
+                        removeTagFromPaper(dict);
                     }
+
                 }
             }
-
         }
 
-        if (userID == 0) {
-            //add all metadata as tags
-            for (const keyVal in metadata_dict) {
-                if (metadata_ids.indexOf(keyVal) < 0 || metadata_dict[keyVal] === "") continue;
-                var value = metadata_dict[keyVal];
-                var tag_data = tagExists(value, "met", 0);
-                var tag_id = tag_data.tag_id;
-                if (tag_id == -1) {
+    }
 
-                    var found_index = -1;
-                    for (const index in metadata_ids) {
-                        if (metadata_ids[index] == keyVal) {
-                            found_index = index;
-                            break;
-                            }
-                        }
+    if (userID == 0) {
+        //add all metadata as tags
+        for (const keyVal in metadata_dict) {
+            if (metadata_ids.indexOf(keyVal) < 0 || metadata_dict[keyVal] === "") continue;
+            var value = metadata_dict[keyVal];
+            var tag_data = tagExists(value, "met", 0);
+            var tag_id = tag_data.tag_id;
+            if (tag_id == -1) {
 
-                        if (found_index != -1) {
-                            var curCategory = metadata_categories[found_index];
-                            var result = addMetadataTag(curCategory, "eng", value, -1);
-
-                            tag_data = tagExists(value, "met", 0);
-                            tag_id = tag_data.tag_id;
-                        }
-                        else {
-                            console.log("error?");
-                        }
-
+                var found_index = -1;
+                for (const index in metadata_ids) {
+                    if (metadata_ids[index] == keyVal) {
+                        found_index = index;
+                        break;
                     }
-
-                    if (tag_id == -1 || tag_id == undefined) {
-                        console.log("Error getting metadata tag " + value + " key = " + keyVal);
-                        continue;
-                    }
-
-                    data = addTagToPaper(id, tag_id, 0);
                 }
+
+                if (found_index != -1) {
+                    var curCategory = metadata_categories[found_index];
+                    var result = addMetadataTag(curCategory, "eng", value, -1);
+
+                    tag_data = tagExists(value, "met", 0);
+                    tag_id = tag_data.tag_id;
+                }
+                else {
+                    console.log("error?");
+                }
+
             }
 
-            for (const index in field_ids) {
-                document.getElementById(field_ids[index]).innerHTML = "";
+            if (tag_id == -1 || tag_id == undefined) {
+                console.log("Error getting metadata tag " + value + " key = " + keyVal);
+                continue;
             }
-            document.getElementById("filename").innerHTML = "";
 
-            document.getElementById("paperStatus").innerHTML = "Uploaded Paper";
-
+            data = addTagToPaper(id, tag_id, 0);
         }
+    }
+
+    for (const index in field_ids) {
+        document.getElementById(field_ids[index]).innerHTML = "";
+    }
+    document.getElementById("filename").innerHTML = "";
+
+    document.getElementById("paperStatus").innerHTML = "Uploaded Paper";
+
+}
 
 export default class EditPaper extends React.Component {
     state = {
         paperInformation: this.props.paperInformation,
         curMetadataText: makeMetadataValues(this.props.paperInformation),
         currentTags: loadTags(this.props.paperInformation),
-		selectedFile: "",
-		isFilePicked: false,
+        selectedFile: "",
+        isFilePicked: false,
     }
 
-	changeHandler = (event) => {
-		if (event.target.files[0].type != "application/pdf") {
-			document.getElementById("uploadStatus").innerHTML = "Only PDFs can be uploaded.";
-		} else {
-			this.setState({ selectedFile: event.target.files[0] });
-			this.setState({ isFilePicked: true });
-		}
-	};
+    changeHandler = (event) => {
+        if (event.target.files[0].type != "application/pdf") {
+            document.getElementById("uploadStatus").innerHTML = "Only PDFs can be uploaded.";
+        } else {
+            this.setState({ selectedFile: event.target.files[0] });
+            this.setState({ isFilePicked: true });
+        }
+    };
 
-	removeUpload = () => {
-		this.setState({ selectedFile: "" });
-		this.setState({ isFilePicked: false });
-		document.getElementById("uploadStatus").innerHTML = "";
-		document.getElementById("fileUpload").value = "";
-	};
+    removeUpload = () => {
+        this.setState({ selectedFile: "" });
+        this.setState({ isFilePicked: false });
+        document.getElementById("uploadStatus").innerHTML = "";
+        document.getElementById("fileUpload").value = "";
+    };
 
-	handleSubmission = () => {
-		if (this.state.isFilePicked) {
-			const formData = new FormData();
+    handleSubmission = () => {
+        if (this.state.isFilePicked) {
+            const formData = new FormData();
 
-			formData.append('file', this.state.selectedFile);
-		
-			var jsonObject;		
+            formData.append('file', this.state.selectedFile);
 
-			fetch(url, {
-				method: 'POST',
-				body: formData
-			}).then(response => response.text())
-			  .then(data => jsonObject = JSON.parse(data))
-			  .then(json => {
-			  	document.getElementById("filename").innerHTML = json.url;
-				document.getElementById("uploadStatus").innerHTML = "Uploaded " + json.url + " with status " + json.status;
-				doAddPaper(this.state.paperInformation, this.state.currentTags, this.state.curMetadataText);
-            	this.props.closeEdit(false, true);
-			  });
-		} else if (window.confirm("Are you sure you want to upload the paper without a file?")) {
-			doAddPaper(this.state.paperInformation, this.state.currentTags, this.state.curMetadataText);	
+            var jsonObject;
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            }).then(response => response.text())
+                .then(data => jsonObject = JSON.parse(data))
+                .then(json => {
+                    document.getElementById("filename").innerHTML = json.url;
+                    document.getElementById("uploadStatus").innerHTML = "Uploaded " + json.url + " with status " + json.status;
+                    doAddPaper(this.state.paperInformation, this.state.currentTags, this.state.curMetadataText);
+                    this.props.closeEdit(false, true);
+                });
+        } else if (window.confirm("Are you sure you want to upload the paper without a file?")) {
+            doAddPaper(this.state.paperInformation, this.state.currentTags, this.state.curMetadataText);
             this.props.closeEdit(false, true);
-		}
-	};
+        }
+    };
 
     renderRedirect = () => {
         if (cookies.get('UserID') == null) {
@@ -250,16 +250,16 @@ export default class EditPaper extends React.Component {
         return index;
     }
 
-	remFile = () => {
-		if (window.confirm("Are you sure you want to delete this file? This action is irreversible.")) {
-			let id = this.state.paperInformation.id;
-			let url = this.state.paperInformation.url;
-			doRemoveFile(id, url);
+    remFile = () => {
+        if (window.confirm("Are you sure you want to delete this file? This action is irreversible.")) {
+            let id = this.state.paperInformation.id;
+            let url = this.state.paperInformation.url;
+            doRemoveFile(id, url);
             var paperInfo = this.state.paperInformation;
             paperInfo.url = "none";
             this.setState({ paperInformation: paperInfo });
-		}
-	}
+        }
+    }
 
     render() {
         console.log("Hi " + JSON.stringify(this.props.paperInformation));
@@ -362,24 +362,24 @@ export default class EditPaper extends React.Component {
                                 <input type="text" className="editPaperBoxes" id="tagsearch" /><br />
 
                                 <br /><br /><br />
-									
-								<div id="fileUploadDiv">
-								<input type="file" name="file" id="fileUpload" disabled={cookies.get('PermLvl') < 1} onChange={this.changeHandler} />
-								<input type="hidden" id="filename" />
-								{this.state.isFilePicked ? (
-									<div>
-										<p>Size: {this.state.selectedFile.size}</p>
-									</div>
-								) : (
-									<p>Select a file to show details</p>
-								)}
-								<button type="button" id="clearUploadButton" disabled={cookies.get('PermLvl') < 1} 
-                                    onClick={this.removeUpload}>Remove Upload</button>
-							</div>
 
-	
-								<div id="uploadStatus"></div>
-			
+                                <div id="fileEditDiv">
+                                    <input type="file" name="file" id="fileUpload" disabled={cookies.get('PermLvl') < 1} onChange={this.changeHandler} />
+                                    <input type="hidden" id="filename" />
+                                    {this.state.isFilePicked ? (
+                                        <div>
+                                            <p>Size: {this.state.selectedFile.size}</p>
+                                        </div>
+                                    ) : (
+                                        <p>Select a file to show details</p>
+                                    )}
+                                    <button type="button" id="clearUploadButton" disabled={cookies.get('PermLvl') < 1}
+                                        onClick={this.removeUpload}>Remove Upload</button>
+                                </div>
+
+
+                                <div id="uploadStatus"></div>
+
                             </div>
                             {
                                 this.state.paperInformation.url !== "none" ?
@@ -387,7 +387,7 @@ export default class EditPaper extends React.Component {
                                         <br />
                                         <a id="currentFile" href={fileURLBase + this.state.paperInformation.url}
                                             target="_blank" >Current File: {this.state.paperInformation.url}</a>
-										<br /><button type="button" id="removeCurrentFile" onClick={this.remFile}>Remove Current File</button>
+                                        <br /><button type="button" id="removeCurrentFile" onClick={this.remFile}>Remove Current File</button>
                                     </div>
                                     : <div>
                                         <br />
