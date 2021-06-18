@@ -115,7 +115,7 @@ class ParseNode {
 var parseIndex = 0;
 
 export function parseSubsegment(equation, userID) {
-    console.log("Running...");
+    // console.log("Running...");
     var node = new ParseNode();
     var expectingClose = false;
 
@@ -277,7 +277,11 @@ export function parseSubsegment(equation, userID) {
 
 export function parseCustomQuery(equation, userID) {
     parseIndex = 0;
-    var result = {errorMessage:undefined, query:undefined};
+    var result = {errorMessage:undefined, query:undefined, 
+        display_query: undefined, original_input: equation};
+    var initial_equation = equation;
+
+    equation = "(" + equation + ")";
 
     //clean out unnecessary spaces
     var newExpression = "";
@@ -309,7 +313,7 @@ export function parseCustomQuery(equation, userID) {
 
     equation = newExpression;
 
-    console.log("!NewEquation " + equation);
+    // console.log("!NewEquation " + equation);
 
     //check for malformed expression
     var tagIndex = 0, lastSeen = -1;
@@ -416,6 +420,24 @@ export function parseCustomQuery(equation, userID) {
         }
     }
 
+    //set up display mode of the expression
+    var display_query = "";
+    for(let i = 0; i < initial_equation.length; i++) {
+        if(initial_equation[i] === '`') {
+            var j = i+1;
+            while(j < initial_equation.length && initial_equation[j] != '`') j++;
+            var actualTag = initial_equation.substring(i+1, j);
+
+            display_query += '`' + tagToInt[actualTag].toString() + '`';
+            i = j;
+        }
+        else {
+            display_query += initial_equation[i];
+        }
+    }
+
+    result.display_query = display_query;
+
     newExpression = "";
     for (let i = 0; i < equation.length; i++) {
         if (equation[i] === '`') {
@@ -432,7 +454,7 @@ export function parseCustomQuery(equation, userID) {
     }
 
     equation = newExpression;
-    console.log("Converted: " + equation);
+    // console.log("Converted: " + equation);
 
     var x = parseSubsegment(equation, userID);
     result.errorMessage = x.errorMessage;
@@ -441,7 +463,4 @@ export function parseCustomQuery(equation, userID) {
 
     result.query = x.finalSQL;
     return result;
-    console.log("ERROR: " + x.errorMessage)
-    console.log(x.finalSQL);
-    console.log("FIN");
 }

@@ -54,7 +54,7 @@ export default class Popup extends React.Component {
         var userID = -1;
         if (cookies.get('UserID')) userID = cookies.get('UserID');
 
-        var result = parseCustomQuery("(" + equation + ")", userID);
+        var result = parseCustomQuery(equation, userID);
 
         if (result.errorMessage !== undefined) {
             document.getElementById("customQueryStatus").innerHTML = "Error: " + result.errorMessage;
@@ -63,8 +63,8 @@ export default class Popup extends React.Component {
         else {
             document.getElementById("customQueryStatus").innerHTML = "";
         }
-        console.log("Error: " + result.errorMessage);
-        console.log("Query: " + result.query);
+        // console.log("Error: " + result.errorMessage);
+        // console.log("Query: " + result.query);
 
         this.props.handleSave(undefined, equation);
     }
