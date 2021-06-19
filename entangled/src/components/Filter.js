@@ -54,7 +54,7 @@ export default class Popup extends React.Component {
         var userID = -1;
         if (cookies.get('UserID')) userID = cookies.get('UserID');
 
-        var result = parseCustomQuery("(" + equation + ")", userID);
+        var result = parseCustomQuery(equation, userID);
 
         if (result.errorMessage !== undefined) {
             document.getElementById("customQueryStatus").innerHTML = "Error: " + result.errorMessage;
@@ -63,8 +63,8 @@ export default class Popup extends React.Component {
         else {
             document.getElementById("customQueryStatus").innerHTML = "";
         }
-        console.log("Error: " + result.errorMessage);
-        console.log("Query: " + result.query);
+        // console.log("Error: " + result.errorMessage);
+        // console.log("Query: " + result.query);
 
         this.props.handleSave(undefined, equation);
     }
@@ -365,8 +365,8 @@ export default class Popup extends React.Component {
                         </div>
                         <div id="customFilterBottomButtons">
                             <button onClick={this.toggleCustomSearch}>Regular</button>
-                            <button className="bottomSaveButtons" id="customFilterSaveButton" onClick={() => this.parseCustomQueryToSQL(customSearchQuery)}>Save</button>
-                            <button className="bottomSaveButtons" id="customFilterCancelButton" onClick={this.handleCancel}>Cancel</button>
+                            <button className="bottomSaveButtonsFilter" id="customFilterSaveButton" onClick={() => this.parseCustomQueryToSQL(customSearchQuery)}>Save</button>
+                            <button className="bottomSaveButtonsFilter" id="customFilterCancelButton" onClick={this.handleCancel}>Cancel</button>
                         </div>
                     </div>
                 </div>

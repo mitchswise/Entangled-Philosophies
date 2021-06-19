@@ -503,11 +503,8 @@ export function tagExistsBatch(jsonDict) {
 	var url = urlBase + '/tagExistsBatch.php';
 	connect("POST", url);
 
-	console.log("Sending... " + jsonPayload);
-
 	try {
 		xhr.send(jsonPayload);
-		console.log("Getting... " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {

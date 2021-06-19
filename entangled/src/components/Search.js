@@ -6,7 +6,7 @@ import { loadTags } from './EditPaper.js';
 import Table from "./Table.js";
 import QueryPopup from './saveQueryPopup.js';
 import EditPaper from './EditPaper.js';
-import { parseCustomQuery, translateToSQL } from './SQLTranslate.js';
+import { parseCustomQuery, translateToSQL, isDigit } from './SQLTranslate.js';
 import './Search.css';
 
 
@@ -83,9 +83,10 @@ function cleanFilterState(filterState) {
     //all new categories + tags that belong to those new categories
 
     const newFilter = filterState.slice();
-    var textToFilter = {};
+    var textToFilter = {}, tagsSeen = {};
 
     tagData.forEach((item, index) => {
+        tagsSeen[item.tag_id] = true;
         var foundInFilter = false;
         for (const x in newFilter) {
             if (newFilter[x].row_name == item.cat_id) {
@@ -110,6 +111,14 @@ function cleanFilterState(filterState) {
             newFilter[idx][item.tag_id] = 0;
         }
     });
+    for(const idx in newFilter) {
+        for(const term in newFilter[idx]) {
+            if(isDigit(term) && !(term in tagsSeen)) {
+                // newFilter[idx].delete(term);
+                delete newFilter[idx][term];
+            }
+        }
+    }
 
     return newFilter;
 }
@@ -121,6 +130,57 @@ function sendSearchQuery(filterState) {
 
     var result = sqlSearch(userID, query);
     return result;
+}
+
+function translateFilterToCustom(filterState) {
+    var equation = "";
+    for(const index in filterState) {
+        var tagsInclude = [];
+        var tagsExclude = [];
+        var includeState = "AND", excludeState = "AND";
+
+        for(const z in filterState[index]) {
+            if(z == "include") {
+                includeState = filterState[index][z];
+            }
+            if(z == "exclude") {
+                excludeState = filterState[index][z];
+            }
+            if(!isDigit(z)) continue;
+            
+            if(filterState[index][z] == 1) tagsInclude.push(z);
+            else if(filterState[index][z] == 2) tagsExclude.push(z);
+        }
+
+
+        // console.log(tagsInclude.toString() + " and " + tagsExclude.toString())
+        if(tagsInclude.length > 0) {
+            if(equation.length > 0) equation += " AND ";
+
+            var nextTerm = "";
+            for(let curTag in tagsInclude) {
+                if(nextTerm.length > 0) nextTerm += " " + includeState + " ";
+                nextTerm += "`" + tagsInclude[curTag] + "`";
+            }
+            nextTerm = "(" + nextTerm + ")";
+
+            equation += nextTerm;
+        }
+
+        if(tagsExclude.length > 0) {
+            if(equation.length > 0) equation += " AND ";
+
+            var nextTerm = "";
+            for(let curTag in tagsExclude) {
+                if(nextTerm.length > 0) nextTerm += " " + excludeState + " ";
+                nextTerm += "`" + tagsExclude[curTag] + "`";
+            }
+            nextTerm = "NOT (" + nextTerm + ")";
+
+            equation += nextTerm;
+        }
+    }
+    return equation;
 }
 
 export default class Search extends React.Component {
@@ -135,23 +195,30 @@ export default class Search extends React.Component {
     getExistingPaperData = () => {
         if (this.props.location && this.props.location.state
             && this.props.location.state.filterState) {
+            console.log("About to work");
             return sendSearchQuery(cleanFilterState(this.props.location.state.filterState));
         }
         if (this.props.location && this.props.location.state
             && this.props.location.state.customQuery) {
-            var customSearchSQL = this.props.location.state.customQuery;
-
-            var userID = -1;
-            if (cookies.get('UserID')) userID = cookies.get('UserID');
-            var result = parseCustomQuery("(" + customSearchSQL + ")", userID);
-            return sqlSearch(userID, result.query);
+            if(this.props.location.state.customQuery.has_error) {
+                console.log("HELLO? ");
+                return sendSearchQuery(initState());
+            }
+            else {
+                var customSearchSQL = this.props.location.state.customQuery.original_input;
+    
+                var userID = -1;
+                if (cookies.get('UserID')) userID = cookies.get('UserID');
+                var result = parseCustomQuery(customSearchSQL, userID);
+                return sqlSearch(userID, result.query);
+            }
         }
         return sendSearchQuery(initState());
     }
     getExistingCustomQuery = () => {
         if (!this.props.location || !this.props.location.state
             || !this.props.location.state.customQuery) {
-            return undefined;
+            return {original_input: undefined};
         }
         return this.props.location.state.customQuery;
     }
@@ -170,12 +237,13 @@ export default class Search extends React.Component {
     }
 
     updateHistory = (newFitlerState, userID) => {
-        var jsonDict = { owner: userID, is_history: 1, query_text: JSON.stringify(newFitlerState), query_type: "JSON" };
+        var display_query = translateFilterToCustom(newFitlerState);
+        var jsonDict = { owner: userID, is_history: 1, query_text: JSON.stringify(newFitlerState), query_type: "JSON", display_query: display_query };
         saveQuery(jsonDict);
         handleHistory(userID);
     }
     updateCustomHistory = (customSearch, userID) => {
-        var jsonDict = { owner: userID, is_history: 1, query_text: customSearch, query_type: "CUSTOM" };
+        var jsonDict = { owner: userID, is_history: 1, query_text: customSearch, query_type: "CUSTOM", display_query: customSearch };
         saveQuery(jsonDict);
         handleHistory(userID);
     }
@@ -193,22 +261,26 @@ export default class Search extends React.Component {
     handleQuerySave = (queryName) => {
         var owner = cookies.get('UserID');
 
-        var query_text = undefined, query_type = undefined;
+        var query_text = undefined, query_type = undefined, display_query = undefined;
 
         if (this.state.lastQueryTypeUsed === 0) {
             query_text = JSON.stringify(this.state.filterState);
-            query_type = "JSON"; //will need to change when we add advanced queries
+            display_query = translateFilterToCustom(this.state.filterState);
+            query_type = "JSON";
         }
         else {
-            query_text = this.state.customQuery;
+            query_text = this.state.customQuery.original_input;
+            display_query = this.state.customQuery.display_query;
             query_type = "CUSTOM";
         }
 
         var is_history = 0;
         var jsonDict = {
             owner: owner, name: queryName, query_text: query_text,
-            query_type: query_type, is_history: is_history
+            query_type: query_type, is_history: is_history, display_query: display_query
         };
+
+        console.log("DISPLAY " + display_query);
 
         saveQuery(jsonDict);
 
@@ -230,15 +302,15 @@ export default class Search extends React.Component {
         }
         else {
             //custom search!
-            var result = parseCustomQuery("(" + customSearchSQL + ")", userID);
+            var result = parseCustomQuery(customSearchSQL, userID);
             this.closePopup();
             var newPaperData = sqlSearch(userID, result.query);
             this.setState({ paperData: newPaperData });
             this.setState({ lastQueryTypeUsed: 1 });
-            this.setState({ customQuery: customSearchSQL });
+            this.setState({ customQuery: result });
 
             if (userID != -1) {
-                this.updateCustomHistory(customSearchSQL, userID);
+                this.updateCustomHistory(result.display_query, userID);
             }
         }
     }
@@ -435,7 +507,7 @@ export default class Search extends React.Component {
                     handleClose={this.togglePopup}
                     tagData={tagData}
                     filterState={filterState}
-                    customQuery={customQuery}
+                    customQuery={customQuery.original_input}
                     handleSave={this.handleFilterSave}
                 />}
                 {isSaveOpen && <QueryPopup
