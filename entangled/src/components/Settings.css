@@ -4,8 +4,8 @@
     border-style: solid;
     border-color: black;
     border-width: 1px;
-    width: 85%;
-    height: 525px;
+    width: 50%;
+    height: 550px;
     margin: auto;
 
 }
@@ -43,7 +43,7 @@
 }
 
 details {
-    width: 300px;   
+    width: 300px;
     padding:3px;
     border-width: 1px;
     font-size: 18px;
@@ -106,12 +106,13 @@ details {
 }
 
 .inputRow {
-    position: block;
-    width: 60%;
+    position: relative;
+    width: 66%;
     height: 50px;
     padding: 20px;
     text-align: right;
     margin: auto;
+    top:16px;
 }
 
 .inputRow h2{
@@ -125,7 +126,7 @@ details {
     width: 300px;
     padding: 3px;
     border-color: black;
-    border-radius: 0px; 
+    border-radius: 0px;
     border-width: 1px;
     border-style: solid;
     font-size: 18px;
@@ -136,6 +137,12 @@ details {
     padding: 0px 0px 0px 0px;
     margin: 10px 0px 0px 0px;
     float:left;
+}
+
+#changePassword {
+
+    width:308px;
+    height:30px;
 }
 
 p{
@@ -171,10 +178,20 @@ label {
     position: relative;
 }
 
-.dropdown-content {
+.dropdown-content{
     width: 100%;
-    text-align: center;
 }
+
+.dropdown-content button{
+    width: 100%;
+    left:6px;
+}
+
+.dropdown-content button:hover{
+    background-color: #ddd;
+}
+
+
 
 .button {
     display: flex;
@@ -192,6 +209,7 @@ label {
     border-bottom-style: solid;
     border-left-style: solid;
     border-width: 1px;
+    top:30px;
 }
 
 #saveBtnTxt {
@@ -201,4 +219,9 @@ label {
     color: white;
     text-decoration: bold;
     font-size: 14px;
+}
+
+#saveStatus {
+    top:80px;
+    position: relative;
 }

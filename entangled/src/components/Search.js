@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import Filter from './Filter.js';
-import { cookies, getTags, getUserInfo, sqlSearch, handleHistory, saveQuery } from '../api.js'
+import { cookies, getTags, tagExists, sqlSearch, handleHistory, saveQuery, fileURLBase,
+    removeTagFromPaper, addTagToPaper } from '../api.js'
+import { loadTags } from './EditPaper.js';
 import Table from "./Table.js";
 import QueryPopup from './saveQueryPopup.js';
 import EditPaper from './EditPaper.js';
+import { parseCustomQuery, translateToSQL, isDigit } from './SQLTranslate.js';
 import './Search.css';
+
 
 const columnsTags = [
     {
@@ -31,9 +35,9 @@ function getTagData() {
     let metadata_ignore = ["17", "23", "32"];
     var tagsList = []
 
-    for(const index in result.tags) {
+    for (const index in result.tags) {
         const entry = result.tags[index];
-        if(!(metadata_ignore.includes(entry["cat_id"])) && entry["frequency"] !== "0") {
+        if (!(metadata_ignore.includes(entry["cat_id"])) && entry["frequency"] !== "0") {
             tagsList.push(entry);
         }
     }
@@ -79,18 +83,19 @@ function cleanFilterState(filterState) {
     //all new categories + tags that belong to those new categories
 
     const newFilter = filterState.slice();
-    var textToFilter = {};
+    var textToFilter = {}, tagsSeen = {};
 
     tagData.forEach((item, index) => {
+        tagsSeen[item.tag_id] = true;
         var foundInFilter = false;
-        for(const x in newFilter) {
-            if(newFilter[x].row_name == item.cat_id) {
+        for (const x in newFilter) {
+            if (newFilter[x].row_name == item.cat_id) {
                 textToFilter[item.catText] = x;
                 foundInFilter = true;
                 break;
             }
         }
-        if(!foundInFilter) {
+        if (!foundInFilter) {
             var row_state = {};
             row_state["row_name"] = item.cat_id;
             row_state["include"] = "OR";
@@ -102,137 +107,120 @@ function cleanFilterState(filterState) {
             newFilter.push(row_state);
         }
         const idx = textToFilter[item.catText];
-        if(!(item.tag_id in newFilter[idx])) {
+        if (!(item.tag_id in newFilter[idx])) {
             newFilter[idx][item.tag_id] = 0;
         }
     });
+    for(const idx in newFilter) {
+        for(const term in newFilter[idx]) {
+            if(isDigit(term) && !(term in tagsSeen)) {
+                // newFilter[idx].delete(term);
+                delete newFilter[idx][term];
+            }
+        }
+    }
 
     return newFilter;
 }
 
-//checks if the string consists of only digits
-function isDigit(val) {
-    return /^\d+$/.test(val);
-}
-
-function makeSelectAND(tagIDs, userID) {
-    var numSections = 0;
-    var selectQuery = "(SELECT paper_id FROM paper_tags WHERE";
-    for(let index = 0; index < tagIDs.length; index++) {
-        var curTag = tagIDs[index];
-        if(numSections > 0) selectQuery += " AND";
-        numSections++;
-
-        var tagQuery = " paper_id IN (SELECT paper_id FROM paper_tags WHERE ((owner = 0 " +
-        "OR owner = " + userID + ") AND tag_id = " + curTag + "))";
-
-        selectQuery += tagQuery;
-    }
-    selectQuery += ")";
-
-    return selectQuery;
-}
-
-function makeSelectOR(tagIDs, userID) {
-    var numSections = 0;
-    var selectQuery = "(SELECT paper_id FROM paper_tags WHERE";
-    for(let index = 0; index < tagIDs.length; index++) {
-        var curTag = tagIDs[index];
-        if(numSections > 0) selectQuery += " OR";
-        numSections++;
-
-        var tagQuery = " ((owner = 0 OR owner = " + userID + ") AND tag_id = " + curTag + ")";
-        selectQuery += tagQuery;
-    }
-    selectQuery += ")";
-
-    return selectQuery;
-}
-
-function translateToSQL(filterState, userID) {
-    var query = "SELECT DISTINCT paper_id FROM paper_tags";
-    var numSections = 0, totalTagsUsed = 0;
-    for(const index in filterState) {
-        const curSection = filterState[index];
-
-        var toInclude = [], toExclude = [];
-
-        for(const ids in curSection) {
-            if(!isDigit(ids)) continue;
-
-            if(curSection[ids] == 1) {
-                toInclude.push(ids);
-            }
-            else if(curSection[ids] == 2) {
-                toExclude.push(ids);
-            }
-        }
-
-        if(toInclude.length == 0 && toExclude.length == 0) continue;
-
-        totalTagsUsed += toInclude.length + toExclude.length;
-
-        if(toInclude.length > 0) {
-            if(numSections == 0) query += " WHERE";
-            else query += " AND";
-            numSections++;
-
-            query += " paper_id IN ";
-
-            if(curSection["include"] === "AND") {
-                query += makeSelectAND(toInclude, userID);
-            }
-            else {
-                query += makeSelectOR(toInclude, userID);
-            }
-        }
-
-        if(toExclude.length > 0) {
-            if(numSections == 0) query += " WHERE";
-            else query += " AND";
-            numSections++;
-
-            query += " paper_id NOT IN ";
-
-            if(curSection["exclude"] === "AND") {
-                query += makeSelectAND(toExclude, userID);
-            }
-            else {
-                query += makeSelectOR(toExclude, userID);
-            }
-        }
-
-    }
-
-    query += ";";
-    return query;
-}
-
 function sendSearchQuery(filterState) {
     var userID = -1;
-    if(cookies.get('UserID')) userID = cookies.get('UserID');
+    if (cookies.get('UserID')) userID = cookies.get('UserID');
     var query = translateToSQL(filterState, userID);
-
 
     var result = sqlSearch(userID, query);
     return result;
 }
 
+function translateFilterToCustom(filterState) {
+    var equation = "";
+    for(const index in filterState) {
+        var tagsInclude = [];
+        var tagsExclude = [];
+        var includeState = "AND", excludeState = "AND";
+
+        for(const z in filterState[index]) {
+            if(z == "include") {
+                includeState = filterState[index][z];
+            }
+            if(z == "exclude") {
+                excludeState = filterState[index][z];
+            }
+            if(!isDigit(z)) continue;
+
+            if(filterState[index][z] == 1) tagsInclude.push(z);
+            else if(filterState[index][z] == 2) tagsExclude.push(z);
+        }
+
+
+        // console.log(tagsInclude.toString() + " and " + tagsExclude.toString())
+        if(tagsInclude.length > 0) {
+            if(equation.length > 0) equation += " AND ";
+
+            var nextTerm = "";
+            for(let curTag in tagsInclude) {
+                if(nextTerm.length > 0) nextTerm += " " + includeState + " ";
+                nextTerm += "`" + tagsInclude[curTag] + "`";
+            }
+            nextTerm = "(" + nextTerm + ")";
+
+            equation += nextTerm;
+        }
+
+        if(tagsExclude.length > 0) {
+            if(equation.length > 0) equation += " AND ";
+
+            var nextTerm = "";
+            for(let curTag in tagsExclude) {
+                if(nextTerm.length > 0) nextTerm += " " + excludeState + " ";
+                nextTerm += "`" + tagsExclude[curTag] + "`";
+            }
+            nextTerm = "NOT (" + nextTerm + ")";
+
+            equation += nextTerm;
+        }
+    }
+    return equation;
+}
+
 export default class Search extends React.Component {
 
     getExistingFilter = () => {
-        if(!this.props.location || !this.props.location.state
-                || !this.props.location.state.filterState) {
+        if (!this.props.location || !this.props.location.state
+            || !this.props.location.state.filterState) {
             return initState();
         }
         return cleanFilterState(this.props.location.state.filterState);
     }
     getExistingPaperData = () => {
-        if(!this.props.location || !this.props.location.state
-                || !this.props.location.state.filterState) {
-            return sendSearchQuery(initState());
+        if (this.props.location && this.props.location.state
+            && this.props.location.state.filterState) {
+            console.log("About to work");
+            return sendSearchQuery(cleanFilterState(this.props.location.state.filterState));
         }
-        return sendSearchQuery(cleanFilterState(this.props.location.state.filterState));
+        if (this.props.location && this.props.location.state
+            && this.props.location.state.customQuery) {
+            if(this.props.location.state.customQuery.has_error) {
+                console.log("HELLO? ");
+                return sendSearchQuery(initState());
+            }
+            else {
+                var customSearchSQL = this.props.location.state.customQuery.original_input;
+
+                var userID = -1;
+                if (cookies.get('UserID')) userID = cookies.get('UserID');
+                var result = parseCustomQuery(customSearchSQL, userID);
+                return sqlSearch(userID, result.query);
+            }
+        }
+        return sendSearchQuery(initState());
+    }
+    getExistingCustomQuery = () => {
+        if (!this.props.location || !this.props.location.state
+            || !this.props.location.state.customQuery) {
+            return {original_input: undefined};
+        }
+        return this.props.location.state.customQuery;
     }
 
     state = {
@@ -240,15 +228,22 @@ export default class Search extends React.Component {
         isSaveOpen: false,
         filterState: this.getExistingFilter(),
         paperData: this.getExistingPaperData(),
-        // filterState: !this.props.location.state.filterState ? initState() : cleanFilterState(this.props.location.state.filterState),
-        // paperData: !this.props.location.state.filterState ? sendSearchQuery(initState()) :
-        //     sendSearchQuery(cleanFilterState(this.props.location.state.filterState)),
         paperInformation: undefined,
-        openEditPaper: false
+        openEditPaper: false,
+        customQuery: this.getExistingCustomQuery(),
+        lastQueryTypeUsed: 0,
+        publicTags: [],
+        privateTags: []
     }
 
     updateHistory = (newFitlerState, userID) => {
-        var jsonDict = {owner:userID, is_history:1, query_text:JSON.stringify(newFitlerState), query_type:"JSON"};
+        var display_query = translateFilterToCustom(newFitlerState);
+        var jsonDict = { owner: userID, is_history: 1, query_text: JSON.stringify(newFitlerState), query_type: "JSON", display_query: display_query };
+        saveQuery(jsonDict);
+        handleHistory(userID);
+    }
+    updateCustomHistory = (customSearch, userID) => {
+        var jsonDict = { owner: userID, is_history: 1, query_text: customSearch, query_type: "CUSTOM", display_query: customSearch };
         saveQuery(jsonDict);
         handleHistory(userID);
     }
@@ -265,62 +260,233 @@ export default class Search extends React.Component {
 
     handleQuerySave = (queryName) => {
         var owner = cookies.get('UserID');
-        var query_text = JSON.stringify(this.state.filterState);
-        var query_type = "JSON"; //will need to change when we add advanced queries
+
+        var query_text = undefined, query_type = undefined, display_query = undefined;
+
+        if (this.state.lastQueryTypeUsed === 0) {
+            query_text = JSON.stringify(this.state.filterState);
+            display_query = translateFilterToCustom(this.state.filterState);
+            query_type = "JSON";
+        }
+        else {
+            query_text = this.state.customQuery.original_input;
+            display_query = this.state.customQuery.display_query;
+            query_type = "CUSTOM";
+        }
+
         var is_history = 0;
-        var jsonDict = {owner:owner, name:queryName, query_text:query_text,
-            query_type:query_type, is_history:is_history};
+        var jsonDict = {
+            owner: owner, name: queryName, query_text: query_text,
+            query_type: query_type, is_history: is_history, display_query: display_query
+        };
+
+        console.log("DISPLAY " + display_query);
 
         saveQuery(jsonDict);
 
         this.toggleSavePopup();
     }
-    handleFilterSave = (newFitlerState) => {
-        this.setState((prevState) => ({ filterState: newFitlerState }));
-
+    handleFilterSave = (newFitlerState, customSearchSQL) => {
         var userID = -1;
-        if(cookies.get('UserID')) userID = cookies.get('UserID');
-        this.setState({ paperData: sendSearchQuery(newFitlerState) });
-        this.closePopup();
+        if (cookies.get('UserID')) userID = cookies.get('UserID');
 
-        if(userID != -1) {
-            this.updateHistory(newFitlerState, userID);
+        if (newFitlerState !== undefined) {
+            this.setState((prevState) => ({ filterState: newFitlerState }));
+            this.closePopup();
+            this.setState({ paperData: sendSearchQuery(newFitlerState) });
+            this.setState({ lastQueryTypeUsed: 0 });
+
+            if (userID != -1) {
+                this.updateHistory(newFitlerState, userID);
+            }
+        }
+        else {
+            //custom search!
+            var result = parseCustomQuery(customSearchSQL, userID);
+            this.closePopup();
+            var newPaperData = sqlSearch(userID, result.query);
+            this.setState({ paperData: newPaperData });
+            this.setState({ lastQueryTypeUsed: 1 });
+            this.setState({ customQuery: result });
+
+            if (userID != -1) {
+                this.updateCustomHistory(result.display_query, userID);
+            }
         }
     }
 
     loadPaper = (paperInfo) => {
         this.setState((prevState) => ({ paperInformation: paperInfo }));
+        var currentTags = loadTags(paperInfo);
+        this.setState({ publicTags: currentTags.filter(item => item.owner == 0) });
+        this.setState({ privateTags: currentTags.filter(item => item.owner != 0) });
+
     }
     closePaper = () => {
         this.setState((prevState) => ({ paperInformation: undefined }));
     }
 
-    viewPaper = () => {
+    updatePrivateTagList = (privateTags, adding) => {
         const { paperInformation } = this.state;
-        return <div>
+        var newTagText = document.getElementById("addPaperTags").value;
+        var userID = cookies.get('UserID');
+        var validTag = tagExists(newTagText, cookies.get('PrefLang'), userID);
+        if(validTag.tag_id < 0) {
+            document.getElementById("addPaperTags").value = "";
+            return;
+        }
+
+        var newTag = { text: newTagText, owner: userID, tag_id:validTag.tag_id };
+
+        var index = -1;
+        for (const x in privateTags) {
+            if (privateTags[x]["text"] == newTag["text"] && privateTags[x]["tag_id"] == newTag["tag_id"]
+            && privateTags[x]["owner"] == newTag["owner"]) {
+                index = x;
+                break;
+            }
+        }
+
+        var newPrivateTags = privateTags.slice();
+
+        if(adding) {
+            if(index == -1) {
+                newPrivateTags.push(newTag);
+                addTagToPaper(paperInformation.id, newTag.tag_id, userID);
+            }
+        }
+        else {
+            if(index != -1) {
+                newPrivateTags.splice(index, 1);
+                var dict = { paper_id: paperInformation.id, tag_id: newTag.tag_id, userID:userID };
+                removeTagFromPaper(dict);
+            }
+        }
+
+        this.setState({ privateTags: newPrivateTags });
+        document.getElementById("addPaperTags").value = "";
+    }
+
+    viewPaper = () => {
+        const { paperInformation, privateTags, publicTags } = this.state;
+        var userID = 0;
+        if(cookies.get('UserID') && cookies.get('PermLvl') == 0) {
+            userID = cookies.get('UserID');
+        }
+
+        return <div id="rightBoxWrapper">
+            <div id="buttonRow">
+                <button id="editPaperButton" onClick={() => { this.setState({ openEditPaper: true }) }}
+                    disabled={!cookies.get('UserID') || cookies.get('PermLvl') == 0}>Edit Paper</button>
+                <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
+            </div>
             <div class="rightBoxPaperInfo">
-                <h2>Title</h2>
-                <p>{paperInformation.title}</p>
-                <h2>Author</h2>
-                <p>{paperInformation.author}</p>
-                <h2>Language</h2>
-                <p>{paperInformation.language}</p>
+
+                <div id="rowOne">
+
+                    <h3>General Information</h3>
+
+                    <p><b>Title:</b> {paperInformation.title}</p>
+
+                    <p><b>Author:</b> {paperInformation.author}</p>
+
+                </div>
+
+                <div id="rowTwo">
+
+                    <h3>Description Information</h3>
+
+                    <p ><b>Subject:</b> {paperInformation.subject}</p>
+
+                    <p ><b>Type/Genre:</b> {paperInformation.type}</p>
+
+                    <p ><b>Coverage:</b> {paperInformation.coverage}</p>
+
+                    <p><b>Description</b> {paperInformation.description}</p>
+
+                </div>
+
+                <div id="rowThree">
+
+                    <h3>Identifying Information</h3>
+
+                    <p><b>Date:</b> {paperInformation.date}</p>
+
+                    <p ><b>Format:</b> {paperInformation.format}</p>
+
+                    <p ><b>Language:</b> {paperInformation.language}</p>
+
+                    <p ><b>ISBN:</b> {paperInformation.isbn}</p>
+
+                    <p ><b>URL:</b> {paperInformation.paper_url}</p>
+
+                    <p ><b>File Link:</b> {
+                        paperInformation.url !== "none" ?
+                            <a id="currentFile" href={fileURLBase + paperInformation.url}
+                                target="_blank" >{paperInformation.url}</a>
+                            :
+                            "None"
+                    }</p>
+
+                </div>
+
+                <div id="rowFour">
+
+                    <h3>Legal Information</h3>
+
+                    <p ><b>Source:</b> {paperInformation.source}</p>
+
+                    <p ><b>Publisher:</b> {paperInformation.publisher}</p>
+
+                    <p ><b>Rights:</b> {paperInformation.rights}</p>
+
+                    <p id="rowFourRelation"><b>Relation:</b> {paperInformation.relation}</p>
+
+                </div>
+
+                <div id="rowFive">
+
+                    <h3>Tags</h3>
+
+                    {
+                        userID != 0 ?
+                            <div id="searchTagsContainer">
+
+                                <div id="searchTagsDisplay" >
+                                    <h4>Public</h4>
+                                    <input value={publicTags.map(item => item.text).join(", ")} disabled />
+                                    <h4>Private</h4>
+                                    <input value={privateTags.map(item => item.text).join(", ")} disabled />
+                                </div>
+
+                                <div id="searchTagsInput" >
+                                    <button onClick={() => this.updatePrivateTagList(privateTags, true)}  id="addTagSearchBtnText">+</button>
+                                    <button onClick={() => this.updatePrivateTagList(privateTags, false)} id="addTagSearchBtnText">-</button>
+                                    <input type="text" placeholder="Enter a valid tag" id="addPaperTags" />
+                                </div>
+
+                            </div>
+                        :
+                        <div id="searchTagsDisplay" >
+                            <h4>Public</h4>
+                            <input value={publicTags.map(item => item.text).join(", ")} disabled />
+                        </div>
+                    }
+
+                </div>
+
             </div>
 
-            <button id="editPaperButton" onClick={() => {this.setState({ openEditPaper: true })}}
-                disabled={!cookies.get('UserID') || cookies.get('PermLvl') < 1}>Edit Paper</button>
-            <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
         </div>
     }
 
     closeEdit = (didDelete, didUpdate) => {
-        console.log(didDelete + " " + didUpdate)
-        if(didUpdate || didDelete) {
+        if (didUpdate || didDelete) {
             var userID = -1;
-            if(cookies.get('UserID')) userID = cookies.get('UserID');
+            if (cookies.get('UserID')) userID = cookies.get('UserID');
             this.setState((prevState) => ({ paperData: sendSearchQuery(prevState.filterState) }));
         }
-        if(didDelete) {
+        if (didDelete) {
             this.setState((prevState) => ({ paperInformation: undefined }));
         }
         this.setState({ openEditPaper: false });
@@ -328,10 +494,10 @@ export default class Search extends React.Component {
 
     render() {
         const { isFilterOpen, isSaveOpen, filterState,
-            openEditPaper, paperData, paperInformation } = this.state;
-            console.log("?? " + filterState)
+            openEditPaper, paperData, paperInformation,
+            customQuery } = this.state;
 
-        if(openEditPaper) {
+        if (openEditPaper) {
             return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />
         }
         return (<div id="searchContainer">
@@ -341,11 +507,13 @@ export default class Search extends React.Component {
                     handleClose={this.togglePopup}
                     tagData={tagData}
                     filterState={filterState}
+                    customQuery={customQuery.original_input}
                     handleSave={this.handleFilterSave}
                 />}
                 {isSaveOpen && <QueryPopup
-                    handleClose = {this.toggleSavePopup}
-                    handleSave = {this.handleQuerySave}
+                    queryType={this.state.lastQueryTypeUsed}
+                    handleClose={this.toggleSavePopup}
+                    handleSave={this.handleQuerySave}
                 />}
                 <div className="box" id="leftBox">
 
@@ -359,7 +527,7 @@ export default class Search extends React.Component {
 
                     {
                         paperInformation !== undefined ? this.viewPaper() :
-                        <></>
+                            <></>
                     }
 
                 </div>

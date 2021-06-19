@@ -15,7 +15,7 @@
 		die("Connection failed " . $conn->connect_error);
 	}
 	
-	$query = "UPDATE users SET email = '" . $email . "', language = '" . $language . "', cookies = " . $cookies . " WHERE id = " . $id . " ;";
+	$query = "UPDATE users SET email = '" . $email . "', language = '" . $language . "', cookies = " . $cookies . " WHERE id = " . $id . ";";
 	$result = mysqli_query($conn, $query);
 
 	if(mysqli_affected_rows($conn) > 0) {

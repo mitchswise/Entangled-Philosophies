@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter } from "react-table";
 import { cookies } from "../api";
 import './Table.css';
+import TableScrollbar from 'react-table-scrollbar';
+
 
 export default function Table({ columns, data, loadFilter, saveQuery, loadPaper }) {
     const {
@@ -60,7 +62,10 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper 
         />
         
         </div>
-        <table {...getTableProps()}>
+
+        <TableScrollbar id="SearchLeftTableScroll" height="704px">
+
+        <table  {...getTableProps()}>
             <thead>
             {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
@@ -81,7 +86,7 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper 
                 </tr>
             ))}
             </thead>
-            <tbody {...getTableBodyProps()}>
+            <tbody id="SearchLeftTable" {...getTableBodyProps()}>
             {page.map((row, i) => {
                 prepareRow(row);
                 return (
@@ -95,6 +100,9 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper 
             })}
             </tbody>
         </table>
+
+        </TableScrollbar>
+
         <div id="prevNextBox">
         
         <button class="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>

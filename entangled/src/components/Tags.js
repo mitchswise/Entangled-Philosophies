@@ -62,7 +62,7 @@ function doAddTag(edit_tag) {
     var translations = {}
     var tag_category = document.getElementById("tagCategoryBox").value;
     if(!tag_category) {
-        document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+        // document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
         return;
     }
     translations["category"] = tag_category;
@@ -72,7 +72,7 @@ function doAddTag(edit_tag) {
         userID = cookies.get('UserID');
         var tag_name = document.getElementById("defBox").value;
         if(!tag_name) {
-            document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+            // document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
             return;
         }
         translations["def"] = tag_name;
@@ -85,7 +85,7 @@ function doAddTag(edit_tag) {
             var tag_translate = document.getElementById(id).value;
 
             if(!tag_translate) {
-                document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+                // document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
                 return;
             }
 
@@ -97,7 +97,7 @@ function doAddTag(edit_tag) {
     var language = cookies.get('PrefLang');
 
     var data = addTag(userID, language, translations, edit_tag);
-    document.getElementById("tagsPageStatus").innerHTML = data.status;
+    // document.getElementById("tagsPageStatus").innerHTML = data.status;
 }
 
 //remove a tag from the database
@@ -107,7 +107,7 @@ function doRemoveTag(rowInfo) {
     var language = rowInfo.owner == 0 ? cookies.get('PrefLang') : "def"; //Switch!
 
     var data = removeTag(tagName, language, userID);
-    document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
+    // document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
 }
 
 //add/edit a category to the database
@@ -121,7 +121,7 @@ function doAddCat(edit_cat) {
         var cat_name = document.getElementById("defBox").value;
         console.log("Hi " + cat_name);
         if(!cat_name) {
-            document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+            // document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
             return;
         }
         translations["def"] = cat_name;
@@ -134,7 +134,7 @@ function doAddCat(edit_cat) {
             var tag_translate = document.getElementById(id).value;
 
             if(!tag_translate) {
-                document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+                // document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
                 return;
             }
 
@@ -143,7 +143,7 @@ function doAddCat(edit_cat) {
     }
 
     var data = addCategory(userID, edit_cat, translations);
-    document.getElementById("tagsPageStatus").innerHTML = data.status;
+    // document.getElementById("tagsPageStatus").innerHTML = data.status;
 }
 
 //remove a category from the database
@@ -153,7 +153,7 @@ function doRemoveCat(rowInfo) {
     var language = rowInfo.owner == 0 ? cookies.get('PrefLang') : "def"; //Switch!
 
     var data = removeCategory(catName, language, userID);
-    document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
+    // document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
 }
 
 //conditional render functions for TAG AND CATEGORY button clicks:
@@ -296,7 +296,7 @@ export default class Tags extends React.Component {
         this.setState({ rowInfo: rowInformation });
         if(cookies.get('PermLvl') < 1) {
             if(rowInformation.owner !== cookies.get('UserID')) {
-                document.getElementById("tagsPageStatus").innerHTML = "Status: You can't edit public items.";
+                // document.getElementById("tagsPageStatus").innerHTML = "Status: You can't edit public items.";
                 this.setState({ tagAdditionState: 0 });
             }
             else {
@@ -341,7 +341,6 @@ export default class Tags extends React.Component {
                                 data={categoryData} loadTag={this.loadTag} addTags={this.makeTagAddInputBoxes}
                                 toggleView={this.toggleView} />
                             }
-                            <div id = "tagsPageStatus">Status:</div>
                         </div>
                         <div id="rightcolumn">
                             {this.elementClear()}
@@ -349,8 +348,9 @@ export default class Tags extends React.Component {
                              tagAdditionState === 2 ? <UserAdd toggleState={toggleState} /> :
                              tagAdditionState === 3 ? <AdminEdit toggleState={toggleState} rowInfo={this.state.rowInfo} /> :
                              tagAdditionState === 4 ? <UserEdit toggleState={toggleState} rowInfo={this.state.rowInfo} /> :
-                            <div></div>}
+                             <div></div>}
                         </div>
+                        {/* <div id="tagsPageStatus">Status:</div> */}
                     </div>
                 </body>
             </div>

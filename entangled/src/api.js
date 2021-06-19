@@ -490,11 +490,53 @@ export function tagFilter(jsonDict) {
 
 	try {
 		xhr.send(jsonPayload);
-		console.log("--> " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
-		console.log("E " + err)
+		return null;
+	}
+}
+
+export function tagExistsBatch(jsonDict) {
+	var jsonPayload = JSON.stringify(jsonDict);
+
+	var url = urlBase + '/tagExistsBatch.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function updateSettings(id, email, language, cookies) {
+	var jsonPayload = '{"id":' + id + ', "email":"' + email + '", "language":"' + language + '", "cookies":' + cookies + '}';
+	var url = urlBase + '/updateSettings.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function removeFile(id, url) {
+	var jsonPayload = '{"id":' + id + ', "url":"' + url + '"}';
+
+	var url = urlBase + '/removeFile.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
 		return null;
 	}
 }
