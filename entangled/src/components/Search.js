@@ -83,9 +83,10 @@ function cleanFilterState(filterState) {
     //all new categories + tags that belong to those new categories
 
     const newFilter = filterState.slice();
-    var textToFilter = {};
+    var textToFilter = {}, tagsSeen = {};
 
     tagData.forEach((item, index) => {
+        tagsSeen[item.tag_id] = true;
         var foundInFilter = false;
         for (const x in newFilter) {
             if (newFilter[x].row_name == item.cat_id) {
@@ -110,6 +111,14 @@ function cleanFilterState(filterState) {
             newFilter[idx][item.tag_id] = 0;
         }
     });
+    for(const idx in newFilter) {
+        for(const term in newFilter[idx]) {
+            if(isDigit(term) && !(term in tagsSeen)) {
+                // newFilter[idx].delete(term);
+                delete newFilter[idx][term];
+            }
+        }
+    }
 
     return newFilter;
 }
@@ -186,16 +195,23 @@ export default class Search extends React.Component {
     getExistingPaperData = () => {
         if (this.props.location && this.props.location.state
             && this.props.location.state.filterState) {
+            console.log("About to work");
             return sendSearchQuery(cleanFilterState(this.props.location.state.filterState));
         }
         if (this.props.location && this.props.location.state
             && this.props.location.state.customQuery) {
-            var customSearchSQL = this.props.location.state.customQuery;
-
-            var userID = -1;
-            if (cookies.get('UserID')) userID = cookies.get('UserID');
-            var result = parseCustomQuery(customSearchSQL, userID);
-            return sqlSearch(userID, result.query);
+            if(this.props.location.state.customQuery.has_error) {
+                console.log("HELLO? ");
+                return sendSearchQuery(initState());
+            }
+            else {
+                var customSearchSQL = this.props.location.state.customQuery.original_input;
+    
+                var userID = -1;
+                if (cookies.get('UserID')) userID = cookies.get('UserID');
+                var result = parseCustomQuery(customSearchSQL, userID);
+                return sqlSearch(userID, result.query);
+            }
         }
         return sendSearchQuery(initState());
     }
@@ -221,12 +237,13 @@ export default class Search extends React.Component {
     }
 
     updateHistory = (newFitlerState, userID) => {
-        var jsonDict = { owner: userID, is_history: 1, query_text: JSON.stringify(newFitlerState), query_type: "JSON" };
+        var display_query = translateFilterToCustom(newFitlerState);
+        var jsonDict = { owner: userID, is_history: 1, query_text: JSON.stringify(newFitlerState), query_type: "JSON", display_query: display_query };
         saveQuery(jsonDict);
         handleHistory(userID);
     }
     updateCustomHistory = (customSearch, userID) => {
-        var jsonDict = { owner: userID, is_history: 1, query_text: customSearch, query_type: "CUSTOM" };
+        var jsonDict = { owner: userID, is_history: 1, query_text: customSearch, query_type: "CUSTOM", display_query: customSearch };
         saveQuery(jsonDict);
         handleHistory(userID);
     }
@@ -260,12 +277,12 @@ export default class Search extends React.Component {
         var is_history = 0;
         var jsonDict = {
             owner: owner, name: queryName, query_text: query_text,
-            query_type: query_type, is_history: is_history
+            query_type: query_type, is_history: is_history, display_query: display_query
         };
 
         console.log("DISPLAY " + display_query);
 
-        // saveQuery(jsonDict);
+        saveQuery(jsonDict);
 
         this.toggleSavePopup();
     }
@@ -293,7 +310,7 @@ export default class Search extends React.Component {
             this.setState({ customQuery: result });
 
             if (userID != -1) {
-                this.updateCustomHistory(customSearchSQL, userID);
+                this.updateCustomHistory(result.display_query, userID);
             }
         }
     }

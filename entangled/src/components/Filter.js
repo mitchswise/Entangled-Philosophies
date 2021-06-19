@@ -365,8 +365,8 @@ export default class Popup extends React.Component {
                         </div>
                         <div id="customFilterBottomButtons">
                             <button onClick={this.toggleCustomSearch}>Regular</button>
-                            <button className="bottomSaveButtons" id="customFilterSaveButton" onClick={() => this.parseCustomQueryToSQL(customSearchQuery)}>Save</button>
-                            <button className="bottomSaveButtons" id="customFilterCancelButton" onClick={this.handleCancel}>Cancel</button>
+                            <button className="bottomSaveButtonsFilter" id="customFilterSaveButton" onClick={() => this.parseCustomQueryToSQL(customSearchQuery)}>Save</button>
+                            <button className="bottomSaveButtonsFilter" id="customFilterCancelButton" onClick={this.handleCancel}>Cancel</button>
                         </div>
                     </div>
                 </div>
