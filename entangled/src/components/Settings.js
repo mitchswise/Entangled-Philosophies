@@ -12,13 +12,14 @@ function validateEmail(mail) {
 }
 
 function doGetUserInfo() {
-    if (!cookies.get('UserID')) return undefined;
+    if (!cookies.get('UserID')) return {};
     id = cookies.get('UserID');
     var data = getUserInfo(id);
     return data;
 }
 
 function setUserInfo() {
+    if(!cookies.get('UserID')) return;
     var data = doGetUserInfo();
     if(data == undefined) return;
 
@@ -104,6 +105,7 @@ export default class Settings extends React.Component {
         const { userInfo } = this.state;
 
         return <div className="container">
+            {this.renderRedirect()}
             <div className="header">
                 <h1 id="title">{dSettings(9, userInfo.language)}</h1>
             </div>
