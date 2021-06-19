@@ -32,9 +32,16 @@ const Admin = () => {
 		var username = document.getElementById("username").value;
 		//var permission_level = document.getElementById("permission_level").value;
 		var permission_level = 1;
-		var data = setPerms(username, permission_level);
-		document.getElementById("ansField_adminPage").innerHTML = data.status;
-		history.go(0);
+		var checkData = getPerms(username, permission_level);
+		if (checkData.error != "") {
+			document.getElementById("ansField_adminPage").innerHTML = checkData.error;
+		} else if (checkData.permission_level > 0) {
+			document.getElementById("ansField_adminPage").innerHTML = username + " is already an admin.";
+		} else {
+			var data = setPerms(username, permission_level);
+			document.getElementById("ansField_adminPage").innerHTML = data.status;
+			history.go(0);
+		}
 	};
 	
 	// const doGetPerms = (props) => {
@@ -44,9 +51,13 @@ const Admin = () => {
 	// 	setPermissionLvlMsg(username + " has a permission level of " + data.permission_level);
 	// };
 
-	const handleRemove = (props) => {
-		setPerms(props, 0);
-		history.go(0);
+	const handleRemove = (username, id) => {
+		if (id == cookies.get("UserID")) {
+			window.alert("You cannot remove yourself.");
+		} else {
+			setPerms(username, 0);
+			history.go(0);
+		}
 	}
 
 	const doGetAdmins = (props) =>  {
@@ -63,19 +74,29 @@ const Admin = () => {
 			});
 		}
 		setAdminList(list.map((array) => {
-            return (
-				//<ul onClick={() => doGetPerms(array.username)} key={array.id}>
-				<details>
-				<summary>
-                    {array.username} - {array.id}
-                </summary>
-					<p>
-					<button onClick={() => handleRemove(array.username)}>
-						Remove {array.username}
-					</button>
-					</p>
-				</details>
-            );
+			if (cookies.get("PermLvl") > 1) {
+          		return (
+					//<ul onClick={() => doGetPerms(array.username)} key={array.id}>
+					<details>
+						<summary>
+                   			{array.username} - {array.id}
+               			</summary>
+						<p>
+						<button onClick={() => handleRemove(array.username, array.id)}>
+							Remove {array.username}
+						</button>
+						</p>
+					</details>
+				);
+			} else {
+				return (
+					<details>
+						<summary>
+							{array.username} - {array.id}
+						</summary>
+					</details>
+				);
+			}
         }))
 	};
 
