@@ -29,18 +29,18 @@ export default class Settings extends React.Component {
                 <div className="SettingsFields">
                         <div class="inputRow">
                             <h2>{dSettings(1, lang)}</h2>
-                            <input type="text" id="username" placeholder="Example Username" disabled/>
+                            <input type="text" id="username" placeholder={dSettings(14, lang)} disabled/>
                         </div>
 
                         <div class="inputRow">
                             <h2>{dSettings(2, lang)}</h2>
                             <details>
                                 <summary>
-                                    Change Email
+                                    {dSettings(11, lang)}
                                 </summary>
                                 <p>
-                                    <input type="text" id="password" placeholder="New Email"/>
-                                    <button>Save Changes</button>
+                                    <input type="text" id="password" placeholder={dSettings(12, lang)}/>
+                                    <button>{dSettings(13, lang)}</button>
                                 </p>
                             </details>
                         </div>
@@ -49,11 +49,11 @@ export default class Settings extends React.Component {
                             <h2>{dSettings(3, lang)}</h2>
                             <details>
                                 <summary>
-                                    Change Password
+                                    {dSettings(4, lang)}
                                 </summary>
                                 <p>
-                                    <input type="password" id="password" placeholder="New Password"/>
-                                    <button>Save Changes</button>
+                                    <input type="password" id="password" placeholder={dSettings(15, lang)}/>
+                                    <button>{dSettings(13, lang)}</button>
                                 </p>
                             </details>
                         </div>
@@ -75,14 +75,14 @@ export default class Settings extends React.Component {
                         <h2>Cookies</h2>
                         <div class="cookies">
                         <input type="radio" id="OptIn" value="OptIn" name="cookieService" />
-                        <label for="OptIn">Opt In</label> <br></br>
+                        <label for="OptIn">{dSettings(7, lang)}</label> <br></br>
                         <input type="radio" id="OptOut" value="OptOut" name="cookieService" />
-                        <label for="OptOut">Opt Out</label> <br></br>
+                        <label for="OptOut">{dSettings(8, lang)}</label> <br></br>
                         </div>
                         </div>
                     </div>
                     <div class="button">
-                            <button type="button" className="inputBoxes" id="save"><div id="saveBtnTxt">Save Changes</div></button>
+                            <button type="button" className="inputBoxes" id="save"><div id="saveBtnTxt">{dSettings(13, lang)}</div></button>
                     </div>
                 </div>
         </div>

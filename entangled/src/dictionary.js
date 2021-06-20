@@ -26,11 +26,11 @@ export function dSettings(s, lang) {
 			break;
 		case 7:
 			if (lang == 'eng') return "Opt In";
-			if (lang == 'ger') return "Zustimmen";
+			if (lang == 'ger') return "Akzeptieren";
 			break;
 		case 8:
 			if (lang == 'eng') return "Opt Out";
-			if (lang == 'ger') return "Aussteigen";
+			if (lang == 'ger') return "Ablehnen";
 			break;
 		case 9:
 			if (lang == 'eng') return "Account Settings";
@@ -40,6 +40,26 @@ export function dSettings(s, lang) {
 			if (lang == '') return "Choose Language";
 			if (lang == 'eng') return "English";
 			if (lang == 'ger') return "Deutsch";
+			break;
+		case 11:
+			if (lang == 'eng') return "Change Email";
+			if (lang == 'ger') return "E-Mail Ändern";
+			break;
+		case 12:
+			if (lang == 'eng') return "New Email";
+			if (lang == 'ger') return "Neue E-Mail";
+			break;
+		case 13:
+			if (lang == 'eng') return "Save Changes";
+			if (lang == 'ger') return "Änderungen Speichern";
+			break;
+		case 14:
+			if (lang == 'eng') return "Example Username";
+			if (lang == 'ger') return "Beispiel-Benutzername";
+			break;
+		case 15:
+			if (lang == 'eng') return "New Password";
+			if (lang == 'ger') return "Neue Passwort";
 			break;
 	}
 }
