@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter, useRowSelect } from "react-table";
-import { cookies, getQueries, removeQueries } from '../api.js'
+import { cookies, getQueries, removeQueries, getTags } from '../api.js'
 import { Checkbox } from './Checkbox.js';
 import './Queries.css';
 
@@ -126,12 +126,48 @@ function getQueryData() {
     if(!cookies.get('UserID')) return [];
     var data = getQueries(cookies.get('UserID'));
 
+    var prefLang = "eng";
+    if(cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
+    var allTags = getTags(cookies.get('UserID'), prefLang);
+    var tagDict = {};
+    for(const index in allTags.tags) {
+        var tag_id = allTags.tags[index].tag_id;
+        tagDict[parseInt(tag_id)] = allTags.tags[index].text;
+    }
+
     for(const x in data.queries) {
-        var text = data.queries[x].query_text;
-        if(text.length > 80) {
-            text = text.substring(0, 80)+"...";
+        var display_query = data.queries[x].display_query;
+        if(display_query == null) continue;
+        var real_display_query = "", display_failed = false;
+        var real_custom_query = "";
+
+        for(let i = 0; i < display_query.length; i++) {
+            if(display_query[i] == '`') {
+                var j = i+1;
+                while(j < display_query.length && display_query[j] != '`') j++;
+
+                var tag = display_query.substring(i+1, j);
+                if(!(parseInt(tag) in tagDict)) {
+                    real_display_query = "MISSING TAG(s)";
+                    display_failed = true;
+                    real_custom_query += "``";
+                }
+                else {
+                    if(!display_failed) real_display_query += "`" + tagDict[parseInt(tag)] + "`";
+                    real_custom_query += "`" + tagDict[parseInt(tag)] + "`";
+                }
+
+                i = j;
+            }
+            else {
+                if(!display_failed) {
+                    real_display_query += display_query[i];
+                }
+                real_custom_query += display_query[i];
+            }
         }
-        data.queries[x].query_text_fixed = text;
+        data.queries[x].display_query = real_display_query;
+        data.queries[x].send_custom_query = real_custom_query;
     }
 
     return data.queries;
@@ -168,7 +204,7 @@ const columnsSavedQuery = [
     },
     {
         Header: "Query",
-        accessor: "query_text_fixed"
+        accessor: "display_query"
     }
 ];
 
@@ -179,7 +215,7 @@ const columnsHistoryQuery = [
     },
     {
         Header: "Query",
-        accessor: "query_text_fixed"
+        accessor: "display_query"
     }
 ];
 
@@ -191,7 +227,8 @@ export default class Queries extends React.Component {
         savedHistory: getSavedHistory(),
         toggleState: false,
         redirectToSearch: false,
-        redirectFilter: null
+        redirectFilter: undefined,
+        redirectCustomQuery: undefined
     }
 
     renderRedirect = () => {
@@ -205,15 +242,34 @@ export default class Queries extends React.Component {
     }
 
     setSearchFlag = (query) => {
-        this.setState({ redirectFilter: JSON.parse(query.query_text) });
+        if(query.query_type === "JSON") {
+            this.setState({ redirectFilter: JSON.parse(query.query_text) });
+        }
+        else {
+            var newRedirectCustom = { original_input: query.send_custom_query, has_error: false };
+            if(query.display_query == "MISSING TAG(s)") {
+                newRedirectCustom.has_error = true;
+            }
+            this.setState({ redirectCustomQuery: newRedirectCustom });   
+        }
         this.setState({ redirectToSearch: true });
     }
 
     loadSearch = () => {
+        var sendState = {};
+        if(this.state.redirectFilter !== undefined) {
+            sendState = { filterState: this.state.redirectFilter };
+        }
+        else {
+            sendState = { customQuery: this.state.redirectCustomQuery };
+        }
+
+        console.log("Redirect? " + JSON.stringify(sendState));
+
         return <Redirect
             to={{
                 pathname: "/search",
-                state: { filterState: this.state.redirectFilter }
+                state: sendState
             }} 
         />
     }

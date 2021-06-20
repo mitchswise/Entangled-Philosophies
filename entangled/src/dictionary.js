@@ -37,29 +37,23 @@ export function dSettings(s, lang) {
 			if (lang == 'ger') return "Kontoeinstellungen";
 			break;
 		case 10:
-			if (lang == '') return "Choose Language";
 			if (lang == 'eng') return "English";
-			if (lang == 'ger') return "Deutsch";
+			if (lang == 'ger') return "Englisch";
 			break;
-		case 11:
-			if (lang == 'eng') return "Change Email";
-			if (lang == 'ger') return "E-Mail Ändern";
-			break;
-		case 12:
-			if (lang == 'eng') return "New Email";
-			if (lang == 'ger') return "Neue E-Mail";
-			break;
-		case 13:
-			if (lang == 'eng') return "Save Changes";
-			if (lang == 'ger') return "Änderungen Speichern";
-			break;
+        case 11:
+            if(lang == 'eng') return "Save Changes";
+            if(lang == 'ger') return "Änderungen speichern";
+            break;
+        case 12:
+            if(lang == 'eng') return "Choose Language";
+            if(lang == 'ger') return "Sprache Wählen";
+            break;
+        case 13:
+            if(lang == 'eng') return "German";
+            if(lang == 'ger') return "Deutsche";
+            break;
 		case 14:
-			if (lang == 'eng') return "Example Username";
-			if (lang == 'ger') return "Beispiel-Benutzername";
-			break;
-		case 15:
-			if (lang == 'eng') return "New Password";
-			if (lang == 'ger') return "Neue Passwort";
-			break;
+			if(lang == 'eng') return "Confirm Password";
+			if(lang == 'ger') return "German Confirm Password"; // PLACEHOLDER
 	}
 }

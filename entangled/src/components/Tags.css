@@ -18,15 +18,11 @@ body {
     margin:auto;
     width:44%;
     height:740px;
+    max-height: 740px;
     left: 4%;
     top:-62px;
     float:left;
-}
-
-#tagsPageStatus {
-    position: relative;
-    top: 45%;
-    float:left;
+    overflow-y: scroll;
 }
 
 #rightcolumn {

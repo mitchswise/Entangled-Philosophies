@@ -10,21 +10,21 @@
 
 	$inData = json_decode(file_get_contents('php://input'), true);
 
-    if($inData["url"] != "none") { //a file is being added
-        $query = "SELECT url FROM papers WHERE id = " . $inData["id"] . ";";
-        $result = $conn->query($query);
-        if(!$result) {
-            echo '{"status":"' . $conn->error . '", "query":"' . $query . '"}';
-            return;
-        }
-        if($result->num_rows == 0) {
-            echo '{"status":"paper does not exist"}';
-            return;
-        }
+    $query = "SELECT url FROM papers WHERE id = " . $inData["id"] . ";";
+    $result = $conn->query($query);
+    if(!$result) {
+        echo '{"status":"' . $conn->error . '", "query":"' . $query . '"}';
+        return;
+    }
+    if($result->num_rows == 0) {
+        echo '{"status":"paper does not exist"}';
+        return;
+    }
 
-        $row = $result->fetch_assoc();
+    $row = $result->fetch_assoc();
+    if($row["url"] != $inData["url"]) {
+        //need to unlink this file if it exists
         if($row["url"] != "none") {
-            //need to unlink this file
             $full_URL = $paperurl . $row["url"];
             unlink($full_URL);
         }

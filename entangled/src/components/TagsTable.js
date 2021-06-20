@@ -40,7 +40,7 @@ export default function Table({ columns, data, loadTag, addTags, toggleView }) {
         <div>
         <input
             value={filterInput}
-            id="tagsSearchBar"
+            id="tagsTableSearchBar"
             onChange={handleFilterChange}
             placeholder={"Search name"}
         />

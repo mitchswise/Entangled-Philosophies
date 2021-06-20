@@ -33,6 +33,10 @@
     width: 200%;
 }
 
+#customSearchBar {
+    width: 100%;
+}
+
 #tagsDynamicFilter {
     border: solid 1px;
     height: 26px;
@@ -163,7 +167,7 @@
     bottom: 10px;
 }
 
-.bottomSaveButtons {
+.bottomSaveButtonsFilter {
     border-radius: 10px;
     border: none;
     color: white;
@@ -177,10 +181,32 @@
     font-size: 18px;
 }
 
+.utilityButtonsCustomFilter {
+    height: 30px;
+    width: 80px;
+}
+
 #filterSaveButton {
     background-color: #229acf;
 }
 
 #filterCancelButton {
     background-color: #fd1200;
+}
+
+#customFilterSaveButton {
+    background-color: #229acf;
+}
+
+#customFilterCancelButton {
+    background-color: #fd1200;
+}
+
+#customFilterBottomButtons {
+    width: 90%;
+    display:flex;
+    justify-content: center;
+    align-content: center;
+    position: absolute;
+    bottom:10px;
 }

@@ -20,7 +20,7 @@ export const doAddPaper = async e => {
 
 	var title = document.getElementById("titleName").value;
 	if (title == "") {
-		document.getElementById("paperStatus").innerHTML = "Paper must include a title";
+		document.getElementById("uploadStatus").innerHTML = "Paper must include a title";
 		return;
 	}
 	var filename = document.getElementById("filename").innerHTML;
@@ -47,7 +47,7 @@ export const doAddPaper = async e => {
 	var i;
 	for (i = 0; i < tagIDs.length; i++) {
 		data = addTagToPaper(id, tagIDs[i], 0);
-		document.getElementById("paperStatus").innerHTML = data.status;
+		document.getElementById("uploadStatus").innerHTML = data.status;
 	}
 
 	//add all metadata as tags
@@ -92,7 +92,7 @@ export const doAddPaper = async e => {
 	}
 	document.getElementById("filename").innerHTML = "";
 
-	document.getElementById("paperStatus").innerHTML = "Uploaded Paper";
+	document.getElementById("uploadStatus").innerHTML = "Uploaded Paper";
 }
 
 export default class UploadPaper extends React.Component {
@@ -157,10 +157,10 @@ export default class UploadPaper extends React.Component {
 			if (data.tag_id >= 0) {
 				tagsList.push(tag);
 				tagIDs.push(data.tag_id);
-				document.getElementById("paperStatus").innerHTML = "";
+				document.getElementById("uploadStatus").innerHTML = "";
 			}
 			else {
-				document.getElementById("paperStatus").innerHTML = "Tag Not Found";
+				document.getElementById("uploadStatus").innerHTML = "Tag Not Found";
 			}
 			console.log(tagsList);
 
@@ -186,10 +186,10 @@ export default class UploadPaper extends React.Component {
 				if (index > -1) {
 					tagIDs.splice(index, 1);
 				}
-				document.getElementById("paperStatus").innerHTML = "";
+				document.getElementById("uploadStatus").innerHTML = "";
 			}
 			else {
-				document.getElementById("paperStatus").innerHTML = "Tag Not Found";
+				document.getElementById("uploadStatus").innerHTML = "Tag Not Found";
 			}
 			console.log(tagsList);
 
@@ -319,31 +319,29 @@ export default class UploadPaper extends React.Component {
 								onClick={doDeleteTag}><div id="addTagBtnTxt">-</div></button>
 							<input type="text" className="PaperBoxes" id="tagsearch" /><br />
 
-							<br /><br /><br />
+							<div id="fileUploadDiv">
+								<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
+								<input type="hidden" id="filename" />
+								{this.state.isFilePicked ? (
+									// <></>
+									<div>
+										<p>Size: {this.state.selectedFile.size}</p>
+									</div>
+								) : (
+									<p>Select a file to show details</p>
+								)}
+								<button type="button" id="clearUploadButton" onClick={this.removeUpload}>Remove Upload</button>
+							</div>
 
-							<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
-							<input type="hidden" id="filename" />
-							{this.state.isFilePicked ? (
-								<div>
-									<p>Filename: {this.state.selectedFile.name}</p>
-									<p>Filetype: {this.state.selectedFile.type}</p>
-									<p>Size: {this.state.selectedFile.size}</p>
-								</div>
-							) : (
-								<p>Select a file to show details</p>
-							)}
-							<button type="button" id="clearUploadButton" onClick={this.removeUpload}>Remove Upload</button>
 
+							<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">Upload</div></button>
 							<div id="uploadStatus"></div>
-
-							<button type="button" className="PaperBoxes" id="upload" onClick={this.handleSubmission}><div id="uploadBtnTxt">Upload</div></button>
 
 
 						</div>
 
 					</div>
 				</div>
-				<div id="paperStatus"></div>
 			</body>
 		</div>
 	}
