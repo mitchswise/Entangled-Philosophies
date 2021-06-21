@@ -3,8 +3,6 @@ import { useState } from 'react';
 import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter } from "react-table";
 import { cookies } from "../api";
 import './Table.css';
-import TableScrollbar from 'react-table-scrollbar';
-
 
 export default function Table({ columns, data, loadFilter, saveQuery, loadPaper }) {
     const {
@@ -63,8 +61,8 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper 
         
         </div>
 
-        <TableScrollbar id="SearchLeftTableScroll" height="704px">
-
+        <div id="SearchTableWrapper" style={{overflowY:"scroll", maxHeight:"95%"}} >
+        
         <table  {...getTableProps()}>
             <thead>
             {headerGroups.map(headerGroup => (
@@ -101,7 +99,7 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper 
             </tbody>
         </table>
 
-        </TableScrollbar>
+        </div>
 
         <div id="prevNextBox">
         
