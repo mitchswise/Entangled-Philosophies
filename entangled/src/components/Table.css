@@ -38,7 +38,17 @@ table th {
 .leftBoxTop{
     width: 100%;
     height:5%;
+    min-width: 100%;
+    /* display: grid; */
+    vertical-align: top;
     border-bottom: 1px solid black;
+}
+
+#SearchTableWrapper {
+  overflow-y: scroll;
+  overflow-x: scroll;
+  max-height: 95%;
+  /* display: grid; */
 }
 
 #tagsSearchBar {
@@ -59,7 +69,18 @@ table th {
   border-right:none !important;
 }
 
-
+#rightButtons {
+  float: left;
+  height:100%;
+  border: none;
+  border-right:none !important;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: none !important;
+}
+#rightButtons:hover {
+  background-color: #ddd;
+}
 
 #saveQuery:hover{
   background-color: #ddd;
@@ -92,10 +113,7 @@ table th {
 }
 
 #tagsAddButton:hover {
-  
   background-color: #ddd;
-
-
 }
 
 #searchSearchBar{
@@ -103,7 +121,7 @@ table th {
   border:none;
   height:100%;
   position: relative;
-  width:80%;
+  width:72%;
   margin:0;
   padding:0;
   padding-left: 10px;
@@ -131,5 +149,6 @@ table th {
 }
 
 #prevNextBox{
+  /* display: grid; */
   margin-left: 30%;
 }

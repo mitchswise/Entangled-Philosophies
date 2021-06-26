@@ -6,24 +6,10 @@ import { loadTags } from './EditPaper.js';
 import Table from "./Table.js";
 import QueryPopup from './saveQueryPopup.js';
 import EditPaper from './EditPaper.js';
+import OptionsPopup from './optionsPopup.js';
 import { parseCustomQuery, translateToSQL, isDigit } from './SQLTranslate.js';
+import { metadata_ids, metadata_categories } from './UploadPaper.js';
 import './Search.css';
-
-
-const columnsTags = [
-    {
-        Header: "Name",
-        accessor: "title",
-    },
-    {
-        Header: "Author",
-        accessor: "author"
-    },
-    {
-        Header: "Language",
-        accessor: "language"
-    }
-];
 
 //loads all available tags for a user
 function getTagData() {
@@ -222,6 +208,17 @@ export default class Search extends React.Component {
         }
         return this.props.location.state.customQuery;
     }
+    makeInitialOptions = () => {
+        var options = {};
+        for(const idx in metadata_ids) {
+            options[metadata_ids[idx]] = false;
+        }
+        options["title"] = true;
+        options["author"] = true;
+        options["language"] = true;
+
+        return options;
+    }
 
     state = {
         isFilterOpen: false,
@@ -233,7 +230,9 @@ export default class Search extends React.Component {
         customQuery: this.getExistingCustomQuery(),
         lastQueryTypeUsed: 0,
         publicTags: [],
-        privateTags: []
+        privateTags: [],
+        isOptionsOpen: false,
+        checkedOptions: this.makeInitialOptions()
     }
 
     updateHistory = (newFitlerState, userID) => {
@@ -280,8 +279,6 @@ export default class Search extends React.Component {
             query_type: query_type, is_history: is_history, display_query: display_query
         };
 
-        console.log("DISPLAY " + display_query);
-
         saveQuery(jsonDict);
 
         this.toggleSavePopup();
@@ -320,10 +317,17 @@ export default class Search extends React.Component {
         var currentTags = loadTags(paperInfo);
         this.setState({ publicTags: currentTags.filter(item => item.owner == 0) });
         this.setState({ privateTags: currentTags.filter(item => item.owner != 0) });
-        
     }
     closePaper = () => {
         this.setState((prevState) => ({ paperInformation: undefined }));
+    }
+
+    loadOptions = () => {
+        this.setState((prevState) => ({ isOptionsOpen: !prevState.isOptionsOpen }));
+    }
+    saveOptions = (newOptions) => {
+        this.setState((prevState) => ({ isOptionsOpen: !prevState.isOptionsOpen }));
+        this.setState((prevState) => ({ checkedOptions: newOptions }));
     }
 
     updatePrivateTagList = (privateTags, adding) => {
@@ -492,10 +496,23 @@ export default class Search extends React.Component {
         this.setState({ openEditPaper: false });
     }
 
+    makeTableColumns = () => {
+        const { checkedOptions } = this.state;
+        var columns = [];
+        for(const idx in metadata_ids) {
+            if(checkedOptions[metadata_ids[idx]] == true) {
+                columns.push({ Header: metadata_categories[idx], accessor:metadata_ids[idx] });
+            }
+        }
+        return columns;
+    }
+
     render() {
         const { isFilterOpen, isSaveOpen, filterState,
             openEditPaper, paperData, paperInformation,
-            customQuery } = this.state;
+            customQuery, isOptionsOpen } = this.state;
+
+        let tableColumns = this.makeTableColumns();
 
         if (openEditPaper) {
             return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />
@@ -515,11 +532,16 @@ export default class Search extends React.Component {
                     handleClose={this.toggleSavePopup}
                     handleSave={this.handleQuerySave}
                 />}
+                {isOptionsOpen && <OptionsPopup
+                    loadOptions={this.loadOptions}
+                    currentOptions={this.state.checkedOptions}
+                    saveOptions={this.saveOptions}
+                />}
                 <div className="box" id="leftBox">
 
-                    <Table class="tagElement" id="tagTable" columns={columnsTags}
+                    <Table class="tagElement" id="tagTable" columns={tableColumns}
                         data={paperData} loadFilter={this.togglePopup} saveQuery={this.toggleSavePopup}
-                        loadPaper={this.loadPaper} />
+                        loadPaper={this.loadPaper} loadOptions={this.loadOptions} />
 
                 </div>
 

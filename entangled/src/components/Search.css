@@ -79,13 +79,16 @@ div.header {
 }
 
 #leftBox, #rightBox {
-    /* display: inline-block;    */
     min-height: 350px; 
 } 
 
 #leftBox {
     margin-left: 4%;
     float: left;
+    position: absolute;
+    /* display: grid; */
+    /* display: inline-block; */
+    /* width: 45%; */
     /* top:-355px; */
     max-height:740px;
 
