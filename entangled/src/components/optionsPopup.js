@@ -5,7 +5,7 @@ import { metadata_categories, metadata_ids } from "./UploadPaper";
 export default class OptionsPopup extends React.Component {
 
     state = {
-        currentOptions: this.props.currentOptions
+        currentOptions: {...this.props.currentOptions}
     }
 
     changeCheck = (id) => {
