@@ -38,8 +38,8 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper,
         setFilterInput(value);
     };
 
-    var browser = navigator.userAgent.toLowerCase().indexOf('mozilla') > -1 ? 'mozilla' : 'other';
-    var searchBarID = browser == 'mozilla' ? "searchSearchBarMozilla" : "searchSearchBarOther"
+    var browser = navigator.userAgent.toLowerCase().indexOf('chrome') > -1 ? 'other' : 'mozilla';
+    var searchBarID = browser == 'other' ? "searchSearchBarChrome" : "searchSearchBarMozilla"
 
     return (
         <>
