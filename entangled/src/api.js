@@ -556,3 +556,19 @@ export function changePassword(id, password) {
 		return null;
 	}
 }
+
+export function getWordCloudTags(dict) {
+	var jsonPayload = JSON.stringify(dict);
+
+	var url = urlBase + '/wordCloud.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		console.log("Done! " + xhr.responseText);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
