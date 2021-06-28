@@ -37,10 +37,30 @@ function doLogin() {
 
 export default class Login extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.enterLogin = this.enterLogin.bind(this);
+    }
+
     renderRedirect = () => {
         if(cookies.get('UserID')) {
             return <Redirect to = '/' />
         }
+    }
+
+    enterLogin(event) {
+        if(event.keyCode == 13) {
+            doLogin();
+        }
+    }
+
+    componentDidMount() {
+        document.getElementById("username").addEventListener("keydown", this.enterLogin, false);
+        document.getElementById("password").addEventListener("keydown", this.enterLogin, false);
+    }
+    componentWillUnmount() {
+        document.getElementById("username").removeEventListener("keydown", this.enterLogin, false);
+        document.getElementById("password").removeEventListener("keydown", this.enterLogin, false);
     }
 
     render() {
