@@ -47,6 +47,17 @@ position: relative;
   position:relative;
 }
 
+#logo3{
+  width:34px;
+  height:34px;
+  float:right;
+  right:2%;
+  top:10px;
+  position:relative;
+  text-decoration: none;
+  font-weight: 100;
+}
+
 .App-link {
   color: #61dafb;
 }

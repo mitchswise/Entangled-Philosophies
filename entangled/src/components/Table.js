@@ -4,7 +4,7 @@ import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter } from 
 import { cookies } from "../api";
 import './Table.css';
 
-export default function Table({ columns, data, loadFilter, saveQuery, loadPaper, loadOptions }) {
+export default function Table({ columns, data, loadFilter, saveQuery, loadPaper, loadOptions, loadVisualize }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -65,7 +65,7 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper,
                     id="rightButtons"
                     type="button"
                     value="Visualize"
-                    onClick={console.log("Hi")}
+                    onClick={loadVisualize}
                 />
                 <input
                     id="rightButtons"

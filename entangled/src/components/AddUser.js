@@ -1,29 +1,46 @@
 import React from 'react';
-import { tagFilter } from '../api.js';
+import ReactWordcloud from 'react-wordcloud';
 
-function doTagFilter() {
-    let tagIDs = [35];
-    var dict = {tags:tagIDs};
-
-    var data = tagFilter(dict);
-    // console.log("Done! " + JSON.stringify(data.tags))
-}
+export const words = [
+    {
+      text: 'told',
+      value: 64,
+    },
+    {
+      text: 'mistake',
+      value: 11,
+    },
+    {
+      text: 'thought',
+      value: 16,
+    },
+    {
+      text: 'bad',
+      value: 17,
+    },
+]  
+export const options = {
+    colors: ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"],
+    enableTooltip: true,
+    deterministic: false,
+    fontFamily: "impact",
+    fontSizes: [20, 60],
+    fontStyle: "normal",
+    fontWeight: "normal",
+    padding: 1,
+    rotations: 3,
+    rotationAngles: [0, 0],
+    scale: "sqrt",
+    spiral: "archimedean",
+    transitionDuration: 1000
+  };
 
 export default class AddUser extends React.Component {
     render() {
         const element = (
-        <div className="container" id="outer-container"> 
-
-            <h3>Test getPapersTag</h3>
-            <input id="paperID" placeholder="paper id"></input>
-            <input id="language1" placeholder="language"></input>
-            <input id="userID" placeholder="user ID"></input>
-            <button onClick={doTagFilter}>Submit</button>
-
-            {/* <button onClick={doEditPaper}> Test Edit Paper </button> */}
-            
-            <div id="tagStatus">Status: </div>
-        </div>
+            <ReactWordcloud 
+                words={words}
+                options={options} />
         );
         return element; 
     }

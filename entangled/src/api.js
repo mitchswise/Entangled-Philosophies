@@ -1,7 +1,8 @@
 import Cookies from 'universal-cookie';
 export const cookies = new Cookies();
 export const supported_languages = ["eng", "ger"];
-export const urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+// export const urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+export const urlBase = 'http://chdr.cs.ucf.edu/~ah458967/Entangled-Philosophies/api';
 export const fileURLBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/paper/';
 
 var xhr;
@@ -550,6 +551,22 @@ export function changePassword(id, password) {
 
 	try {
 		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function getWordCloudTags(dict) {
+	var jsonPayload = JSON.stringify(dict);
+
+	var url = urlBase + '/wordCloud.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		console.log("Done! " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
