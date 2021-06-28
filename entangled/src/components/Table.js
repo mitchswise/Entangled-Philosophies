@@ -38,6 +38,9 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper,
         setFilterInput(value);
     };
 
+    var browser = navigator.userAgent.toLowerCase().indexOf('mozilla') > -1 ? 'mozilla' : 'other';
+    var searchBarID = browser == 'mozilla' ? "searchSearchBarMozilla" : "searchSearchBarOther"
+
     return (
         <>
             <div class="leftBoxTop">
@@ -54,7 +57,7 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper,
                 />
                 <input
                     value={filterInput}
-                    id="searchSearchBar"
+                    id={searchBarID}
                     onChange={handleFilterChange}
                     placeholder={"Search name"}
                 />

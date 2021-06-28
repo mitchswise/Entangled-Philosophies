@@ -51,16 +51,6 @@ table th {
   /* display: grid; */
 }
 
-#tagsSearchBar {
-  height:34px;
-  position: relative;
-  width:79.53%;
-  top:1px;
-  border:none;
-  float:left;
-  border-radius: 0px;
-}
-
 #saveQuery{
   float: left;
   border: none;
@@ -95,7 +85,7 @@ table th {
   border-top:none;
   border-bottom:none;
   height:100%;
-  left:1px;
+  /* left:1px; */
   position: relative;
   border-left:1px solid black;
   border-radius: 0px !important;
@@ -104,7 +94,6 @@ table th {
 #tagsAddButton {
   width:10%;
   height:34px;
-  left:0px;
   position: relative;
   border-radius: 0px;
   float:right;
@@ -116,7 +105,7 @@ table th {
   background-color: #ddd;
 }
 
-#searchSearchBar{
+#searchSearchBarMozilla{
   float:left;
   border:none;
   height:100%;
@@ -127,6 +116,16 @@ table th {
   padding-left: 10px;
 }
 
+#searchSearchBarOther{
+  float:left;
+  border:none;
+  height:100%;
+  position: relative;
+  width:68%;
+  margin:0;
+  padding:0;
+  padding-left: 10px;
+}
 
 #pageNumbers {
   position: relative;
