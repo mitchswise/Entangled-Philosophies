@@ -7,17 +7,19 @@ var tagsList = [];
 var tagIDs = [];
 var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/uploadPaper.php';
 
-export const doAddPaper = async e => {
-	let field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
-		"description", "type", "format", "languageBox", "sourceBox",
-		"publisher", "rights", "coverage", "isbn", "urlBox"];
-	let metadata_ids = ["title", "author", "contributor", "relation", "subject", "date",
-		"description", "type", "format", "language", "source",
-		"publisher", "rights", "coverage", "isbn", "paper_url"];
-	let metadata_categories = ["Title", "Author", "Contributor", "Relation", "Subject", "Date",
-		"Description", "Type", "Format", "Language", "Source",
-		"Publisher", "Rights", "Coverage", "ISBN", "URL"];
+export const field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
+"description", "type", "format", "languageBox", "sourceBox",
+"publisher", "rights", "coverage", "isbn", "urlBox"];
 
+export const metadata_ids = ["title", "author", "contributor", "relation", "subject", "date",
+"description", "type", "format", "language", "source",
+"publisher", "rights", "coverage", "isbn", "paper_url"];
+
+export const metadata_categories = ["Title", "Author", "Contributor", "Relation", "Subject", "Date",
+"Description", "Type", "Format", "Language", "Source",
+"Publisher", "Rights", "Coverage", "ISBN", "URL"];
+
+export const doAddPaper = async e => {
 	var title = document.getElementById("titleName").value;
 	if (title == "") {
 		document.getElementById("uploadStatus").innerHTML = "Paper must include a title";

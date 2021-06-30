@@ -19,6 +19,11 @@ function doAddUser(preferredLanguage) {
     var username = document.getElementById("username").value;
     var email = document.getElementById("email").value;
     var language = preferredLanguage;
+	
+	var passLetter = /[abcdefghijklmnopqrstuvwxyz]/;
+	var passUpper = /[ABCDEFGHIJKLMNOPWRSTUVWXYZ]/;
+	var passNum = /[1234567890]/;
+	var passSpecial = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
 
     if (!username) {
         document.getElementById("registerUserStatus").innerHTML = ("Enter a username.");
@@ -37,6 +42,31 @@ function doAddUser(preferredLanguage) {
         document.getElementById("registerUserStatus").innerHTML = ("Passwords do not match");
         return;
     }
+
+	if (firstPass.length < 8) {
+		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 8 characters.");
+		return;
+	}
+
+	if (!passLetter.test(firstPass) || !passUpper.test(firstPass)) {
+		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 1 lowercase and uppercase letter.");
+		return;
+	}
+
+	if (!passNum.test(firstPass)) {	
+		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 1 number.");
+		return;
+	}
+
+	if (!passSpecial.test(firstPass)) {
+		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 1 special character.");
+		return;
+	}
+
+	if (firstPass.includes(" ")) {
+		document.getElementById("registerUserStatus").innerHTML = ("Password must not contain spaces.");
+	}
+
     if (!validateEmail(email)) {
         document.getElementById("registerUserStatus").innerHTML = ("Invalid email");
         return;

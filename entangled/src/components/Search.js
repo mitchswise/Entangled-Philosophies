@@ -1,29 +1,17 @@
 import React, { useState } from 'react';
 import Filter from './Filter.js';
 import { cookies, getTags, tagExists, sqlSearch, handleHistory, saveQuery, fileURLBase,
-    removeTagFromPaper, addTagToPaper } from '../api.js'
+    removeTagFromPaper, addTagToPaper, getWordCloudTags } from '../api.js'
 import { loadTags } from './EditPaper.js';
 import Table from "./Table.js";
 import QueryPopup from './saveQueryPopup.js';
 import EditPaper from './EditPaper.js';
+import OptionsPopup from './optionsPopup.js';
 import { parseCustomQuery, translateToSQL, isDigit } from './SQLTranslate.js';
+import { metadata_ids, metadata_categories } from './UploadPaper.js';
+import ReactWordcloud from 'react-wordcloud';
+import { words, options } from './AddUser.js';
 import './Search.css';
-
-
-const columnsTags = [
-    {
-        Header: "Name",
-        accessor: "title",
-    },
-    {
-        Header: "Author",
-        accessor: "author"
-    },
-    {
-        Header: "Language",
-        accessor: "language"
-    }
-];
 
 //loads all available tags for a user
 function getTagData() {
@@ -222,6 +210,17 @@ export default class Search extends React.Component {
         }
         return this.props.location.state.customQuery;
     }
+    makeInitialOptions = () => {
+        var options = {};
+        for(const idx in metadata_ids) {
+            options[metadata_ids[idx]] = false;
+        }
+        options["title"] = true;
+        options["author"] = true;
+        options["language"] = true;
+
+        return options;
+    }
 
     state = {
         isFilterOpen: false,
@@ -233,7 +232,10 @@ export default class Search extends React.Component {
         customQuery: this.getExistingCustomQuery(),
         lastQueryTypeUsed: 0,
         publicTags: [],
-        privateTags: []
+        privateTags: [],
+        isOptionsOpen: false,
+        checkedOptions: this.makeInitialOptions(),
+        dataVisualization: 0
     }
 
     updateHistory = (newFitlerState, userID) => {
@@ -280,8 +282,6 @@ export default class Search extends React.Component {
             query_type: query_type, is_history: is_history, display_query: display_query
         };
 
-        console.log("DISPLAY " + display_query);
-
         saveQuery(jsonDict);
 
         this.toggleSavePopup();
@@ -289,6 +289,8 @@ export default class Search extends React.Component {
     handleFilterSave = (newFitlerState, customSearchSQL) => {
         var userID = -1;
         if (cookies.get('UserID')) userID = cookies.get('UserID');
+
+        this.setState((prevState) => ({ dataVisualization: 0 }));
 
         if (newFitlerState !== undefined) {
             this.setState((prevState) => ({ filterState: newFitlerState }));
@@ -317,13 +319,21 @@ export default class Search extends React.Component {
 
     loadPaper = (paperInfo) => {
         this.setState((prevState) => ({ paperInformation: paperInfo }));
+        this.setState((prevState) => ({ dataVisualization: 0 }));
         var currentTags = loadTags(paperInfo);
         this.setState({ publicTags: currentTags.filter(item => item.owner == 0) });
         this.setState({ privateTags: currentTags.filter(item => item.owner != 0) });
-        
     }
     closePaper = () => {
         this.setState((prevState) => ({ paperInformation: undefined }));
+    }
+
+    loadOptions = () => {
+        this.setState((prevState) => ({ isOptionsOpen: !prevState.isOptionsOpen }));
+    }
+    saveOptions = (newOptions) => {
+        this.setState((prevState) => ({ isOptionsOpen: !prevState.isOptionsOpen }));
+        this.setState((prevState) => ({ checkedOptions: newOptions }));
     }
 
     updatePrivateTagList = (privateTags, adding) => {
@@ -492,10 +502,60 @@ export default class Search extends React.Component {
         this.setState({ openEditPaper: false });
     }
 
+    makeTableColumns = () => {
+        const { checkedOptions } = this.state;
+        var columns = [];
+        for(const idx in metadata_ids) {
+            if(checkedOptions[metadata_ids[idx]] == true) {
+                columns.push({ Header: metadata_categories[idx], accessor:metadata_ids[idx] });
+            }
+        }
+        return columns;
+    }
+
+    collectTags = () => {
+        try {
+            const { paperData } = this.state;
+            if(paperData.length == 0) {
+                return [];
+            }
+    
+            var userID = 0;
+            if(cookies.get('UserID')) userID = cookies.get('UserID');
+            var prefLang = "eng";
+            if(cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
+    
+            // console.log("Okay " + JSON.stringify(paperData));
+    
+            var paperIDs = [];
+            for(const idx in paperData) {
+                paperIDs.push(paperData[idx].id);
+            }
+    
+            var dict = {userID: userID, language:prefLang, papers:paperIDs };
+            return getWordCloudTags(dict).tags;
+        }
+        catch (error) {
+            return [];
+        }
+    }
+
+    loadWordCloud = () => {
+        console.log("Here?");
+        this.setState((prevState) => ({ paperInformation: undefined }));
+        this.setState((prevState) => ({ dataVisualization: 1 }));
+    }
+
     render() {
         const { isFilterOpen, isSaveOpen, filterState,
             openEditPaper, paperData, paperInformation,
-            customQuery } = this.state;
+            customQuery, isOptionsOpen, dataVisualization } = this.state;
+
+        let tableColumns = this.makeTableColumns();
+        var newWords = undefined;
+        if(dataVisualization == 1) {
+            newWords = this.collectTags();
+        }
 
         if (openEditPaper) {
             return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />
@@ -515,11 +575,17 @@ export default class Search extends React.Component {
                     handleClose={this.toggleSavePopup}
                     handleSave={this.handleQuerySave}
                 />}
+                {isOptionsOpen && <OptionsPopup
+                    loadOptions={this.loadOptions}
+                    currentOptions={this.state.checkedOptions}
+                    saveOptions={this.saveOptions}
+                />}
                 <div className="box" id="leftBox">
 
-                    <Table class="tagElement" id="tagTable" columns={columnsTags}
+                    <Table class="tagElement" id="tagTable" columns={tableColumns}
                         data={paperData} loadFilter={this.togglePopup} saveQuery={this.toggleSavePopup}
-                        loadPaper={this.loadPaper} />
+                        loadPaper={this.loadPaper} loadOptions={this.loadOptions}
+                        loadVisualize={this.loadWordCloud} />
 
                 </div>
 
@@ -527,6 +593,7 @@ export default class Search extends React.Component {
 
                     {
                         paperInformation !== undefined ? this.viewPaper() :
+                        dataVisualization === 1 ? <ReactWordcloud words={newWords} options={options} /> :
                             <></>
                     }
 
