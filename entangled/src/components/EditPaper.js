@@ -262,7 +262,6 @@ export default class EditPaper extends React.Component {
     }
 
     render() {
-        console.log("Hi " + JSON.stringify(this.props.paperInformation));
         const doAddTag = async e => {
             var tag = document.getElementById("tagsearch").value;
 

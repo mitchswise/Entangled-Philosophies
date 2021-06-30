@@ -82,12 +82,13 @@ div.header {
     min-height: 350px; 
 } 
 
+
 #leftBox {
     margin-left: 4%;
     float: left;
     position: absolute;
     max-height: 40vh;
-
+    text-align: center !important;
 }
 #rightBox {
     margin-right: 4%;

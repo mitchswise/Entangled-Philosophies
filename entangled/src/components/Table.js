@@ -44,35 +44,30 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper,
     return (
         <>
             <div class="leftBoxTop">
-                <input id="saveQuery"
-                    type="button"
-                    value="Save Query"
-                    disabled={!cookies.get('UserID')}
-                    onClick={saveQuery}
-                />
-                <input id="Filter"
-                    type="button"
-                    value="Filter"
-                    onClick={loadFilter}
-                />
+
+                <button id="saveQuery" disabled={!cookies.get('UserID')} onClick={saveQuery}>Save Query</button>
+
+                <button id="Filter" onClick={loadFilter}>Filter</button>
+
                 <input
                     value={filterInput}
                     id={searchBarID}
                     onChange={handleFilterChange}
                     placeholder={"Search name"}
                 />
-                <input
-                    id="rightButtons"
-                    type="button"
-                    value="Visualize"
-                    onClick={loadVisualize}
-                />
-                <input
-                    id="rightButtons"
-                    type="button"
-                    value="Options"
-                    onClick={loadOptions}
-                />
+
+
+                <div class="dropdownSearch">
+                    <button class="dropbtnSearch">Visualize</button>
+                    <div class="dropdown-contentSearch">
+                        <button className="rightButton2" onClick={() => loadVisualize(1)}>Word Cloud</button>
+                        <button className="rightButton2" id="barChartButton" onClick={() => loadVisualize(2)}>Bar Chart</button>
+                    </div>
+                </div>
+
+
+
+                <button id="rightButtons" onClick={loadOptions}>Options</button>
 
             </div>
 
@@ -116,25 +111,22 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper,
 
             </div>
 
-            <div id="prevNextBox">
-
-                <button class="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
-                <span class="pageNumbers">
-                    Page{' '}
-                    {pageIndex + 1} / {pageOptions.length}
-                    {' '}
-                </span>
-                <button class="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
-                <select class="pageNumbers" id="showNumber" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
-                    {
-                        [10, 15, 20].map(pageSize => (
-                            <option key={pageSize} value={pageSize} >
-                                Show {pageSize}
-                            </option>
-                        ))
-                    }
-                </select>
-            </div>
+            <button class="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
+            <span class="pageNumbers">
+                Page{' '}
+                {pageIndex + 1} / {pageOptions.length}
+                {' '}
+            </span>
+            <button class="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
+            <select class="pageNumbers" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
+                {
+                    [10, 15, 20].map(pageSize => (
+                        <option key={pageSize} value={pageSize} >
+                            Show {pageSize}
+                        </option>
+                    ))
+                }
+            </select>
 
         </>
     );
