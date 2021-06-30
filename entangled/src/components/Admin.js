@@ -80,12 +80,15 @@ const Admin = () => {
 					<details>
 						<summary>
                    			{array.username} - {array.id}
+							<div id="removeUser" onClick={() => handleRemove(array.username, array.id)}>
+								{/* Remove {array.username}*/} X
+							</div>
                			</summary>
-						<p>
+						{/* <p>
 						<button onClick={() => handleRemove(array.username, array.id)}>
 							Remove {array.username}
 						</button>
-						</p>
+						</p> */}
 					</details>
 				);
 			} else {
