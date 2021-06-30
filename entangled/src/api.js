@@ -572,3 +572,18 @@ export function getWordCloudTags(dict) {
 		return null;
 	}
 }
+
+export function paperExists(title, author) {
+	var jsonPayload = '{"title":"' + title + '", "author":"' + author + '"}';
+	
+	var url = urlBase + '/paperExists.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
