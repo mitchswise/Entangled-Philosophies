@@ -77,7 +77,7 @@ export function sendActivation(username) {
 export function resetPassword(username, email) {
 	var jsonPayload = '{"username":"' + username + '", "email":"' + email + '"}';
 	var url = urlBase + '/resetPassword.php';
-
+	
 	connect("POST", url);
 
 	try {
@@ -107,7 +107,7 @@ export function setPerms(username, permission_level) {
 export function getPerms(username) {
 	var jsonPayload = '{"username":"' + username + '"}';
 	var url = urlBase + '/getPerms.php';
-
+	
 	connect("POST", url);
 
 	try {
@@ -142,7 +142,7 @@ export function addTag(user, language, translations, edit_tag) {
 
 	var url = urlBase + '/addTag.php';
 	connect("POST", url);
-
+	
 	try {
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);
@@ -158,7 +158,7 @@ export function removeTag(name, language, user) {
 
 	var url = urlBase + '/removeTag.php';
 	connect("POST", url);
-
+	
 	try {
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);
@@ -208,7 +208,7 @@ export function addCategory(user, cat_id, translations) {
 
 	var url = urlBase + '/addCategory.php';
 	connect("POST", url);
-
+	
 	try {
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);
@@ -224,7 +224,7 @@ export function removeCategory(name, language, user) {
 
 	var url = urlBase + '/removeCategory.php';
 	connect("POST", url);
-
+	
 	try {
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);
@@ -267,9 +267,9 @@ export function getCategoryTranslation(cat_id) {
 export function addPaper(metadata_dict) {
 	var jsonPayload = JSON.stringify(metadata_dict);
 
-	var url = urlBase + '/addPaper.php';
+	var url = urlBase + '/addPaper.php';	
 	connect("POST", url);
-
+  
   try {
 		xhr.send(jsonPayload);
 		var jsonObject = JSON.parse(xhr.responseText);
@@ -297,7 +297,7 @@ export function addMetadataTag(category, language, text, tag_id) {
 
 export function removePaper(id) {
 	var jsonPayload = '{"id":' + id + '}';
-
+	
 	var url = urlBase + '/removePaper.php';
  	connect("POST", url);
 
@@ -330,7 +330,7 @@ export function addTagToPaper(paper_id, tag_id, userID) {
 	var jsonDict = {paper_id:paper_id, tag_id:tag_id, userID:userID };
 	var jsonPayload = JSON.stringify(jsonDict);
 
-
+	
 	var url = urlBase + '/addTagToPaper.php';
 	connect("POST", url);
 
@@ -343,6 +343,10 @@ export function addTagToPaper(paper_id, tag_id, userID) {
 	}
 }
 
+export function getUserInfo(userID) {
+	var jsonDict = { id:userID };
+	var jsonPayload = JSON.stringify(jsonDict);
+	
 	var url = urlBase + '/getUserInfo.php';
 	connect("POST", url);
 
@@ -420,7 +424,7 @@ export function getQueries(userID) {
 
 export function removeQueries(jsonDict) {
 	var jsonPayload = JSON.stringify(jsonDict);
-
+	
 	var url = urlBase + '/removeQueries.php';
 	connect("POST", url);
 
@@ -435,7 +439,7 @@ export function removeQueries(jsonDict) {
 
 export function getPapersTag(jsonDict) {
 	var jsonPayload = JSON.stringify(jsonDict);
-
+	
 	var url = urlBase + '/getPapersTag.php';
 	connect("POST", url);
 
@@ -450,7 +454,7 @@ export function getPapersTag(jsonDict) {
 
 export function editPaper(jsonDict) {
 	var jsonPayload = JSON.stringify(jsonDict);
-
+	
 	var url = urlBase + '/editPaper.php';
 	connect("POST", url);
 
@@ -465,7 +469,7 @@ export function editPaper(jsonDict) {
 
 export function removeTagFromPaper(jsonDict) {
 	var jsonPayload = JSON.stringify(jsonDict);
-
+	
 	var url = urlBase + '/removePaperTag.php';
 	connect("POST", url);
 
