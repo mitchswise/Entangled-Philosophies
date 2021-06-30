@@ -297,6 +297,17 @@
     margin: 0;
 }
 
+#leftLocation {
+    position: relative;
+    left: -254px;
+    top: -672px;
+}
+
+#location {
+    top: -722px;
+    margin: 0;
+}
+
 #leftTags
 {
     position: relative;
