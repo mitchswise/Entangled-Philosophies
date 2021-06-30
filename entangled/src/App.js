@@ -17,8 +17,12 @@ import Queries from './components/Queries.js';
 import Logo from './components/logo.JPG';
 import Logo2 from './components/mag_glass.JPG';
 import { cookies } from './api.js';
+import CookieConsent from "react-cookie-consent";
 
 function App() {
+  const publicIp = require('public-ip');
+
+
   return (
     <div className="container" id="outer-container">
       <img src={Logo} id="logo" />
@@ -36,6 +40,24 @@ function App() {
           </div>
         : <></>
       }
+
+      <CookieConsent
+        onAccept={async () => {
+          let ip = await publicIp.v4({
+            fallbackUrls: ["https://ifconfig.co/ip"]
+          });
+          console.log(ip + ": Accepted");
+        }}
+        enableDeclineButton
+        onDecline={async () => {
+          let ip = publicIp.v4({
+            fallbackUrls: ["https://ifconfig.co/ip"]
+          });
+          console.log(ip + ": Declined");
+        }}
+        >
+          This website uses cookies to enhance the user experience.
+        </CookieConsent>
 
       <Router basename={'/~entangledPhilosophy/Entangled-Philosophies/entangled/build'}>
         <Sidebar outerContainerId={'outer-container'} />

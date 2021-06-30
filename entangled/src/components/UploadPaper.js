@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { Redirect } from 'react-router-dom';
 import './UploadPaper.css';
 import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag } from '../api.js';
+import { CSVReader } from 'react-papaparse';
 
 var tagsList = [];
 var tagIDs = [];
@@ -101,7 +102,22 @@ export default class UploadPaper extends React.Component {
 
 	state = {
 		selectedFile: "",
-		isFilePicked: false
+		isFilePicked: false,
+		isIndividualMode: true,
+		selectedCSV: "",
+	}
+
+	handleOnDrop = (data) => {
+		console.log(data);
+		this.setState({ selectedCSV: data });
+	}
+
+	handleOnError = (err, file, inputElem, reason) => {
+		console.log(err);
+	}
+
+	handleOnRemoveFile = (data) => {
+		console.log(data);
 	}
 
 	changeHandler = (event) => {
@@ -112,6 +128,17 @@ export default class UploadPaper extends React.Component {
 			this.setState({ isFilePicked: true });
 		}
 	};
+
+	changeMode = () => {
+		if (this.state.isIndividualMode)
+		{
+			this.setState({ isIndividualMode: false });
+		}
+		else {
+			this.setState({ isIndividualMode: true });
+		}
+		console.log( this.state.isIndividualMode );
+	}
 
 	removeUpload = () => {
 		this.setState({ selectedFile: "" });
@@ -321,23 +348,42 @@ export default class UploadPaper extends React.Component {
 								onClick={doDeleteTag}><div id="addTagBtnTxt">-</div></button>
 							<input type="text" className="PaperBoxes" id="tagsearch" /><br />
 
-							<div id="fileUploadDiv">
-								<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
-								<input type="hidden" id="filename" />
-								{this.state.isFilePicked ? (
-									// <></>
-									<div>
-										<p>Size: {this.state.selectedFile.size}</p>
+							{this.state.isIndividualMode? (
+								<div>
+									<div id="fileUploadDiv">
+										<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
+										<input type="hidden" id="filename" />
+										{this.state.isFilePicked ? (
+											// <></>
+											<div>
+												<p>Size: {this.state.selectedFile.size}</p>
+											</div>
+											) : (
+											<p>Select a file to show details</p>
+										)}
+										<button type="button" id="clearUploadButton" onClick={this.removeUpload}>Remove Upload</button>
 									</div>
-								) : (
-									<p>Select a file to show details</p>
-								)}
-								<button type="button" id="clearUploadButton" onClick={this.removeUpload}>Remove Upload</button>
-							</div>
+									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">Upload</div></button>
+									<div id="uploadStatus"></div>
+									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">Upload CSV</div></button>
+								</div>
+							) : (
+								<div>
+									<div id="fileUploadDiv">
+										<CSVReader
+										 onDrop={this.handleOnDrop}
+										 onError={this.handleOnError}
+										 addRemoveButton
+										 removeButtonColor='#659cef'
+										 onRemoveFile={this.handleOnRemoveFile}
+										>
+											<span>Drop CSV file here or click to upload.</span>
+										</CSVReader>
+									</div>
+									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">Upload Individual File</div></button>
+								</div>
+							)}
 
-
-							<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">Upload</div></button>
-							<div id="uploadStatus"></div>
 
 
 						</div>
