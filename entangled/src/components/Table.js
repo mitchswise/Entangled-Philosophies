@@ -3,10 +3,8 @@ import { useState } from 'react';
 import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter } from "react-table";
 import { cookies } from "../api";
 import './Table.css';
-import TableScrollbar from 'react-table-scrollbar';
 
-
-export default function Table({ columns, data, loadFilter, saveQuery, loadPaper }) {
+export default function Table({ columns, data, loadFilter, saveQuery, loadPaper, loadOptions, loadVisualize }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -26,10 +24,10 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper 
         columns,
         data
     },
-    useFilters,
-    useGlobalFilter,
-    useSortBy,
-    usePagination);
+        useFilters,
+        useGlobalFilter,
+        useSortBy,
+        usePagination);
 
     const { pageIndex, pageSize, globalFilter } = state;
     const [filterInput, setFilterInput] = useState("");
@@ -40,89 +38,96 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper 
         setFilterInput(value);
     };
 
+    var browser = navigator.userAgent.toLowerCase().indexOf('chrome') > -1 ? 'other' : 'mozilla';
+    var searchBarID = browser == 'other' ? "searchSearchBarChrome" : "searchSearchBarMozilla"
+
     return (
         <>
-        <div class="leftBoxTop">
-        <input id="saveQuery"
-            type="button"
-            value="Save Query"
-            disabled={!cookies.get('UserID')}
-            onClick={saveQuery}
-        />
-        <input id="Filter"
-            type="button"
-            value="Filter"
-            onClick={loadFilter}
-        />
-        <input
-            value={filterInput}
-            id="searchSearchBar"
-            onChange={handleFilterChange}
-            placeholder={"Search name"}
-        />
-        
-        </div>
+            <div class="leftBoxTop">
 
-        <TableScrollbar id="SearchLeftTableScroll" height="704px">
+                <button id="saveQuery" disabled={!cookies.get('UserID')} onClick={saveQuery}>Save Query</button>
 
-        <table  {...getTableProps()}>
-            <thead>
-            {headerGroups.map(headerGroup => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
-                    <th
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={
-                      column.isSorted
-                        ? column.isSortedDesc
-                          ? "sort-desc"
-                          : "sort-asc"
-                        : ""
-                    }
-                  >
-                    {column.render("Header")}
-                  </th>
-                ))}
-                </tr>
-            ))}
-            </thead>
-            <tbody id="SearchLeftTable" {...getTableBodyProps()}>
-            {page.map((row, i) => {
-                prepareRow(row);
-                return (
-                <tr {...row.getRowProps()}
-                        onClick={() => loadPaper(row.original)} >
-                    {row.cells.map(cell => {
-                    return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-                    })}
-                </tr>
-                );
-            })}
-            </tbody>
-        </table>
+                <button id="Filter" onClick={loadFilter}>Filter</button>
 
-        </TableScrollbar>
+                <input
+                    value={filterInput}
+                    id={searchBarID}
+                    onChange={handleFilterChange}
+                    placeholder={"Search name"}
+                />
 
-        <div id="prevNextBox">
-        
-        <button class="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
-        <span class = "pageNumbers">
-            Page{' '}
-            {pageIndex + 1} / {pageOptions.length}
-            {' '}
-        </span>
-        <button class="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>  
-        <select class="pageNumbers" id="showNumber" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
-            {
-                [10, 15, 20].map(pageSize => (
-                    <option key={pageSize} value={pageSize} >
-                        Show {pageSize}
-                    </option>
-                ))
-            }
-        </select>
-          </div>
 
-    </>
+                <div class="dropdownSearch">
+                    <button class="dropbtnSearch">Visualize</button>
+                    <div class="dropdown-contentSearch">
+                        <button className="rightButton2" onClick={() => loadVisualize(1)}>Word Cloud</button>
+                        <button className="rightButton2" id="barChartButton" onClick={() => loadVisualize(2)}>Bar Chart</button>
+                    </div>
+                </div>
+
+
+
+                <button id="rightButtons" onClick={loadOptions}>Options</button>
+
+            </div>
+
+            <div id="SearchTableWrapper" >
+
+                <table  {...getTableProps()}>
+                    <thead>
+                        {headerGroups.map(headerGroup => (
+                            <tr {...headerGroup.getHeaderGroupProps()}>
+                                {headerGroup.headers.map(column => (
+                                    <th
+                                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                                        className={
+                                            column.isSorted
+                                                ? column.isSortedDesc
+                                                    ? "sort-desc"
+                                                    : "sort-asc"
+                                                : ""
+                                        }
+                                    >
+                                        {column.render("Header")}
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
+                    </thead>
+                    <tbody id="SearchLeftTable" {...getTableBodyProps()}>
+                        {page.map((row, i) => {
+                            prepareRow(row);
+                            return (
+                                <tr {...row.getRowProps()}
+                                    onClick={() => loadPaper(row.original)} >
+                                    {row.cells.map(cell => {
+                                        return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+                                    })}
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+
+            </div>
+
+            <button class="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
+            <span class="pageNumbers">
+                Page{' '}
+                {pageIndex + 1} / {pageOptions.length}
+                {' '}
+            </span>
+            <button class="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
+            <select class="pageNumbers" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
+                {
+                    [10, 15, 20].map(pageSize => (
+                        <option key={pageSize} value={pageSize} >
+                            Show {pageSize}
+                        </option>
+                    ))
+                }
+            </select>
+
+        </>
     );
 }

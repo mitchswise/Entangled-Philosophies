@@ -3,6 +3,100 @@ import { Redirect } from 'react-router-dom';
 import './UploadPaper.css';
 import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag } from '../api.js';
 
+var tagsList = [];
+var tagIDs = [];
+var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/uploadPaper.php';
+
+export const field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
+"description", "type", "format", "languageBox", "sourceBox",
+"publisher", "rights", "coverage", "isbn", "urlBox", "location"];
+
+export const metadata_ids = ["title", "author", "contributor", "relation", "subject", "date",
+"description", "type", "format", "language", "source",
+"publisher", "rights", "coverage", "isbn", "paper_url", "location"];
+
+export const metadata_categories = ["Title", "Author", "Contributor", "Relation", "Subject", "Date",
+"Description", "Type", "Format", "Language", "Source",
+"Publisher", "Rights", "Coverage", "ISBN", "URL", "Location"];
+
+export const doAddPaper = async e => {
+	var title = document.getElementById("titleName").value;
+	if (title == "") {
+		document.getElementById("uploadStatus").innerHTML = "Paper must include a title";
+		return;
+	}
+	var filename = document.getElementById("filename").innerHTML;
+	var url;
+
+	if (filename == "") {
+		url = "none";
+	} else {
+		url = document.getElementById("filename").innerHTML;
+	}
+
+	var metadata_dict = {};
+	for (const index in field_ids) {
+		var value = document.getElementById(field_ids[index]).value;
+		if (value !== "") {
+			metadata_dict[metadata_ids[index]] = value;
+		}
+	}
+	metadata_dict["url"] = url;
+
+	var data = addPaper(metadata_dict);
+	var id = data.id;
+
+	var i;
+	for (i = 0; i < tagIDs.length; i++) {
+		data = addTagToPaper(id, tagIDs[i], 0);
+		document.getElementById("uploadStatus").innerHTML = data.status;
+	}
+
+	//add all metadata as tags
+	for (const keyVal in metadata_dict) {
+		if (keyVal === "url") continue;
+		var value = metadata_dict[keyVal];
+		var tag_data = tagExists(value, "met", 0);
+		var tag_id = tag_data.tag_id;
+		if (tag_id == -1) {
+
+			var found_index = -1;
+			for (const index in metadata_ids) {
+				if (metadata_ids[index] == keyVal) {
+					found_index = index;
+					break;
+				}
+			}
+
+			if (found_index != -1) {
+				var curCategory = metadata_categories[found_index];
+				var result = addMetadataTag(curCategory, "eng", value, -1);
+
+				tag_data = tagExists(value, "met", 0);
+				tag_id = tag_data.tag_id;
+			}
+			else {
+				console.log("error?");
+			}
+
+		}
+
+		if (tag_id == -1 || tag_id == undefined) {
+			console.log("Error getting metadata tag " + value + " key = " + keyVal);
+			continue;
+		}
+
+		data = addTagToPaper(id, tag_id, 0);
+	}
+
+	for (const index in field_ids) {
+		document.getElementById(field_ids[index]).innerHTML = "";
+	}
+	document.getElementById("filename").innerHTML = "";
+
+	document.getElementById("uploadStatus").innerHTML = "Uploaded Paper";
+}
+
 export default class UploadPaper extends React.Component {
 	componentDidMount() {
 		const script = document.createElement("script");
@@ -173,6 +267,13 @@ export default class UploadPaper extends React.Component {
 								id="urlBox"
 								placeholder="Optional URL"
 							/>
+							<h2 id="leftLocation">Location</h2>
+							<input type="text"
+								className="PaperBoxes"
+								id="location"
+								placeholder="Optional Location"
+							/>
+
 						</div>
 						<hr id="paper_line"></hr>
 

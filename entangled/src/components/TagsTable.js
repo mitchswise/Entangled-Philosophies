@@ -37,17 +37,19 @@ export default function Table({ columns, data, loadTag, addTags, toggleView }) {
 
     return (
         <>
-        <div>
+        <div id = "tagsTableTopBar">
         <input
             value={filterInput}
             id="tagsTableSearchBar"
             onChange={handleFilterChange}
             placeholder={"Search name"}
         />
-        <button id="tagsAddButton" onClick={addTags} >Add</button>
-        <button id="tagsAddButton" onClick={toggleView} >Toggle</button>
+        <button className="tagsAddButton" id="tagsTableAddButton" onClick={addTags} >Add</button>
+        <button className="tagsAddButton" onClick={toggleView} >Toggle</button>
         
         </div>
+        <div id="SearchTableWrapper">
+
         <table {...getTableProps()}>
             <thead>
             {headerGroups.map(headerGroup => (
@@ -69,7 +71,9 @@ export default function Table({ columns, data, loadTag, addTags, toggleView }) {
                 </tr>
             ))}
             </thead>
+
             <tbody {...getTableBodyProps()}>
+
             {page.map((row, i) => {
                 prepareRow(row);
                 return (
@@ -81,9 +85,12 @@ export default function Table({ columns, data, loadTag, addTags, toggleView }) {
                 </tr>
                 );
             })}
+
             </tbody>
+
         </table>
-     
+        </div>
+
         <button class="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
         <span class = "pageNumbers">
             Page{' '}

@@ -49,6 +49,11 @@ export default class Settings extends React.Component {
     }
 
     doUpdateSettings = () => {
+		let passLetter = /[abcdefghijklmnopqrstuvwxyz]/;
+		let passUpper = /[ABCDEFGHIJKLMNOPQRSTUVWXYZ]/;
+		let passNum = /[1234567890]/;
+		let passSpecial = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+
         let email = document.getElementById("email").value;
 
         let language = this.state.userInfo["language"];
@@ -58,41 +63,65 @@ export default class Settings extends React.Component {
             userCookies = 1;
         }
 
-		let error = 0;
 		let passUpdated = 0;
-		if (document.getElementById("changePassword").value != "") {
-			if (document.getElementById("changePassword").value === document.getElementById("confirmPassword").value) {
-				var data = changePassword(cookies.get("UserID"), document.getElementById("changePassword").value);
-				passUpdated = 1;
-				if (data.error == 1) {
-					error = 1;
-					document.getElementById("saveStatus").innerHTML = data.status;
-				}
-			} else {
-				error = 1;
+		let firstPass = document.getElementById("changePassword").value;
+		let secondPass = document.getElementById("confirmPassword").value;
+
+		if (firstPass != "") {
+			if (firstPass !== secondPass) {
 				document.getElementById("saveStatus").innerHTML = "Passwords do not match.";
+				return;
+			}
+
+			if (firstPass.length < 8) {
+				document.getElementById("saveStatus").innerHTML = "Password must contain at least 8 characters.";
+				return;
+			}
+
+			if (!passLetter.test(firstPass) || !passUpper.test(firstPass)) {
+				document.getElementById("saveStatus").innerHTML = "Password must contain at least 1 lowercase and uppercase letter.";
+				return;
+			}
+
+			if (!passNum.test(firstPass)) {
+				document.getElementById("saveStatus").innerHTML = "Password must contain at least 1 number.";
+				return;
+			}
+
+			if (!passSpecial.test(firstPass)) {
+				document.getElementById("saveStatus").innerHTML = "Password must contain at least 1 special character.";
+				return;
+			}
+
+			if (firstPass.includes(" ")) {
+				document.getElementById("saveStatus").innerHTML = "Password must not contain spaces.";
+				return;
+			}
+
+			let data = changePassword(cookies.get("UserID"), document.getElementById("changePassword").value);
+			passUpdated = 1;
+			if (data.error == 1) {
+				document.getElementById("saveStatus").innerHTML = data.status;
+				return;
 			}
 		}
 
-		if (error === 0) {
-        	let data = updateSettings(id, email, language, userCookies);
-       		if (data.status == "success") {
+        let data = updateSettings(id, email, language, userCookies);
+       	if (data.status == "success") {
 
-            	//update cookie (TEMPORARY)
-            	cookies.set('PrefLang', language, { path: '/' });
+          	//update cookie (TEMPORARY)
+           	cookies.set('PrefLang', language, { path: '/' });
 
-            	document.getElementById("saveStatus").innerHTML = "Settings have been saved.";
-            	window.location.reload();
-        	} else {
-				if (passUpdated == 1) {
-					document.getElementById("saveStatus").innerHTML = "Settings have been saved.";
-					window.location.reload();
-				} else {
-            		document.getElementById("saveStatus").innerHTML = data.status;
-				}
-       		}
-		}
-
+           	document.getElementById("saveStatus").innerHTML = "Settings have been saved.";
+           	window.location.reload();
+       	} else {
+			if (passUpdated == 1) {
+				document.getElementById("saveStatus").innerHTML = "Settings have been saved.";
+				window.location.reload();
+			} else {
+           		document.getElementById("saveStatus").innerHTML = data.status;
+			}
+  		}
     }
 
     setLanguage = (newLanguage) => {

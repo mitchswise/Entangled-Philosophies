@@ -1,29 +1,20 @@
 import React, { useState } from 'react';
 import Filter from './Filter.js';
-import { cookies, getTags, tagExists, sqlSearch, handleHistory, saveQuery, fileURLBase,
-    removeTagFromPaper, addTagToPaper } from '../api.js'
+import {
+    cookies, getTags, tagExists, sqlSearch, handleHistory, saveQuery, fileURLBase,
+    removeTagFromPaper, addTagToPaper, getWordCloudTags
+} from '../api.js'
 import { loadTags } from './EditPaper.js';
 import Table from "./Table.js";
 import QueryPopup from './saveQueryPopup.js';
 import EditPaper from './EditPaper.js';
+import OptionsPopup from './optionsPopup.js';
 import { parseCustomQuery, translateToSQL, isDigit } from './SQLTranslate.js';
+import { metadata_ids, metadata_categories } from './UploadPaper.js';
+import ReactWordcloud from 'react-wordcloud';
+import { options } from './AddUser.js';
+import { Chart } from "react-google-charts";
 import './Search.css';
-
-
-const columnsTags = [
-    {
-        Header: "Name",
-        accessor: "title",
-    },
-    {
-        Header: "Author",
-        accessor: "author"
-    },
-    {
-        Header: "Language",
-        accessor: "language"
-    }
-];
 
 //loads all available tags for a user
 function getTagData() {
@@ -111,9 +102,9 @@ function cleanFilterState(filterState) {
             newFilter[idx][item.tag_id] = 0;
         }
     });
-    for(const idx in newFilter) {
-        for(const term in newFilter[idx]) {
-            if(isDigit(term) && !(term in tagsSeen)) {
+    for (const idx in newFilter) {
+        for (const term in newFilter[idx]) {
+            if (isDigit(term) && !(term in tagsSeen)) {
                 // newFilter[idx].delete(term);
                 delete newFilter[idx][term];
             }
@@ -134,32 +125,32 @@ function sendSearchQuery(filterState) {
 
 function translateFilterToCustom(filterState) {
     var equation = "";
-    for(const index in filterState) {
+    for (const index in filterState) {
         var tagsInclude = [];
         var tagsExclude = [];
         var includeState = "AND", excludeState = "AND";
 
-        for(const z in filterState[index]) {
-            if(z == "include") {
+        for (const z in filterState[index]) {
+            if (z == "include") {
                 includeState = filterState[index][z];
             }
-            if(z == "exclude") {
+            if (z == "exclude") {
                 excludeState = filterState[index][z];
             }
-            if(!isDigit(z)) continue;
+            if (!isDigit(z)) continue;
 
-            if(filterState[index][z] == 1) tagsInclude.push(z);
-            else if(filterState[index][z] == 2) tagsExclude.push(z);
+            if (filterState[index][z] == 1) tagsInclude.push(z);
+            else if (filterState[index][z] == 2) tagsExclude.push(z);
         }
 
 
         // console.log(tagsInclude.toString() + " and " + tagsExclude.toString())
-        if(tagsInclude.length > 0) {
-            if(equation.length > 0) equation += " AND ";
+        if (tagsInclude.length > 0) {
+            if (equation.length > 0) equation += " AND ";
 
             var nextTerm = "";
-            for(let curTag in tagsInclude) {
-                if(nextTerm.length > 0) nextTerm += " " + includeState + " ";
+            for (let curTag in tagsInclude) {
+                if (nextTerm.length > 0) nextTerm += " " + includeState + " ";
                 nextTerm += "`" + tagsInclude[curTag] + "`";
             }
             nextTerm = "(" + nextTerm + ")";
@@ -167,12 +158,12 @@ function translateFilterToCustom(filterState) {
             equation += nextTerm;
         }
 
-        if(tagsExclude.length > 0) {
-            if(equation.length > 0) equation += " AND ";
+        if (tagsExclude.length > 0) {
+            if (equation.length > 0) equation += " AND ";
 
             var nextTerm = "";
-            for(let curTag in tagsExclude) {
-                if(nextTerm.length > 0) nextTerm += " " + excludeState + " ";
+            for (let curTag in tagsExclude) {
+                if (nextTerm.length > 0) nextTerm += " " + excludeState + " ";
                 nextTerm += "`" + tagsExclude[curTag] + "`";
             }
             nextTerm = "NOT (" + nextTerm + ")";
@@ -195,13 +186,11 @@ export default class Search extends React.Component {
     getExistingPaperData = () => {
         if (this.props.location && this.props.location.state
             && this.props.location.state.filterState) {
-            console.log("About to work");
             return sendSearchQuery(cleanFilterState(this.props.location.state.filterState));
         }
         if (this.props.location && this.props.location.state
             && this.props.location.state.customQuery) {
-            if(this.props.location.state.customQuery.has_error) {
-                console.log("HELLO? ");
+            if (this.props.location.state.customQuery.has_error) {
                 return sendSearchQuery(initState());
             }
             else {
@@ -218,9 +207,20 @@ export default class Search extends React.Component {
     getExistingCustomQuery = () => {
         if (!this.props.location || !this.props.location.state
             || !this.props.location.state.customQuery) {
-            return {original_input: undefined};
+            return { original_input: undefined };
         }
         return this.props.location.state.customQuery;
+    }
+    makeInitialOptions = () => {
+        var options = {};
+        for (const idx in metadata_ids) {
+            options[metadata_ids[idx]] = false;
+        }
+        options["title"] = true;
+        options["author"] = true;
+        options["language"] = true;
+
+        return options;
     }
 
     state = {
@@ -233,7 +233,10 @@ export default class Search extends React.Component {
         customQuery: this.getExistingCustomQuery(),
         lastQueryTypeUsed: 0,
         publicTags: [],
-        privateTags: []
+        privateTags: [],
+        isOptionsOpen: false,
+        checkedOptions: this.makeInitialOptions(),
+        dataVisualization: 0
     }
 
     updateHistory = (newFitlerState, userID) => {
@@ -280,8 +283,6 @@ export default class Search extends React.Component {
             query_type: query_type, is_history: is_history, display_query: display_query
         };
 
-        console.log("DISPLAY " + display_query);
-
         saveQuery(jsonDict);
 
         this.toggleSavePopup();
@@ -289,6 +290,8 @@ export default class Search extends React.Component {
     handleFilterSave = (newFitlerState, customSearchSQL) => {
         var userID = -1;
         if (cookies.get('UserID')) userID = cookies.get('UserID');
+
+        this.setState((prevState) => ({ dataVisualization: 0 }));
 
         if (newFitlerState !== undefined) {
             this.setState((prevState) => ({ filterState: newFitlerState }));
@@ -317,13 +320,21 @@ export default class Search extends React.Component {
 
     loadPaper = (paperInfo) => {
         this.setState((prevState) => ({ paperInformation: paperInfo }));
+        this.setState((prevState) => ({ dataVisualization: 0 }));
         var currentTags = loadTags(paperInfo);
         this.setState({ publicTags: currentTags.filter(item => item.owner == 0) });
         this.setState({ privateTags: currentTags.filter(item => item.owner != 0) });
-
     }
     closePaper = () => {
         this.setState((prevState) => ({ paperInformation: undefined }));
+    }
+
+    loadOptions = () => {
+        this.setState((prevState) => ({ isOptionsOpen: !prevState.isOptionsOpen }));
+    }
+    saveOptions = (newOptions) => {
+        this.setState((prevState) => ({ isOptionsOpen: !prevState.isOptionsOpen }));
+        this.setState((prevState) => ({ checkedOptions: newOptions }));
     }
 
     updatePrivateTagList = (privateTags, adding) => {
@@ -331,17 +342,17 @@ export default class Search extends React.Component {
         var newTagText = document.getElementById("addPaperTags").value;
         var userID = cookies.get('UserID');
         var validTag = tagExists(newTagText, cookies.get('PrefLang'), userID);
-        if(validTag.tag_id < 0) {
+        if (validTag.tag_id < 0) {
             document.getElementById("addPaperTags").value = "";
             return;
         }
 
-        var newTag = { text: newTagText, owner: userID, tag_id:validTag.tag_id };
+        var newTag = { text: newTagText, owner: userID, tag_id: validTag.tag_id };
 
         var index = -1;
         for (const x in privateTags) {
             if (privateTags[x]["text"] == newTag["text"] && privateTags[x]["tag_id"] == newTag["tag_id"]
-            && privateTags[x]["owner"] == newTag["owner"]) {
+                && privateTags[x]["owner"] == newTag["owner"]) {
                 index = x;
                 break;
             }
@@ -349,16 +360,16 @@ export default class Search extends React.Component {
 
         var newPrivateTags = privateTags.slice();
 
-        if(adding) {
-            if(index == -1) {
+        if (adding) {
+            if (index == -1) {
                 newPrivateTags.push(newTag);
                 addTagToPaper(paperInformation.id, newTag.tag_id, userID);
             }
         }
         else {
-            if(index != -1) {
+            if (index != -1) {
                 newPrivateTags.splice(index, 1);
-                var dict = { paper_id: paperInformation.id, tag_id: newTag.tag_id, userID:userID };
+                var dict = { paper_id: paperInformation.id, tag_id: newTag.tag_id, userID: userID };
                 removeTagFromPaper(dict);
             }
         }
@@ -370,7 +381,7 @@ export default class Search extends React.Component {
     viewPaper = () => {
         const { paperInformation, privateTags, publicTags } = this.state;
         var userID = 0;
-        if(cookies.get('UserID') && cookies.get('PermLvl') == 0) {
+        if (cookies.get('UserID') && cookies.get('PermLvl') == 0) {
             userID = cookies.get('UserID');
         }
 
@@ -416,6 +427,8 @@ export default class Search extends React.Component {
 
                     <p ><b>Language:</b> {paperInformation.language}</p>
 
+                    <p ><b>Location:</b> {paperInformation.location}</p>
+
                     <p ><b>ISBN:</b> {paperInformation.isbn}</p>
 
                     <p ><b>URL:</b> {paperInformation.paper_url}</p>
@@ -460,17 +473,17 @@ export default class Search extends React.Component {
                                 </div>
 
                                 <div id="searchTagsInput" >
-                                    <button onClick={() => this.updatePrivateTagList(privateTags, true)}  id="addTagSearchBtnText">+</button>
+                                    <button onClick={() => this.updatePrivateTagList(privateTags, true)} id="addTagSearchBtnText">+</button>
                                     <button onClick={() => this.updatePrivateTagList(privateTags, false)} id="addTagSearchBtnText">-</button>
                                     <input type="text" placeholder="Enter a valid tag" id="addPaperTags" />
                                 </div>
 
                             </div>
-                        :
-                        <div id="searchTagsDisplay" >
-                            <h4>Public</h4>
-                            <input value={publicTags.map(item => item.text).join(", ")} disabled />
-                        </div>
+                            :
+                            <div id="searchTagsDisplay" >
+                                <h4>Public</h4>
+                                <input value={publicTags.map(item => item.text).join(", ")} disabled />
+                            </div>
                     }
 
                 </div>
@@ -492,10 +505,83 @@ export default class Search extends React.Component {
         this.setState({ openEditPaper: false });
     }
 
+    makeTableColumns = () => {
+        const { checkedOptions } = this.state;
+        var columns = [];
+        for (const idx in metadata_ids) {
+            if (checkedOptions[metadata_ids[idx]] == true) {
+                columns.push({ Header: metadata_categories[idx], accessor: metadata_ids[idx] });
+            }
+        }
+        return columns;
+    }
+
+    collectTags = () => {
+        try {
+            const { paperData } = this.state;
+            if (paperData.length == 0) {
+                return [];
+            }
+
+            var userID = 0;
+            if (cookies.get('UserID')) userID = cookies.get('UserID');
+            var prefLang = "eng";
+            if (cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
+
+            var paperIDs = [];
+            for (const idx in paperData) {
+                paperIDs.push(paperData[idx].id);
+            }
+
+            var dict = { userID: userID, language: prefLang, papers: paperIDs };
+            return getWordCloudTags(dict).tags;
+        }
+        catch (error) {
+            return [];
+        }
+    }
+
+    collectBarChartData = (field_type) => {
+        const { paperData } = this.state;
+        var data = {};
+
+        for (const idx in paperData) {
+            if (!paperData[idx][field_type]) continue;
+            if (!(paperData[idx][field_type] in data)) data[paperData[idx][field_type]] = 0;
+            data[paperData[idx][field_type]]++;
+        }
+
+        var capitalized = field_type.charAt(0).toUpperCase() + field_type.slice(1);
+
+        var results = [ [capitalized, ''] ];
+        for (const key in data) {
+            // if(key == "German") results.push([key, 1000]);
+            // else results.push([key, data[key]]);
+            results.push([key, data[key]]);
+        }
+
+        console.log(JSON.stringify(results));
+        return results;
+    }
+
+    loadVisualize = (visual_type) => {
+        this.setState((prevState) => ({ paperInformation: undefined }));
+        this.setState((prevState) => ({ dataVisualization: visual_type }));
+    }
+
     render() {
         const { isFilterOpen, isSaveOpen, filterState,
             openEditPaper, paperData, paperInformation,
-            customQuery } = this.state;
+            customQuery, isOptionsOpen, dataVisualization } = this.state;
+
+        let tableColumns = this.makeTableColumns();
+        var wordCloudData = undefined, barChartData = undefined;
+        if (dataVisualization == 1) {
+            wordCloudData = this.collectTags();
+        }
+        else if (dataVisualization == 2) {
+            barChartData = this.collectBarChartData('date');
+        }
 
         if (openEditPaper) {
             return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />
@@ -515,11 +601,17 @@ export default class Search extends React.Component {
                     handleClose={this.toggleSavePopup}
                     handleSave={this.handleQuerySave}
                 />}
+                {isOptionsOpen && <OptionsPopup
+                    loadOptions={this.loadOptions}
+                    currentOptions={this.state.checkedOptions}
+                    saveOptions={this.saveOptions}
+                />}
                 <div className="box" id="leftBox">
 
-                    <Table class="tagElement" id="tagTable" columns={columnsTags}
+                    <Table class="tagElement" id="tagTable" columns={tableColumns}
                         data={paperData} loadFilter={this.togglePopup} saveQuery={this.toggleSavePopup}
-                        loadPaper={this.loadPaper} />
+                        loadPaper={this.loadPaper} loadOptions={this.loadOptions}
+                        loadVisualize={this.loadVisualize} />
 
                 </div>
 
@@ -527,7 +619,31 @@ export default class Search extends React.Component {
 
                     {
                         paperInformation !== undefined ? this.viewPaper() :
-                            <></>
+                            dataVisualization === 1 ? <ReactWordcloud words={wordCloudData} options={options} /> :
+                                dataVisualization === 2 ?
+                                    <div id="barChartWrapper" style={{width: '90%', height:'90%', paddingLeft: "10%", paddingTop: "5%"}} >
+                                    <Chart
+                                        width={'100%'}
+                                        height={'100%'}
+                                        chartType="Bar"
+                                        loader={<div>Loading Chart</div>}
+                                        data={barChartData}
+                                        options={{
+                                            title: '',
+                                            chartArea: { width: '50%' },
+                                            hAxis: {
+                                              title: '',
+                                              minValue: 0,
+                                            },
+                                            vAxis: {
+                                              title: 'Date',
+                                              format: '#'
+                                            },
+                                          }}
+                                    />
+                                    </div>
+                                :
+                                <></>
                     }
 
                 </div>

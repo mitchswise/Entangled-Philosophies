@@ -119,7 +119,6 @@ function doAddCat(edit_cat) {
     if(cookies.get('PermLvl') < 1) { //user adding it
         userID = cookies.get('UserID');
         var cat_name = document.getElementById("defBox").value;
-        console.log("Hi " + cat_name);
         if(!cat_name) {
             // document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
             return;
