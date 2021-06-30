@@ -52,5 +52,8 @@ export function dSettings(s, lang) {
             if(lang == 'eng') return "German";
             if(lang == 'ger') return "Deutsche";
             break;
+		case 14:
+			if(lang == 'eng') return "Confirm Password";
+			if(lang == 'ger') return "German Confirm Password"; // PLACEHOLDER
 	}
 }

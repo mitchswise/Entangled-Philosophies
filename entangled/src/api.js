@@ -540,3 +540,19 @@ export function removeFile(id, url) {
 		return null;
 	}
 }
+
+export function changePassword(id, password) {
+	var jsonPayload = '{"id":' + id + ', "password":"' + password + '"}';
+
+	console.log("id:" + id + " pass: " + password);
+	var url = urlBase + '/changePassword.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}

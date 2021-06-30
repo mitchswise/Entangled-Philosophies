@@ -140,9 +140,13 @@ details {
 }
 
 #changePassword {
-
     width:308px;
-    height:30px;
+    height:15px;
+}
+
+#confirmPassword {
+	width:308px;
+	height:15px;
 }
 
 p{

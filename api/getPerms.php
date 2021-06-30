@@ -18,9 +18,9 @@
 
 	if($result->num_rows > 0) {
 		$row = $result->fetch_assoc();
-		echo '{"permission_level":' . $row["permission_level"] . '}';
+		echo '{"permission_level":' . $row["permission_level"] . ', "error":""}';
 	}
 	else {
-		echo '{"error":"user not found"}';
+		echo '{"error":"User not found."}';
 	}
 ?>

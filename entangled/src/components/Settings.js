@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import './Settings.css';
-import { getUserInfo, updateSettings, cookies } from '../api.js';
+import { getUserInfo, updateSettings, changePassword, cookies } from '../api.js';
 import { dSettings } from '../dictionary.js';
 
 var id;
@@ -12,13 +12,14 @@ function validateEmail(mail) {
 }
 
 function doGetUserInfo() {
-    if (!cookies.get('UserID')) return undefined;
+    if (!cookies.get('UserID')) return {};
     id = cookies.get('UserID');
     var data = getUserInfo(id);
     return data;
 }
 
 function setUserInfo() {
+    if(!cookies.get('UserID')) return;
     var data = doGetUserInfo();
     if(data == undefined) return;
 
@@ -57,21 +58,41 @@ export default class Settings extends React.Component {
             userCookies = 1;
         }
 
-        if (!validateEmail(email)) {
-            document.getElementById("saveStatus").innerHTML = "Invalid email.";
-        } else {
-            let data = updateSettings(id, email, language, userCookies);
-            if (data.status == "success") {
+		let error = 0;
+		let passUpdated = 0;
+		if (document.getElementById("changePassword").value != "") {
+			if (document.getElementById("changePassword").value === document.getElementById("confirmPassword").value) {
+				var data = changePassword(cookies.get("UserID"), document.getElementById("changePassword").value);
+				passUpdated = 1;
+				if (data.error == 1) {
+					error = 1;
+					document.getElementById("saveStatus").innerHTML = data.status;
+				}
+			} else {
+				error = 1;
+				document.getElementById("saveStatus").innerHTML = "Passwords do not match.";
+			}
+		}
 
-                //update cookie (TEMPORARY)
-                cookies.set('PrefLang', language, { path: '/' });
+		if (error === 0) {
+        	let data = updateSettings(id, email, language, userCookies);
+       		if (data.status == "success") {
 
-                document.getElementById("saveStatus").innerHTML = "Settings have been saved.";
-                window.location.reload();
-            } else {
-                document.getElementById("saveStatus").innerHTML = data.status;
-            }
-        }
+            	//update cookie (TEMPORARY)
+            	cookies.set('PrefLang', language, { path: '/' });
+
+            	document.getElementById("saveStatus").innerHTML = "Settings have been saved.";
+            	window.location.reload();
+        	} else {
+				if (passUpdated == 1) {
+					document.getElementById("saveStatus").innerHTML = "Settings have been saved.";
+					window.location.reload();
+				} else {
+            		document.getElementById("saveStatus").innerHTML = data.status;
+				}
+       		}
+		}
+
     }
 
     setLanguage = (newLanguage) => {
@@ -84,6 +105,7 @@ export default class Settings extends React.Component {
         const { userInfo } = this.state;
 
         return <div className="container">
+            {this.renderRedirect()}
             <div className="header">
                 <h1 id="title">{dSettings(9, userInfo.language)}</h1>
             </div>
@@ -102,7 +124,8 @@ export default class Settings extends React.Component {
 
                     <div class="inputRow">
                         <h2>{dSettings(3, userInfo.language)}</h2>
-                        <button type="button" id="changePassword">{dSettings(4, userInfo.language)}</button>
+                        <input type="password" id="changePassword" placeholder={dSettings(4, userInfo.language)}/>
+						<input type="password" id="confirmPassword" placeholder={dSettings(14, userInfo.language)}/>
                     </div>
 
                     <div class="inputRow">
