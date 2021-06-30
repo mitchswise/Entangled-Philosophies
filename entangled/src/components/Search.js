@@ -427,6 +427,8 @@ export default class Search extends React.Component {
 
                     <p ><b>Language:</b> {paperInformation.language}</p>
 
+                    <p ><b>Location:</b> {paperInformation.location}</p>
+
                     <p ><b>ISBN:</b> {paperInformation.isbn}</p>
 
                     <p ><b>URL:</b> {paperInformation.paper_url}</p>

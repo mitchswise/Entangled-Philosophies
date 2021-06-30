@@ -9,15 +9,15 @@ var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/ap
 
 export const field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
 "description", "type", "format", "languageBox", "sourceBox",
-"publisher", "rights", "coverage", "isbn", "urlBox"];
+"publisher", "rights", "coverage", "isbn", "urlBox", "location"];
 
 export const metadata_ids = ["title", "author", "contributor", "relation", "subject", "date",
 "description", "type", "format", "language", "source",
-"publisher", "rights", "coverage", "isbn", "paper_url"];
+"publisher", "rights", "coverage", "isbn", "paper_url", "location"];
 
 export const metadata_categories = ["Title", "Author", "Contributor", "Relation", "Subject", "Date",
 "Description", "Type", "Format", "Language", "Source",
-"Publisher", "Rights", "Coverage", "ISBN", "URL"];
+"Publisher", "Rights", "Coverage", "ISBN", "URL", "Location"];
 
 export const doAddPaper = async e => {
 	var title = document.getElementById("titleName").value;
@@ -305,6 +305,13 @@ export default class UploadPaper extends React.Component {
 								id="urlBox"
 								placeholder="Optional URL"
 							/>
+							<h2 id="leftLocation">Location</h2>
+							<input type="text"
+								className="PaperBoxes"
+								id="location"
+								placeholder="Optional Location"
+							/>
+							
 						</div>
 						<hr id="paper_line"></hr>
 
