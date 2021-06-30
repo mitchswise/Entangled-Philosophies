@@ -9,24 +9,17 @@ import {
     removePaper, removeFile
 } from '../api.js';
 
+import { field_ids, metadata_ids, metadata_categories } from './UploadPaper';
+
 var tagsList = [];
 var tagIDs = [];
 var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/uploadPaper.php';
 var userID = cookies.get('UserID');
 if (cookies.get('PermLvl') > 0) userID = 0;
 
-let field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
-    "description", "type", "format", "languageBox", "sourceBox",
-    "publisher", "rights", "coverage", "isbn", "urlBox"];
-let metadata_ids = ["title", "author", "contributor", "relation", "subject", "date",
-    "description", "type", "format", "language", "source",
-    "publisher", "rights", "coverage", "isbn", "paper_url"];
-let metadata_categories = ["Title", "Author", "Contributor", "Relation", "Subject", "Date",
-    "Description", "Type", "Format", "Language", "Source",
-    "Publisher", "Rights", "Coverage", "ISBN", "URL"];
 let header_ids = ["leftTitle", "leftAuthor", "leftContributor", "leftRelations", "leftSubject", "leftDate",
     "leftDescription", "leftType", "leftFormat", "leftLanguage", "leftSource",
-    "leftPublisher", "leftRights", "leftCoverage", "leftISBN", "leftURL"];
+    "leftPublisher", "leftRights", "leftCoverage", "leftISBN", "leftURL", "leftLocation"];
 
 function makeMetadataValues(paperInformation) {
     var curMetadataText = [];
