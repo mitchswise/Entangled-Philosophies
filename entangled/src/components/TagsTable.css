@@ -29,21 +29,28 @@ table th {
   color: white;
 }
 
+tbody{
+  text-align: left;
+}
+
 
 #tagsTableSearchBar {
-  height:31px;
+  height:32px;
   border: 1px black;
   position: absolute;
-  width:85%;
+  width:80%;
   left:0%;
 }
 
-#tagstopbar{
-  position: sticky;
-  width:100%;
-  display: block;
-  height:34px;
+#tagsTableSearchBar:focus {
+  outline : none;
+}
 
+
+#tagsTableTopBar {
+  height: 34px;
+  width:100%;
+  border-bottom: 1px solid;
 }
 
 #tagsAddButton {

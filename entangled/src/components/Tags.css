@@ -22,7 +22,6 @@ body {
     left: 4%;
     top:-62px;
     float:left;
-    overflow-y: scroll;
 }
 
 #rightcolumn {
@@ -146,10 +145,12 @@ body {
     border-top:none;
     border-bottom: 1px solid black;
     border-right:1px solid black;
+
 }
 
 #addTagButtonsAdmin:hover {
     background-color: #ddd;
+    
 }
 
 #addCatButtons {
@@ -206,6 +207,8 @@ body {
     position: absolute;
     border-bottom: 1px solid black;
     border-right:1px solid black;
+    cursor: pointer;
+
 }
 
 .editCatButtonsAdmin:hover{
@@ -227,4 +230,5 @@ body {
     border-bottom: 1px solid black;
     border-right:1px solid black;
     border-left: 1px solid black;
+    cursor: pointer;
 }
