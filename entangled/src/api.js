@@ -343,10 +343,6 @@ export function addTagToPaper(paper_id, tag_id, userID) {
 	}
 }
 
-export function getUserInfo(userID) {
-	var jsonDict = { id:userID };
-	var jsonPayload = JSON.stringify(jsonDict);
-
 	var url = urlBase + '/getUserInfo.php';
 	connect("POST", url);
 

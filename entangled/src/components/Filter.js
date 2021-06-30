@@ -20,8 +20,6 @@ function getValidTags(forced_tags) {
     return array;
 }
 
-
-
 export default class Popup extends React.Component {
     state = {
         itemList: [],
@@ -206,7 +204,7 @@ export default class Popup extends React.Component {
                 </div>
                 <div id="rightcolumnFilter">
                     <button onClick={() => this.flipExpand(filterIndex)} disabled={tagList.length <= TAG_LIMIT} id="viewRow">
-                        {isExpanded ? "Shrink" : "Expand"}
+                        {isExpanded ? "Shrink" : "Expand" }
                     </button>
                     <button onClick={() => this.setAllTags(filterIndex, 1)} id="viewRow">All</button>
                     <button onClick={() => this.setAllTags(filterIndex, 0)} id="viewRow">Clear</button>
@@ -236,9 +234,9 @@ export default class Popup extends React.Component {
                     var curTag = tagList[tag];
                     var tag_id = curTag.tag_id;
 
-                    if (curTags < TAG_LIMIT || isExpanded) {
+                    if(curTags < TAG_LIMIT || isExpanded) {
                         // console.log("? " + JSON.stringify(validTags) + " AND " + tag_id);
-                        if (validTags.indexOf(parseInt(tag_id)) === -1) continue;
+                        if(validTags.indexOf(parseInt(tag_id)) === -1) continue;
                         curTags++;
 
                         const buttonState = filterState[filterIndex][tag_id];
