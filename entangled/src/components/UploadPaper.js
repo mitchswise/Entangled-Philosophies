@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import { Redirect } from 'react-router-dom';
 import './UploadPaper.css';
-import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag, tagExistsBatch, addTagBatch, addTagToPaperBatch, paperExists } from '../api.js';
+import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag } from '../api.js';
+import { tagExistsBatch, addTagBatch, addTagToPaperBatch, paperExists } from '../api.js';
 
 var tagsList = [];	
 var tagIDs = [];
