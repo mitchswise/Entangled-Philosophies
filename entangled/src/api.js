@@ -582,6 +582,7 @@ export function paperExists(title, author) {
 
 	try {
 		xhr.send(jsonPayload);
+		console.log("Response: " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
@@ -597,6 +598,7 @@ export function addTagBatch(dict) {
 
 	try {
 		xhr.send(jsonPayload);
+		console.log("tag add! " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
@@ -612,6 +614,7 @@ export function addTagToPaperBatch(dict) {
 
 	try {
 		xhr.send(jsonPayload);
+		console.log("add! " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
@@ -627,7 +630,7 @@ export function removePaperTagBatch(dict) {
 
 	try {
 		xhr.send(jsonPayload);
-		console.log("! " + xhr.responseText);
+		console.log("remove! " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
