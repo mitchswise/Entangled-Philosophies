@@ -13,7 +13,7 @@
     $title = $inData["title"];
     $author = $inData["author"];
 
-    $query = "SELECT id FROM papers WHERE title = " . $title . " AND author = '" . $author . "';";
+    $query = "SELECT id FROM papers WHERE title = '" . $title . "' AND author = '" . $author . "';";
     $result = $conn->query($query);
 
     if($result->num_rows > 0) {

@@ -38,8 +38,13 @@
 
     for($i = 0; $i < $arr_len; $i++) {
         $cur_category = $category_to_id[$arr[$i]["category"]];
-        $query = "INSERT INTO tags(owner_id, category_id) VALUES (" . $userID . ", " . $cur_category . ");";
+        $query = "INSERT INTO tags (owner_id, category_id) VALUES (" . $userID . ", " . $cur_category . ");";
         $result = $conn->query($query);
+        if(!$result) {
+            echo 'Failed on adding ' . $arr[$i]["category"] . ' we couldnt insert into tags';
+            return;
+        }
+
         $tag_id = $conn->insert_id;
 
         $query = "INSERT INTO tags_translation (tag_id, language, text, owner) VALUES ";
