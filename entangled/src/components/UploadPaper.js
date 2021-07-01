@@ -19,6 +19,10 @@ export const metadata_categories = ["Title", "Author", "Contributor", "Relation"
 "Description", "Type", "Format", "Language", "Source",
 "Publisher", "Rights", "Coverage", "ISBN", "URL", "Location"];
 
+export function addSinglePaper(dict) {
+	if(!("title" in dict)) return;
+}
+
 export const doAddPaper = async e => {
 	var title = document.getElementById("titleName").value;
 	if (title == "") {
