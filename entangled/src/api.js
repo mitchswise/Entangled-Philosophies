@@ -1,8 +1,7 @@
 import Cookies from 'universal-cookie';
 export const cookies = new Cookies();
 export const supported_languages = ["eng", "ger"];
-// export const urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
-export const urlBase = 'http://chdr.cs.ucf.edu/~ah458967/Entangled-Philosophies/api';
+export const urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
 export const fileURLBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/paper/';
 
 var xhr;
@@ -566,7 +565,6 @@ export function getWordCloudTags(dict) {
 
 	try {
 		xhr.send(jsonPayload);
-		console.log("Done! " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
@@ -582,7 +580,6 @@ export function paperExists(title, author) {
 
 	try {
 		xhr.send(jsonPayload);
-		console.log("Response: " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
@@ -598,7 +595,6 @@ export function addTagBatch(dict) {
 
 	try {
 		xhr.send(jsonPayload);
-		console.log("tag add! " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
@@ -614,7 +610,6 @@ export function addTagToPaperBatch(dict) {
 
 	try {
 		xhr.send(jsonPayload);
-		console.log("add! " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
@@ -630,7 +625,6 @@ export function removePaperTagBatch(dict) {
 
 	try {
 		xhr.send(jsonPayload);
-		console.log("remove! " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
