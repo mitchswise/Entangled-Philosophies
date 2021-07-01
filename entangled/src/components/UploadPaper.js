@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { Redirect } from 'react-router-dom';
 import './UploadPaper.css';
 import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag } from '../api.js';
+import { CSVReader } from 'react-papaparse';
 import { tagExistsBatch, addTagBatch, addTagToPaperBatch, paperExists } from '../api.js';
 
 var tagsList = [];	
