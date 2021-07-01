@@ -20,14 +20,16 @@ export const options = {
   };
 
 function checkEndpoint() {
-  var pass = {title:"Spreadsheet paper"};
+  var pass = {title:"Testing Spreadsheet Paper"};
   pass["Author"] = "SomeAuthor";
-  pass["Manual Tags"] = "ABC;ABC Doesnt Exist";
+  pass["Subject"] = "";
+  pass["Manual Tags"] = "ABC";
   pass["Date"] = "999";
   pass["Contributor"] = "NonExistentContributor";
   pass["Url"] = "www.philosophy.com";
 
   console.log(JSON.stringify(pass));
+
 
   var result = addSpreadsheetPaper(pass);
   console.log(JSON.stringify(result));

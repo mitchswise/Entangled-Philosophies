@@ -28,7 +28,7 @@ export function addSpreadsheetPaper(dict) {
 	for(const key in dict) {
 		var new_key = key.toLowerCase();
 		if(new_key == "url") new_key = "paper_url";
-		if(new_key.trim().length == 0) continue;
+		if(dict[key].trim().length == 0) continue;
 
 		if(new_key == "manual tags") {
 			tagsList = dict[key].split(";");
