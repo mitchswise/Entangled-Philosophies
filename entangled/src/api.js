@@ -1,7 +1,7 @@
 import Cookies from 'universal-cookie';
 export const cookies = new Cookies();
 export const supported_languages = ["eng", "ger"];
-export const urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
+export const urlBase = 'http://chdr.cs.ucf.edu/~al657032/Entangled-Philosophies/api';
 export const fileURLBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/paper/';
 
 var xhr;
@@ -577,6 +577,36 @@ export function paperExists(title, author) {
 	var jsonPayload = '{"title":"' + title + '", "author":"' + author + '"}';
 	
 	var url = urlBase + '/paperExists.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function removeUser(id) {
+	var jsonPayload = '{"id":' + id + '}';
+
+	var url = urlBase + '/removeUser.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function removeAllTags(id) {
+	var jsonPayload = '{"id":' + id + '}';
+
+	var url = urlBase + '/removeAllTags.php';
 	connect("POST", url);
 
 	try {
