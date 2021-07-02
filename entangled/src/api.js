@@ -587,11 +587,41 @@ export function paperExists(title, author) {
 	}
 }
 
+export function removeUser(id) {
+	var jsonPayload = '{"id":' + id + '}';
+
+	var url = urlBase + '/removeUser.php';
+  connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+	
+export function removeAllTags(id) {
+	var jsonPayload = '{"id":' + id + '}';
+
+	var url = urlBase + '/removeAllTags.php';
+  connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
 export function addTagBatch(dict) {
 	var jsonPayload = JSON.stringify(dict);
 
 	var url = urlBase + '/addTagBatch.php';
-	connect("POST", url);
+  connect("POST", url);
 
 	try {
 		xhr.send(jsonPayload);
@@ -616,7 +646,7 @@ export function addTagToPaperBatch(dict) {
 		return null;
 	}
 }
-
+  
 export function removePaperTagBatch(dict) {
 	var jsonPayload = JSON.stringify(dict);
 

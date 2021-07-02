@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import './Settings.css';
-import { getUserInfo, updateSettings, changePassword, cookies } from '../api.js';
+import { getUserInfo, updateSettings, changePassword, removeUser, removeAllTags, cookies } from '../api.js';
 import { dSettings } from '../dictionary.js';
 
 var id;
@@ -47,6 +47,31 @@ export default class Settings extends React.Component {
             return <Redirect to = '/' />
         }
     }
+
+	doRemoveUser = () => {
+		if (window.confirm("Are you sure you want to delete your account? You will lose all your tags, categories, and queries. This cannot be undone.")) {
+			let id = cookies.get("UserID");
+			let perms = cookies.get("PermLvl");
+
+			if (perms > 1) {
+				document.getElementById("saveStatus").value = "Cannot remove the super admin.";
+			} else if (perms == 0) {
+				// Remove user's tags and categories
+				let removeTagsData = removeAllTags(id);
+				console.log("removeTagsData");
+				console.log(removeTagsData);
+			}
+
+			// Remove user with their saved queries
+			let removeUserData = removeUser(id);
+			console.log("removeUserData");
+			console.log(removeUserData);
+			cookies.remove('UserID', { path: '/' });
+			cookies.remove('PermLvl', { path: '/' });
+			cookies.remove('PrefLang', { path: '/' });
+			window.location.reload();
+		}
+	}
 
     doUpdateSettings = () => {
 		let passLetter = /[abcdefghijklmnopqrstuvwxyz]/;
@@ -191,6 +216,11 @@ export default class Settings extends React.Component {
                 <div class="button">
                     <button type="button" className="inputBoxes" id="save" onClick={this.doUpdateSettings}><div id="saveBtnTxt">{dSettings(11, userInfo.language)}</div></button>
                 </div>
+				<br></br>
+				<br></br>
+				<div class="button">
+					<button type="button" className="inputBoxes" id="removeUser" onClick={this.doRemoveUser}><div id="removeUserTxt">{dSettings(15, userInfo.language)}</div></button>
+				</div>
                 <div id="saveStatus" align="center"></div>
             </div>
         </div>

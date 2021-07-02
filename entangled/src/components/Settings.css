@@ -216,7 +216,29 @@ label {
     top:30px;
 }
 
+#removeUser {
+    background-color: #f74135;
+    border: none;
+    height:36px;
+    width: 110px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+    top:30px;
+}
+
 #saveBtnTxt {
+    vertical-align:middle;
+    bottom:0px;
+    position: relative;
+    color: white;
+    text-decoration: bold;
+    font-size: 14px;
+}
+
+#removeUserTxt {
     vertical-align:middle;
     bottom:0px;
     position: relative;
