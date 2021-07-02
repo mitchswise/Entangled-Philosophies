@@ -565,7 +565,6 @@ export function getWordCloudTags(dict) {
 
 	try {
 		xhr.send(jsonPayload);
-		console.log("Done! " + xhr.responseText);
 		var jsonObject = JSON.parse(xhr.responseText);
 		return jsonObject;
 	} catch (err) {
@@ -592,7 +591,22 @@ export function removeUser(id) {
 	var jsonPayload = '{"id":' + id + '}';
 
 	var url = urlBase + '/removeUser.php';
-	connect("POST", url);
+  connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+	
+export function removeAllTags(id) {
+	var jsonPayload = '{"id":' + id + '}';
+
+	var url = urlBase + '/removeAllTags.php';
+  connect("POST", url);
 
 	try {
 		xhr.send(jsonPayload);
@@ -603,10 +617,40 @@ export function removeUser(id) {
 	}
 }
 
-export function removeAllTags(id) {
-	var jsonPayload = '{"id":' + id + '}';
+export function addTagBatch(dict) {
+	var jsonPayload = JSON.stringify(dict);
 
-	var url = urlBase + '/removeAllTags.php';
+	var url = urlBase + '/addTagBatch.php';
+  connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+
+export function addTagToPaperBatch(dict) {
+	var jsonPayload = JSON.stringify(dict);
+
+	var url = urlBase + '/addTagToPaperBatch.php';
+	connect("POST", url);
+
+	try {
+		xhr.send(jsonPayload);
+		var jsonObject = JSON.parse(xhr.responseText);
+		return jsonObject;
+	} catch (err) {
+		return null;
+	}
+}
+  
+export function removePaperTagBatch(dict) {
+	var jsonPayload = JSON.stringify(dict);
+
+	var url = urlBase + '/removePaperTagBatch.php';
 	connect("POST", url);
 
 	try {

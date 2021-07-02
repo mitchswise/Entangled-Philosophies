@@ -35,7 +35,7 @@
     }
 
     $query = "SELECT tag_id, text, owner FROM tags_translation WHERE (owner = 0 AND (language = '" . $language . 
-    "' OR language='met')) OR (owner = " . $userID . " AND language = 'def');";
+    "')) OR (owner = " . $userID . " AND language = 'def');";
     $result = $conn->query($query);
 
     if(!$result) {

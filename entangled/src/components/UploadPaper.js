@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import { Redirect } from 'react-router-dom';
 import './UploadPaper.css';
 import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag } from '../api.js';
+import { CSVReader } from 'react-papaparse';
+import { tagExistsBatch, addTagBatch, addTagToPaperBatch, paperExists } from '../api.js';
 
 var tagsList = [];	
 var tagIDs = [];
@@ -9,15 +11,135 @@ var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/ap
 
 export const field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
 "description", "type", "format", "languageBox", "sourceBox",
-"publisher", "rights", "coverage", "isbn", "urlBox"];
+"publisher", "rights", "coverage", "isbn", "urlBox", "location"];
 
 export const metadata_ids = ["title", "author", "contributor", "relation", "subject", "date",
 "description", "type", "format", "language", "source",
-"publisher", "rights", "coverage", "isbn", "paper_url"];
+"publisher", "rights", "coverage", "isbn", "paper_url", "location"];
 
 export const metadata_categories = ["Title", "Author", "Contributor", "Relation", "Subject", "Date",
 "Description", "Type", "Format", "Language", "Source",
-"Publisher", "Rights", "Coverage", "ISBN", "URL"];
+"Publisher", "Rights", "Coverage", "ISBN", "URL", "Location"];
+
+export function addSpreadsheetPaper(dict) {
+	var response = {success:false, error:undefined};
+
+	var metadata_dict = {};
+	var tagsList = [];
+
+	for(const key in dict) {
+		var new_key = key.toLowerCase();
+		if(new_key == "url") new_key = "paper_url";
+		if(dict[key].trim().length == 0) continue;
+
+		if(new_key == "manual tags") {
+			tagsList = dict[key].split(";");
+		}
+		else {
+			metadata_dict[new_key] = dict[key];
+		}
+	}
+
+	if(!("title" in metadata_dict)) {
+		response.error = "Missing title";
+		return response;
+	}
+
+	//check for duplicate (title,author) pair?
+	if(("author" in metadata_dict)) {
+		var doesExist = paperExists(metadata_dict["title"], metadata_dict["author"]);
+		if(doesExist.exists == true) {
+			response.error = "Duplicate paper being inserted.";
+			return response;
+		}
+	}
+
+	metadata_dict["url"] = "none";
+
+	var addPaperData = addPaper(metadata_dict);
+	var paper_id = addPaperData.id;
+
+	//figure out existence of all tags
+	var tagsToPass = [];
+	for(const idx in tagsList) {
+		tagsToPass.push({text: tagsList[idx]});
+	}
+	for(const key in metadata_dict) {
+		if(key == "url") continue;
+		tagsToPass.push({ text: metadata_dict[key] });
+	}
+
+	//assumptions made because we're in 'add spreadsheet paper'
+	var jsonDict = { tagsArray:tagsToPass, userID:0, language:"eng" };
+	var data = tagExistsBatch(jsonDict);
+
+	//find any missing tags and add them to the database
+	var tagsToAdd = [];
+
+	for(const idx in tagsList) {
+		if(data.tags[ tagsList[idx] ] == "-1") {
+			var category = "General";
+			var eng = tagsList[idx];
+			var ger = tagsList[idx] + " - needs German translation";
+			tagsToAdd.push({ category:category, eng:eng, ger:ger });
+		}
+	}
+
+	for(const key in metadata_dict) {
+		if(key == "url") continue;
+		if(data.tags[ metadata_dict[key] ] == "-1") {
+			var category = "";
+			if(key == "paper_url") category = "URL";
+			else category = key.charAt(0).toUpperCase() + key.slice(1);
+
+			var met = metadata_dict[key];
+
+			tagsToAdd.push({ category:category, met:met });
+		}
+	}
+
+	console.log("Tags to add: " + JSON.stringify(tagsToAdd));
+
+	if(tagsToAdd.length > 0) {
+		jsonDict = {userID: 0, language: "eng", tagsArray:tagsToAdd};
+		console.log("dict passed: " + JSON.stringify(jsonDict));
+		data = addTagBatch(jsonDict);
+	}
+
+	//now all the tags exist. Get their IDs by recalling tagExists
+	jsonDict = { tagsArray:tagsToPass, userID:0, language:"eng" };
+	data = tagExistsBatch(jsonDict);
+
+	console.log("Do all tags exist? " + JSON.stringify(data));
+
+	//add all these existing tags to a paper
+	var tagToPaper = [];
+	for(const idx in tagsList) {
+		var tag_id = data.tags[ tagsList[idx] ];
+		if(tag_id == "-1") {
+			response.error = "Tags not added properly";
+			return response;
+		}
+		tagToPaper.push({ tag_id: parseInt(tag_id, 10) });
+	}
+
+	for(const key in metadata_dict) {
+		if(key == "url") continue;
+		var tag_id = data.tags[ metadata_dict[key] ];
+		if(tag_id == "-1") {
+			response.error = "Tags not added properly";
+			return response;
+		}
+
+		tagToPaper.push({ tag_id: parseInt(tag_id, 10) });
+	}
+
+	jsonDict = {paper_id:paper_id, userID:0, tagsArray:tagToPaper};
+	data = addTagToPaperBatch(jsonDict);
+
+	response.success = true;
+	return response;
+}
 
 export const doAddPaper = async e => {
 	var title = document.getElementById("titleName").value;
@@ -305,6 +427,13 @@ export default class UploadPaper extends React.Component {
 								id="urlBox"
 								placeholder="Optional URL"
 							/>
+							<h2 id="leftLocation">Location</h2>
+							<input type="text"
+								className="PaperBoxes"
+								id="location"
+								placeholder="Optional Location"
+							/>
+							
 						</div>
 						<hr id="paper_line"></hr>
 

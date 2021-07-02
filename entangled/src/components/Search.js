@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Filter from './Filter.js';
-import { cookies, getTags, tagExists, sqlSearch, handleHistory, saveQuery, fileURLBase,
-    removeTagFromPaper, addTagToPaper, getWordCloudTags } from '../api.js'
+import {
+    cookies, getTags, tagExists, sqlSearch, handleHistory, saveQuery, fileURLBase,
+    removeTagFromPaper, addTagToPaper, getWordCloudTags
+} from '../api.js'
 import { loadTags } from './EditPaper.js';
 import Table from "./Table.js";
 import QueryPopup from './saveQueryPopup.js';
@@ -9,8 +11,8 @@ import EditPaper from './EditPaper.js';
 import OptionsPopup from './optionsPopup.js';
 import { parseCustomQuery, translateToSQL, isDigit } from './SQLTranslate.js';
 import { metadata_ids, metadata_categories } from './UploadPaper.js';
-import ReactWordcloud from 'react-wordcloud';
-import { words, options } from './AddUser.js';
+import WordCloud from './WordCloud.js';
+import BarChart from './BarChart.js';
 import './Search.css';
 
 //loads all available tags for a user
@@ -99,9 +101,9 @@ function cleanFilterState(filterState) {
             newFilter[idx][item.tag_id] = 0;
         }
     });
-    for(const idx in newFilter) {
-        for(const term in newFilter[idx]) {
-            if(isDigit(term) && !(term in tagsSeen)) {
+    for (const idx in newFilter) {
+        for (const term in newFilter[idx]) {
+            if (isDigit(term) && !(term in tagsSeen)) {
                 // newFilter[idx].delete(term);
                 delete newFilter[idx][term];
             }
@@ -122,32 +124,32 @@ function sendSearchQuery(filterState) {
 
 function translateFilterToCustom(filterState) {
     var equation = "";
-    for(const index in filterState) {
+    for (const index in filterState) {
         var tagsInclude = [];
         var tagsExclude = [];
         var includeState = "AND", excludeState = "AND";
 
-        for(const z in filterState[index]) {
-            if(z == "include") {
+        for (const z in filterState[index]) {
+            if (z == "include") {
                 includeState = filterState[index][z];
             }
-            if(z == "exclude") {
+            if (z == "exclude") {
                 excludeState = filterState[index][z];
             }
-            if(!isDigit(z)) continue;
-            
-            if(filterState[index][z] == 1) tagsInclude.push(z);
-            else if(filterState[index][z] == 2) tagsExclude.push(z);
+            if (!isDigit(z)) continue;
+
+            if (filterState[index][z] == 1) tagsInclude.push(z);
+            else if (filterState[index][z] == 2) tagsExclude.push(z);
         }
 
 
         // console.log(tagsInclude.toString() + " and " + tagsExclude.toString())
-        if(tagsInclude.length > 0) {
-            if(equation.length > 0) equation += " AND ";
+        if (tagsInclude.length > 0) {
+            if (equation.length > 0) equation += " AND ";
 
             var nextTerm = "";
-            for(let curTag in tagsInclude) {
-                if(nextTerm.length > 0) nextTerm += " " + includeState + " ";
+            for (let curTag in tagsInclude) {
+                if (nextTerm.length > 0) nextTerm += " " + includeState + " ";
                 nextTerm += "`" + tagsInclude[curTag] + "`";
             }
             nextTerm = "(" + nextTerm + ")";
@@ -155,12 +157,12 @@ function translateFilterToCustom(filterState) {
             equation += nextTerm;
         }
 
-        if(tagsExclude.length > 0) {
-            if(equation.length > 0) equation += " AND ";
+        if (tagsExclude.length > 0) {
+            if (equation.length > 0) equation += " AND ";
 
             var nextTerm = "";
-            for(let curTag in tagsExclude) {
-                if(nextTerm.length > 0) nextTerm += " " + excludeState + " ";
+            for (let curTag in tagsExclude) {
+                if (nextTerm.length > 0) nextTerm += " " + excludeState + " ";
                 nextTerm += "`" + tagsExclude[curTag] + "`";
             }
             nextTerm = "NOT (" + nextTerm + ")";
@@ -183,18 +185,16 @@ export default class Search extends React.Component {
     getExistingPaperData = () => {
         if (this.props.location && this.props.location.state
             && this.props.location.state.filterState) {
-            console.log("About to work");
             return sendSearchQuery(cleanFilterState(this.props.location.state.filterState));
         }
         if (this.props.location && this.props.location.state
             && this.props.location.state.customQuery) {
-            if(this.props.location.state.customQuery.has_error) {
-                console.log("HELLO? ");
+            if (this.props.location.state.customQuery.has_error) {
                 return sendSearchQuery(initState());
             }
             else {
                 var customSearchSQL = this.props.location.state.customQuery.original_input;
-    
+
                 var userID = -1;
                 if (cookies.get('UserID')) userID = cookies.get('UserID');
                 var result = parseCustomQuery(customSearchSQL, userID);
@@ -206,13 +206,13 @@ export default class Search extends React.Component {
     getExistingCustomQuery = () => {
         if (!this.props.location || !this.props.location.state
             || !this.props.location.state.customQuery) {
-            return {original_input: undefined};
+            return { original_input: undefined };
         }
         return this.props.location.state.customQuery;
     }
     makeInitialOptions = () => {
         var options = {};
-        for(const idx in metadata_ids) {
+        for (const idx in metadata_ids) {
             options[metadata_ids[idx]] = false;
         }
         options["title"] = true;
@@ -341,38 +341,38 @@ export default class Search extends React.Component {
         var newTagText = document.getElementById("addPaperTags").value;
         var userID = cookies.get('UserID');
         var validTag = tagExists(newTagText, cookies.get('PrefLang'), userID);
-        if(validTag.tag_id < 0) {
+        if (validTag.tag_id < 0) {
             document.getElementById("addPaperTags").value = "";
             return;
         }
-        
-        var newTag = { text: newTagText, owner: userID, tag_id:validTag.tag_id };
-        
+
+        var newTag = { text: newTagText, owner: userID, tag_id: validTag.tag_id };
+
         var index = -1;
         for (const x in privateTags) {
             if (privateTags[x]["text"] == newTag["text"] && privateTags[x]["tag_id"] == newTag["tag_id"]
-            && privateTags[x]["owner"] == newTag["owner"]) {
+                && privateTags[x]["owner"] == newTag["owner"]) {
                 index = x;
                 break;
             }
         }
-        
+
         var newPrivateTags = privateTags.slice();
-        
-        if(adding) {
-            if(index == -1) {
+
+        if (adding) {
+            if (index == -1) {
                 newPrivateTags.push(newTag);
                 addTagToPaper(paperInformation.id, newTag.tag_id, userID);
             }
         }
         else {
-            if(index != -1) {
+            if (index != -1) {
                 newPrivateTags.splice(index, 1);
-                var dict = { paper_id: paperInformation.id, tag_id: newTag.tag_id, userID:userID };
+                var dict = { paper_id: paperInformation.id, tag_id: newTag.tag_id, userID: userID };
                 removeTagFromPaper(dict);
             }
         }
-        
+
         this.setState({ privateTags: newPrivateTags });
         document.getElementById("addPaperTags").value = "";
     }
@@ -380,7 +380,7 @@ export default class Search extends React.Component {
     viewPaper = () => {
         const { paperInformation, privateTags, publicTags } = this.state;
         var userID = 0;
-        if(cookies.get('UserID') && cookies.get('PermLvl') == 0) {
+        if (cookies.get('UserID') && cookies.get('PermLvl') == 0) {
             userID = cookies.get('UserID');
         }
 
@@ -426,6 +426,8 @@ export default class Search extends React.Component {
 
                     <p ><b>Language:</b> {paperInformation.language}</p>
 
+                    <p ><b>Location:</b> {paperInformation.location}</p>
+
                     <p ><b>ISBN:</b> {paperInformation.isbn}</p>
 
                     <p ><b>URL:</b> {paperInformation.paper_url}</p>
@@ -461,7 +463,7 @@ export default class Search extends React.Component {
                     {
                         userID != 0 ?
                             <div id="searchTagsContainer">
-                            
+
                                 <div id="searchTagsDisplay" >
                                     <h4>Public</h4>
                                     <input value={publicTags.map(item => item.text).join(", ")} disabled />
@@ -470,17 +472,17 @@ export default class Search extends React.Component {
                                 </div>
 
                                 <div id="searchTagsInput" >
-                                    <button onClick={() => this.updatePrivateTagList(privateTags, true)}  id="addTagSearchBtnText">+</button>
+                                    <button onClick={() => this.updatePrivateTagList(privateTags, true)} id="addTagSearchBtnText">+</button>
                                     <button onClick={() => this.updatePrivateTagList(privateTags, false)} id="addTagSearchBtnText">-</button>
                                     <input type="text" placeholder="Enter a valid tag" id="addPaperTags" />
                                 </div>
 
                             </div>
-                        :
-                        <div id="searchTagsDisplay" >
-                            <h4>Public</h4>
-                            <input value={publicTags.map(item => item.text).join(", ")} disabled />
-                        </div>
+                            :
+                            <div id="searchTagsDisplay" >
+                                <h4>Public</h4>
+                                <input value={publicTags.map(item => item.text).join(", ")} disabled />
+                            </div>
                     }
 
                 </div>
@@ -505,45 +507,19 @@ export default class Search extends React.Component {
     makeTableColumns = () => {
         const { checkedOptions } = this.state;
         var columns = [];
-        for(const idx in metadata_ids) {
-            if(checkedOptions[metadata_ids[idx]] == true) {
-                columns.push({ Header: metadata_categories[idx], accessor:metadata_ids[idx] });
+        for (const idx in metadata_ids) {
+            if (checkedOptions[metadata_ids[idx]] == true) {
+                columns.push({ Header: metadata_categories[idx], accessor: metadata_ids[idx] });
             }
         }
         return columns;
     }
 
-    collectTags = () => {
-        try {
-            const { paperData } = this.state;
-            if(paperData.length == 0) {
-                return [];
-            }
-    
-            var userID = 0;
-            if(cookies.get('UserID')) userID = cookies.get('UserID');
-            var prefLang = "eng";
-            if(cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
-    
-            // console.log("Okay " + JSON.stringify(paperData));
-    
-            var paperIDs = [];
-            for(const idx in paperData) {
-                paperIDs.push(paperData[idx].id);
-            }
-    
-            var dict = {userID: userID, language:prefLang, papers:paperIDs };
-            return getWordCloudTags(dict).tags;
-        }
-        catch (error) {
-            return [];
-        }
-    }
 
-    loadWordCloud = () => {
-        console.log("Here?");
+
+    loadVisualize = (visual_type) => {
         this.setState((prevState) => ({ paperInformation: undefined }));
-        this.setState((prevState) => ({ dataVisualization: 1 }));
+        this.setState((prevState) => ({ dataVisualization: visual_type }));
     }
 
     render() {
@@ -552,10 +528,6 @@ export default class Search extends React.Component {
             customQuery, isOptionsOpen, dataVisualization } = this.state;
 
         let tableColumns = this.makeTableColumns();
-        var newWords = undefined;
-        if(dataVisualization == 1) {
-            newWords = this.collectTags();
-        }
 
         if (openEditPaper) {
             return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />
@@ -585,7 +557,7 @@ export default class Search extends React.Component {
                     <Table class="tagElement" id="tagTable" columns={tableColumns}
                         data={paperData} loadFilter={this.togglePopup} saveQuery={this.toggleSavePopup}
                         loadPaper={this.loadPaper} loadOptions={this.loadOptions}
-                        loadVisualize={this.loadWordCloud} />
+                        loadVisualize={this.loadVisualize} />
 
                 </div>
 
@@ -593,8 +565,9 @@ export default class Search extends React.Component {
 
                     {
                         paperInformation !== undefined ? this.viewPaper() :
-                        dataVisualization === 1 ? <ReactWordcloud words={newWords} options={options} /> :
-                            <></>
+                            dataVisualization === 1 ? <WordCloud paperData={paperData} /> :
+                                dataVisualization === 2 ? <BarChart paperData={paperData} /> :
+                                <></>
                     }
 
                 </div>
