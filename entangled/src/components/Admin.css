@@ -135,3 +135,7 @@ div#adminList button {
     color: lightskyblue;
     padding: 20px;
 }
+
+#idColor {
+    color: lightgray;
+}

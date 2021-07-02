@@ -5,6 +5,9 @@ import {getPerms} from '../api.js';
 import {getAdmins, cookies} from '../api.js';
 import { useHistory } from 'react-router-dom';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faTimes } from '@fortawesome/free-solid-svg-icons'
+
 
 const Admin = () => {
 	const history = useHistory([]);
@@ -79,9 +82,10 @@ const Admin = () => {
 					//<ul onClick={() => doGetPerms(array.username)} key={array.id}>
 					<details>
 						<summary>
-                   			{array.username} - {array.id}
+						<FontAwesomeIcon icon={faUser}/><span>&nbsp;&nbsp;</span>
+                   			{array.username} <span id="idColor">[{array.id}]</span>
 							<div id="removeUser" onClick={() => handleRemove(array.username, array.id)}>
-								{/* Remove {array.username}*/} X
+								{/* Remove {array.username}*/} <FontAwesomeIcon icon={faTimes}/>
 							</div>
                			</summary>
 						{/* <p>
