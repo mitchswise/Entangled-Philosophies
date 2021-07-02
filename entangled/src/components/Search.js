@@ -11,9 +11,8 @@ import EditPaper from './EditPaper.js';
 import OptionsPopup from './optionsPopup.js';
 import { parseCustomQuery, translateToSQL, isDigit } from './SQLTranslate.js';
 import { metadata_ids, metadata_categories } from './UploadPaper.js';
-import ReactWordcloud from 'react-wordcloud';
-import { options } from './AddUser.js';
-import { Chart } from "react-google-charts";
+import WordCloud from './WordCloud.js';
+import BarChart from './BarChart.js';
 import './Search.css';
 
 //loads all available tags for a user
@@ -516,53 +515,7 @@ export default class Search extends React.Component {
         return columns;
     }
 
-    collectTags = () => {
-        try {
-            const { paperData } = this.state;
-            if (paperData.length == 0) {
-                return [];
-            }
 
-            var userID = 0;
-            if (cookies.get('UserID')) userID = cookies.get('UserID');
-            var prefLang = "eng";
-            if (cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
-
-            var paperIDs = [];
-            for (const idx in paperData) {
-                paperIDs.push(paperData[idx].id);
-            }
-
-            var dict = { userID: userID, language: prefLang, papers: paperIDs };
-            return getWordCloudTags(dict).tags;
-        }
-        catch (error) {
-            return [];
-        }
-    }
-
-    collectBarChartData = (field_type) => {
-        const { paperData } = this.state;
-        var data = {};
-
-        for (const idx in paperData) {
-            if (!paperData[idx][field_type]) continue;
-            if (!(paperData[idx][field_type] in data)) data[paperData[idx][field_type]] = 0;
-            data[paperData[idx][field_type]]++;
-        }
-
-        var capitalized = field_type.charAt(0).toUpperCase() + field_type.slice(1);
-
-        var results = [ [capitalized, ''] ];
-        for (const key in data) {
-            // if(key == "German") results.push([key, 1000]);
-            // else results.push([key, data[key]]);
-            results.push([key, data[key]]);
-        }
-
-        console.log(JSON.stringify(results));
-        return results;
-    }
 
     loadVisualize = (visual_type) => {
         this.setState((prevState) => ({ paperInformation: undefined }));
@@ -575,13 +528,6 @@ export default class Search extends React.Component {
             customQuery, isOptionsOpen, dataVisualization } = this.state;
 
         let tableColumns = this.makeTableColumns();
-        var wordCloudData = undefined, barChartData = undefined;
-        if (dataVisualization == 1) {
-            wordCloudData = this.collectTags();
-        }
-        else if (dataVisualization == 2) {
-            barChartData = this.collectBarChartData('date');
-        }
 
         if (openEditPaper) {
             return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />
@@ -619,30 +565,8 @@ export default class Search extends React.Component {
 
                     {
                         paperInformation !== undefined ? this.viewPaper() :
-                            dataVisualization === 1 ? <ReactWordcloud words={wordCloudData} options={options} /> :
-                                dataVisualization === 2 ? 
-                                    <div id="barChartWrapper" style={{width: '90%', height:'90%', paddingLeft: "10%", paddingTop: "5%"}} >
-                                    <Chart 
-                                        width={'100%'}
-                                        height={'100%'}
-                                        chartType="Bar"
-                                        loader={<div>Loading Chart</div>}
-                                        data={barChartData}
-                                        options={{
-                                            title: '',
-                                            chartArea: { width: '50%' },
-                                            hAxis: {
-                                              title: '',
-                                              minValue: 0,
-                                            },
-                                            vAxis: {
-                                              title: 'Date',
-                                              format: '#'
-                                            },
-                                          }}
-                                    />
-                                    </div>
-                                :
+                            dataVisualization === 1 ? <WordCloud paperData={paperData} /> :
+                                dataVisualization === 2 ? <BarChart paperData={paperData} /> :
                                 <></>
                     }
 
