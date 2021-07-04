@@ -226,11 +226,13 @@ export default class UploadPaper extends React.Component {
 		isFilePicked: false,
 		isIndividualMode: true,
 		selectedCSV: "",
+		isCSVPicked: false
 	}
 
 	handleOnDrop = (data) => {
 		console.log(data);
 		this.setState({ selectedCSV: data });
+		this.setState({ isCSVPicked: true });
 	}
 
 	handleOnError = (err, file, inputElem, reason) => {
@@ -239,6 +241,7 @@ export default class UploadPaper extends React.Component {
 
 	handleOnRemoveFile = (data) => {
 		console.log(data);
+		this.setState({ isCSVPicked: false });
 	}
 
 	changeHandler = (event) => {
@@ -290,6 +293,113 @@ export default class UploadPaper extends React.Component {
 			doAddPaper();
 		}
 	};
+
+	handleBatchSubmission = async () => {
+		if (this.state.isCSVPicked) {
+			var csv = this.state.selectedCSV;
+			var paper;
+			var title = -1;
+			var author = -1;
+			var contributor = -1;
+			var relation = -1;
+			var subject = -1;
+			var date = -1;
+			var description = -1;
+			var type = -1;
+			var format = -1;
+			var language = -1;
+			var source = -1;
+			var publisher = -1;
+			var rights = -1;
+			var coverage = -1;
+			var isbn = -1;
+			var url = -1;
+			var location = -1;
+			var editor = -1;
+			var translator = -1;
+			var manual = -1;
+
+			console.log(csv[0]);
+			console.log(csv[0].data.length);
+			paper = csv[0].data;
+			for (let i = 0; i < csv[0].data.length; i++)
+			{
+				if (paper[i].toUpperCase() == "TITLE") title = i;
+				if (paper[i].toUpperCase() == "AUTHOR") author = i;
+				if (paper[i].toUpperCase() == "CONTRIBUTOR") contributor = i;
+				if (paper[i].toUpperCase() == "RELATION") relation = i;
+				if (paper[i].toUpperCase() == "SUBJECT") subject = i;
+				if (paper[i].toUpperCase() == "DATE") date = i;
+				if (paper[i].toUpperCase() == "DESCRIPTION") description = i;
+				if (paper[i].toUpperCase() == "TYPE") type = i;
+				if (paper[i].toUpperCase() == "FORMAT") format = i;
+				if (paper[i].toUpperCase() == "LANGUAGE") language = i;
+				if (paper[i].toUpperCase() == "SOURCE") source = i;
+				if (paper[i].toUpperCase() == "PUBLISHER") publisher = i;
+				if (paper[i].toUpperCase() == "RIGHTS") rights = i;
+				if (paper[i].toUpperCase() == "COVERAGE") coverage = i;
+				if (paper[i].toUpperCase() == "ISBN") isbn = i;
+				if (paper[i].toUpperCase() == "URL") url = i;
+				if (paper[i].toUpperCase() == "LOCATION") location = i;
+				if (paper[i].toUpperCase() == "EDITOR") editor = i;
+				if (paper[i].toUpperCase() == "TRANSLATOR") translator = i;
+				if (paper[i].toUpperCase() == "MANUAL TAGS") manual = i;
+			}
+
+			for (let i = 1; i < csv.length-1; i++)
+			{
+				paper = csv[i].data;
+				if (title == -1 || paper[title] == "")
+				{
+					document.getElementById("uploadStatus").innerHTML = "Not all papers have titles.";
+					continue;
+				}
+				if (author == -1 || paper[author] == "")
+				{
+					document.getElementById("uploadStatus").innerHTML = "Not all papers have authors.";
+					continue;
+				}
+
+				var pass = {title: paper[title]};
+				pass["Author"] = paper[author];
+				let finalContrib = "";
+				if (contributor > -1 && paper[contributor] != "") {
+				 finalContrib = paper[contributor];
+				 if (editor > -1 && paper[editor] != "") finalContrib = finalContrib + ", " + paper[editor] + " - Editor";
+				 if (translator > -1 && paper[translator != ""]) finalContrib = finalContrib + ", " + paper[translator] + " - Translator";
+				 pass["Contributor"] = finalContrib;
+				}
+				else if (editor > -1 && paper[editor] != "") {
+					finalContrib = csv[i][editor] + " - Editor";
+					if (translator > -1 && paper[translator] != "") finalContrib = finalContrib + ", " + paper[translator] + " - Translator";
+					pass["Contributor"] = finalContrib
+				}
+				else if (translator > -1 && paper[translator] != "") pass["Contributor"] = paper[translator] + " - Translator";
+				if (relation > -1) pass["Relation"] = paper[relation];
+				if (subject > -1) pass["Subject"] = paper[subject];
+				if (date > -1) pass["Date"] = paper[date];
+				if (description > -1) pass["Description"] = paper[description];
+				if (type > -1) pass["Type"] = paper[type];
+				if (format > -1) pass["Format"] = paper[format];
+				if (language > -1) pass["Language"] = paper[language];
+				if (source > -1) pass["Source"] = paper[source];
+				if (publisher > -1) pass["Publisher"] = paper[publisher];
+				if (rights > -1) pass["Rights"] = paper[rights];
+				if (coverage > -1) pass["Coverage"] = paper[coverage];
+				if (isbn > -1) pass["ISBN"] = paper[isbn];
+				if (url > -1) pass["URL"] = paper[url];
+				if (location > -1) pass["Location"] = paper[location];
+				if (manual > -1) pass["Manual Tags"] = paper[manual];
+
+				console.log(JSON.stringify(pass));
+
+				var result = addSpreadsheetPaper(pass);
+				console.log(JSON.stringify(result));
+				document.getElementById("uploadStatus").innerHTML = result.error;
+				if (result.error == "") document.getElementById("uploadStatus").innerHTML = "All paper successfully uploaded.";
+			}
+		}
+	}
 
 	renderRedirect = () => {
 		if (cookies.get('UserID') == null || cookies.get('PermLvl') < 1) {
@@ -463,6 +573,7 @@ export default class UploadPaper extends React.Component {
 						</div>
 						<hr id="paper_line"></hr>
 
+						{this.state.isIndividualMode? (
 						<div id="OtherFields">
 							<h2 id="leftTags">Tags</h2>
 							<input type="text" className="PaperBoxes" id="tags" disabled /><br />
@@ -476,7 +587,6 @@ export default class UploadPaper extends React.Component {
 								onClick={doDeleteTag}><div id="addTagBtnTxt">-</div></button>
 							<input type="text" className="PaperBoxes" id="tagsearch" /><br />
 
-							{this.state.isIndividualMode? (
 								<div>
 									<div id="fileUploadDiv">
 										<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
@@ -495,8 +605,9 @@ export default class UploadPaper extends React.Component {
 									<div id="uploadStatus"></div>
 									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">Upload CSV</div></button>
 								</div>
+							</div>
 							) : (
-								<div>
+								<div id="OtherFields">
 									<div id="fileUploadDiv">
 										<CSVReader
 										 onDrop={this.handleOnDrop}
@@ -508,14 +619,11 @@ export default class UploadPaper extends React.Component {
 											<span>Drop CSV file here or click to upload.</span>
 										</CSVReader>
 									</div>
+									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleBatchSubmission}><div id="uploadBtnTxt">Upload</div></button>
+									<div id="uploadStatus"></div>
 									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">Upload Individual File</div></button>
 								</div>
 							)}
-
-
-
-						</div>
-
 					</div>
 				</div>
 			</body>
