@@ -1,78 +1,126 @@
-#queryWrapper {
-  width: 50%;
-  margin: 0 auto;
-}
+
 
 table {
-font-family: Arial, Helvetica, sans-serif;
-border-collapse: collapse;
-width: 95%;
-top: 0px;
-}
-
-table td, table th {
-border: 1px solid #ddd;
-padding: 8px;
-}
-
-table tr:nth-child(even){background-color: #f2f2f2;}
-
-table tr:hover {background-color: #ddd;}
-
-table th {
-padding-top: 12px;
-padding-bottom: 12px;
-text-align: center;
-background-color: #ff5959;
-color: white;
-}
-
-
-
-#queriesToggle {
-  height:37px;
-  left:-1px;
-  position: relative;
-  border-radius: 0px;
-  border-left: none;
-  border: 1px solid black;
-
-}
-
-#queriesDelete{
-  height:37px;
-  left:-1px;
-  border: 1px solid black;
-  position: relative;
-  border-left:none;
-}
-
-#queriesDelete:hover {
-  background-color: #ddd;
-}
-
-#queriesToggle:hover {
-background-color: #ddd;
-}
-
-#queriesSearchBar {
-  height:31px;
-  position: relative;
-  width:87.90%;
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 95%;
+  top: 0px;
+  }
   
-}
-
-#queryTopBar{
-width:100%;
-}
-
-#pageNumbers{
-margin:10px;
-height:34px;
-left:342px;
-}
-
-#queriesBottom{
-
-width: 100%;
-}
+  table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  }
+  
+  table tr:nth-child(even){background-color: #f2f2f2;}
+  
+  table tr:hover {background-color: #ddd;}
+  
+  table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #ff5959;
+  color: white;
+  }
+  
+  #queriesTable{
+    width:100%;
+  }
+  
+  #queriesTableWrapper{ 
+    width:100%;
+    overflow-y: scroll !important;
+    overflow-x: scroll !important;
+    max-height: 703px;
+  }
+  
+  
+  #queriesToggle {
+    height:100%;
+    position: relative;
+    border-radius: 0px;
+    border-left: none;
+    border-top: none !important;
+    width:10%;
+    border: 1px solid black;
+    float:left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+  
+  #queriesDelete{
+    height:100%;
+    width:10%;
+    border: 1px solid black;
+    position: relative;
+    border-left:none;
+    border-top: none;
+    border-right: none;
+    float:left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  
+  }
+  
+  #queriesDelete:hover {
+    background-color: #ddd;
+  }
+  
+  #queriesToggle:hover {
+  background-color: #ddd;
+  }
+  
+  #queriesSearchBar {
+    width:80%;
+    height:36px;
+    position: relative;
+    float: left;
+    padding: 0;
+    margin: 0;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: 1px solid black;
+  }
+  
+  #queriesSearchBar:focus {
+    outline: none;
+  
+  }
+  
+  #queriesBox {
+    margin-left:29% !important;
+    width:60%;
+    text-align: center !important;
+    border: 1px solid black;
+    position: relative;
+    text-align: center;
+    width:44%;
+    max-height:740px !important;
+    min-height:740px !important; 
+    top:-62px;
+    min-width: 405px;
+  }
+  
+  
+  #queryTopBar{
+  width:100%;
+  height:37px;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  }
+  
+  #pageNumbers{
+  margin:10px;
+  height:34px;
+  left:0px;
+  }
+  
+  #queriesBottom{
+  
+  width: 100%;
+  }

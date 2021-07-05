@@ -59,6 +59,7 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
 
     return (
         <>
+        <div id="queriesBox">
         <div id = "queryTopBar">
         <input
             value={filterInput}
@@ -70,7 +71,8 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
         <button id="queriesDelete" onClick={() => deleteQueries(selectedFlatRows.map((row) => row.original))} >Delete</button>
         
         </div>
-        <table {...getTableProps()}>
+        <div id="queriesTableWrapper">
+        <table id="queriesTable" {...getTableProps()}>
             <thead>
             {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
@@ -109,6 +111,7 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
             })}
             </tbody>
         </table>
+        </div>
         <div id="queriesBottom">
         <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
         <span id = "pageNumbers">
@@ -118,6 +121,8 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
         </span>
         <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
         </div>
+        </div>
+
     </>
     );
 }
@@ -296,7 +301,6 @@ export default class Queries extends React.Component {
             {this.renderRedirect()}
             {redirectToSearch ? this.loadSearch() : <></>}
             <body>
-                <div id="queryWrapper">
                     {
                         toggleState === false ? 
                             <QueriesTable columns={columnsSavedQuery} data={savedQueries}
@@ -306,9 +310,10 @@ export default class Queries extends React.Component {
                                 toggleView={this.toggleView} setSearchFlag={this.setSearchFlag} 
                                 deleteQueries={this.handleQueryDelete} />
                     }
-                </div>
+
             </body>
-            
-        </div>);
+
+        </div>
+        );
     }
 }
