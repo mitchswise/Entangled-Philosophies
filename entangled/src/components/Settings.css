@@ -43,7 +43,7 @@
 }
 
 details {
-    width: 300px;   
+    width: 300px;
     padding:3px;
     border-width: 1px;
     font-size: 18px;
@@ -126,7 +126,7 @@ details {
     width: 300px;
     padding: 3px;
     border-color: black;
-    border-radius: 0px; 
+    border-radius: 0px;
     border-width: 1px;
     border-style: solid;
     font-size: 18px;

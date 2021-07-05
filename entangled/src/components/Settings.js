@@ -30,7 +30,7 @@ function setUserInfo() {
     } else {
         document.getElementById("OptOut").checked = true;
     }
-} 
+}
 
 export default class Settings extends React.Component {
 
@@ -80,14 +80,15 @@ export default class Settings extends React.Component {
 		let passSpecial = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
 
         let email = document.getElementById("email").value;
-    
+
         let language = this.state.userInfo["language"];
-    
+
         let userCookies = 0;
         if (document.getElementById("OptIn").checked) {
             userCookies = 1;
         }
-    
+
+		let error = 0;
 		let passUpdated = 0;
 		let firstPass = document.getElementById("changePassword").value;
 		let secondPass = document.getElementById("confirmPassword").value;
@@ -192,12 +193,12 @@ export default class Settings extends React.Component {
                                         style={
                                             userInfo.language === "eng" ? { color: 'green' } :
                                                 { color: 'black' }
-                                        } type="submit" id="englishButton">{dSettings(10, userInfo.language)}</button>
+                                        } type="submit" id="englishButton">English</button>
                                     <button onClick={() => this.setLanguage("ger")}
                                         style={
                                             userInfo.language === "ger" ? { color: 'green' } :
                                                 { color: 'black' }
-                                        } type="submit" id="germanButton">{dSettings(13, userInfo.language)}</button>
+                                        } type="submit" id="germanButton">Deutsche</button>
                                 </div>
                             </div>
                         </div>

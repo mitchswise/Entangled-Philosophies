@@ -26,11 +26,11 @@ export function dSettings(s, lang) {
 			break;
 		case 7:
 			if (lang == 'eng') return "Opt In";
-			if (lang == 'ger') return "Zustimmen";
+			if (lang == 'ger') return "Akzeptieren";
 			break;
 		case 8:
 			if (lang == 'eng') return "Opt Out";
-			if (lang == 'ger') return "Aussteigen";
+			if (lang == 'ger') return "Ablehnen";
 			break;
 		case 9:
 			if (lang == 'eng') return "Account Settings";
