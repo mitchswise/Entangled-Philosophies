@@ -34,6 +34,9 @@ export function addSpreadsheetPaper(dict) {
 
 		if(new_key == "manual tags") {
 			tagsList = dict[key].split(";");
+			for(let idx = 0; idx < tagsList.length; idx++) {
+				tagsList[idx] = tagsList[idx].trim();
+			}
 		}
 		else {
 			metadata_dict[new_key] = dict[key];
@@ -58,8 +61,8 @@ export function addSpreadsheetPaper(dict) {
 
 	var addPaperData = addPaper(metadata_dict);
 	var paper_id = addPaperData.id;
-
-	//figure out existence of all tags
+	
+	// //figure out existence of all tags
 	var tagsToPass = [];
 	for(const idx in tagsList) {
 		tagsToPass.push({text: tagsList[idx]});
@@ -68,14 +71,14 @@ export function addSpreadsheetPaper(dict) {
 		if(key == "url") continue;
 		tagsToPass.push({ text: metadata_dict[key] });
 	}
-
+	
 	//assumptions made because we're in 'add spreadsheet paper'
 	var jsonDict = { tagsArray:tagsToPass, userID:0, language:"eng" };
 	var data = tagExistsBatch(jsonDict);
-
+	
 	//find any missing tags and add them to the database
 	var tagsToAdd = [];
-
+	
 	for(const idx in tagsList) {
 		if(data.tags[ tagsList[idx] ] == "-1") {
 			var category = "General";
@@ -84,34 +87,35 @@ export function addSpreadsheetPaper(dict) {
 			tagsToAdd.push({ category:category, eng:eng, ger:ger });
 		}
 	}
-
+	
 	for(const key in metadata_dict) {
 		if(key == "url") continue;
 		if(data.tags[ metadata_dict[key] ] == "-1") {
 			var category = "";
 			if(key == "paper_url") category = "URL";
+			else if(key == "isbn") category = "ISBN";
 			else category = key.charAt(0).toUpperCase() + key.slice(1);
-
+			
 			var met = metadata_dict[key];
-
+			
 			tagsToAdd.push({ category:category, met:met });
 		}
 	}
-
+	
 	console.log("Tags to add: " + JSON.stringify(tagsToAdd));
-
+	
 	if(tagsToAdd.length > 0) {
 		jsonDict = {userID: 0, language: "eng", tagsArray:tagsToAdd};
 		console.log("dict passed: " + JSON.stringify(jsonDict));
 		data = addTagBatch(jsonDict);
 	}
-
+	
 	//now all the tags exist. Get their IDs by recalling tagExists
 	jsonDict = { tagsArray:tagsToPass, userID:0, language:"eng" };
 	data = tagExistsBatch(jsonDict);
-
+	
 	console.log("Do all tags exist? " + JSON.stringify(data));
-
+	
 	//add all these existing tags to a paper
 	var tagToPaper = [];
 	for(const idx in tagsList) {
@@ -122,7 +126,7 @@ export function addSpreadsheetPaper(dict) {
 		}
 		tagToPaper.push({ tag_id: parseInt(tag_id, 10) });
 	}
-
+	
 	for(const key in metadata_dict) {
 		if(key == "url") continue;
 		var tag_id = data.tags[ metadata_dict[key] ];
@@ -130,13 +134,13 @@ export function addSpreadsheetPaper(dict) {
 			response.error = "Tags not added properly";
 			return response;
 		}
-
+		
 		tagToPaper.push({ tag_id: parseInt(tag_id, 10) });
 	}
-
+	
 	jsonDict = {paper_id:paper_id, userID:0, tagsArray:tagToPaper};
 	data = addTagToPaperBatch(jsonDict);
-
+	
 	response.success = true;
 	return response;
 }
@@ -346,6 +350,7 @@ export default class UploadPaper extends React.Component {
 				if (paper[i].toUpperCase() == "MANUAL TAGS") manual = i;
 			}
 
+			var papers_uploaded = 0;
 			for (let i = 1; i < csv.length-1; i++)
 			{
 				paper = csv[i].data;
@@ -391,13 +396,16 @@ export default class UploadPaper extends React.Component {
 				if (location > -1) pass["Location"] = paper[location];
 				if (manual > -1) pass["Manual Tags"] = paper[manual];
 
-				console.log(JSON.stringify(pass));
-
 				var result = addSpreadsheetPaper(pass);
 				console.log(JSON.stringify(result));
 				document.getElementById("uploadStatus").innerHTML = result.error;
-				if (result.error == "") document.getElementById("uploadStatus").innerHTML = "All paper successfully uploaded.";
+				if (result.error == undefined) {
+					papers_uploaded++;
+					document.getElementById("uploadStatus").innerHTML = "All paper successfully uploaded.";
+				}
 			}
+
+			console.log("We uploaded " + papers_uploaded);
 		}
 	}
 

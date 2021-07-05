@@ -20,7 +20,7 @@
     $query = "";
     if($user_id > 0) {
         //make a query to find all input tags that are user-made tags
-        $query = "SELECT tag_id, text text FROM tags_translation WHERE ";
+        $query = "SELECT tag_id, text FROM tags_translation WHERE ";
         for($i = 0; $i < $arr_len; $i++) {
             if($i > 0) $query = $query . " OR ";
             $add = "(owner = " . $user_id . " AND language='def' AND text='" . $arr[$i]["text"] . "')";
