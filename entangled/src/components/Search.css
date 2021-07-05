@@ -28,14 +28,16 @@ div.header {
 
 .rightBoxPaperInfo {
     position: relative;
-}
+    overflow-y: scroll;
+    height:737px;
+    top:-32px;}
 
 #buttonRow {
     height:34px;
-    width:44%;
-    position: fixed;
+    width:100%;
+    position:sticky;
     z-index: 1;
-    top:126px;
+    top:0px;
     background-color: white;
     border-bottom: 1px solid black;
 }
@@ -45,14 +47,13 @@ div.header {
 #closePaperButton {
     height:34px;
     position: absolute;
-    left:75px;
+    left:74px;
     border-top: none !important;
     border: 1px solid black;
     margin:0;
-    border-radius: 4px;
-    border-top-left-radius: 0px;
+    border-radius: 0px;
     border-bottom:none;
-
+    cursor:pointer;
 
 }
 
@@ -66,11 +67,9 @@ div.header {
     border-top: none !important;
     border: 1px solid black;
     left:-1px;
-    border-radius: 4px;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-    border-bottom-left-radius: 0px;
+    border-radius: 0px;
     border-bottom:none;
+    cursor: pointer;
 
 }
 
@@ -93,7 +92,6 @@ div.header {
 #rightBox {
     margin-right: 4%;
     float: right;
-    overflow-y: scroll !important;
 }
 
 #searchBody {
@@ -165,7 +163,6 @@ div.header {
     width: 100%;
     height:fit-content;
     position: relative;
-    padding-bottom:5px;
 }
 
 #rowFour h3 {
@@ -176,6 +173,18 @@ div.header {
 #rowFour p {
     border-bottom:1px solid black;
     width:100%;
+}
+
+#rowFive {
+    width: 100%;
+    top:-10px;
+    height:fit-content;
+    position: relative;
+}
+
+#rowFive h3 {
+    text-align: center;
+    text-decoration: underline;
 }
 
 #rowFive {
@@ -226,6 +235,8 @@ div.header {
     flex-direction: "row";
     align-items: center;
     justify-content: center;
+    position: relative;
+    height:20px;
 }
 
 #searchTagsInput {
@@ -239,3 +250,48 @@ div.header {
     margin-left: 4%;
     margin-right: 1%;
 }
+
+@media screen and (max-width: 1300px) {
+
+    #leftBox {
+        margin-left: 15%;        
+        float: none;
+        position:relative;
+        max-height: 40vh;
+        text-align: center !important;
+        display: block;
+        top: -61px;
+    }
+    #rightBox {
+        margin-left: 15%;
+        float: none;
+        display: block;
+        top:-23px;
+        position: relative;
+
+    }
+    
+    .box {
+     
+        position:unset;
+        text-align: center;
+        margin:auto;
+        width:70%;
+        height:740px;
+        display: block;
+    }
+
+    #saveQuery {
+        font-size: 12px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #Filter {
+        font-size:12px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+
+  }

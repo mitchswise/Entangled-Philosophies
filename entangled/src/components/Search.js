@@ -430,7 +430,13 @@ export default class Search extends React.Component {
 
                     <p ><b>ISBN:</b> {paperInformation.isbn}</p>
 
-                    <p ><b>URL:</b> {paperInformation.paper_url}</p>
+                    <p ><b>URL:</b> {
+                        paperInformation.paper_url !== null ?
+                            <a id="currentFile" href={paperInformation.paper_url}
+                                target="_blank" >{paperInformation.paper_url}</a>
+                        :
+                        ""
+                    }</p>
 
                     <p ><b>File Link:</b> {
                         paperInformation.url !== "none" ?
@@ -480,8 +486,8 @@ export default class Search extends React.Component {
                             </div>
                             :
                             <div id="searchTagsDisplay" >
-                                <h4>Public</h4>
-                                <input value={publicTags.map(item => item.text).join(", ")} disabled />
+                                <h4 id="tagsPublic">Public:</h4>
+                                <input id="searchTagsDisplayinput" value={publicTags.map(item => item.text).join(", ")} disabled />
                             </div>
                     }
 
