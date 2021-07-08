@@ -97,6 +97,9 @@ export function dSettings(s, lang) {
 		case 28:
 			if(lang == 'eng') return "About Us";
 			if(lang == 'ger') return "Über Uns";
+		case 29:
+			if(lang == 'eng') return "Search";
+			if(lang == 'ger') return "Suche";
 		default:
 			return "?";
 	}

@@ -15,13 +15,17 @@ import WordCloud from './WordCloud.js';
 import BarChart from './BarChart.js';
 import './Search.css';
 import { getPermLvl, getGlobalLanguage } from '../api.js';
+import { dSettings } from '../dictionary.js';
 
 var userLanguage = getGlobalLanguage();
 var userPermLvl = getPermLvl();
+var loadedTagData = undefined, loadedTagLanguage = undefined;
 
 //loads all available tags for a user
-function getTagData() {
-    var userID = 0, prefLang = userLanguage;
+function getTagData(userLang) {
+    if(loadedTagData != undefined && loadedTagLanguage == userLang) return loadedTagData;
+
+    var userID = 0, prefLang = userLang;
     if (cookies.get('UserID')) userID = cookies.get('UserID');
     var result = getTags(userID, prefLang);
 
@@ -35,14 +39,18 @@ function getTagData() {
         }
     }
 
+    loadedTagData = tagsList;
+    loadedTagLanguage = userLang;
+
     return tagsList;
 }
-const tagData = getTagData();
 
 //sets up the filter JSON to be used/updated
 //for searching based on filter criteria
-function initState() {
+function initState(userLang) {
     var categories = [];
+
+    const tagData = getTagData(userLang)
     tagData.forEach((item, index) => {
         if (!(item.catText in categories)) {
             categories[item.catText] = [];
@@ -70,7 +78,7 @@ function initState() {
     return initState;
 }
 
-function cleanFilterState(filterState) {
+function cleanFilterState(filterState, userLang) {
     //because of saved queries before a category is added,
     //we need to make sure filter state is up to date with 
     //all new categories + tags that belong to those new categories
@@ -78,6 +86,7 @@ function cleanFilterState(filterState) {
     const newFilter = filterState.slice();
     var textToFilter = {}, tagsSeen = {};
 
+    const tagData = getTagData(userLang);
     tagData.forEach((item, index) => {
         tagsSeen[item.tag_id] = true;
         var foundInFilter = false;
@@ -178,22 +187,22 @@ function translateFilterToCustom(filterState) {
 
 export default class Search extends React.Component {
 
-    getExistingFilter = () => {
+    getExistingFilter = (userLang) => {
         if (!this.props.location || !this.props.location.state
             || !this.props.location.state.filterState) {
-            return initState();
+            return initState(userLang);
         }
-        return cleanFilterState(this.props.location.state.filterState);
+        return cleanFilterState(this.props.location.state.filterState, userLang);
     }
-    getExistingPaperData = () => {
+    getExistingPaperData = (userLang) => {
         if (this.props.location && this.props.location.state
             && this.props.location.state.filterState) {
-            return sendSearchQuery(cleanFilterState(this.props.location.state.filterState));
+            return sendSearchQuery(cleanFilterState(this.props.location.state.filterState, userLang));
         }
         if (this.props.location && this.props.location.state
             && this.props.location.state.customQuery) {
             if (this.props.location.state.customQuery.has_error) {
-                return sendSearchQuery(initState());
+                return sendSearchQuery(initState(userLang));
             }
             else {
                 var customSearchSQL = this.props.location.state.customQuery.original_input;
@@ -204,9 +213,9 @@ export default class Search extends React.Component {
                 return sqlSearch(userID, result.query);
             }
         }
-        return sendSearchQuery(initState());
+        return sendSearchQuery(initState(userLang));
     }
-    getExistingCustomQuery = () => {
+    getExistingCustomQuery = (userLang) => {
         if (!this.props.location || !this.props.location.state
             || !this.props.location.state.customQuery) {
             return { original_input: undefined };
@@ -226,13 +235,14 @@ export default class Search extends React.Component {
     }
 
     state = {
+        tagData: getTagData(this.props.userLang),
         isFilterOpen: false,
         isSaveOpen: false,
-        filterState: this.getExistingFilter(),
-        paperData: this.getExistingPaperData(),
+        filterState: this.getExistingFilter(this.props.userLang),
+        paperData: this.getExistingPaperData(this.props.userLang),
         paperInformation: undefined,
         openEditPaper: false,
-        customQuery: this.getExistingCustomQuery(),
+        customQuery: this.getExistingCustomQuery(this.props.userLang),
         lastQueryTypeUsed: 0,
         publicTags: [],
         privateTags: [],
@@ -522,7 +532,7 @@ export default class Search extends React.Component {
 
         const { isFilterOpen, isSaveOpen, filterState,
             openEditPaper, paperData, paperInformation,
-            customQuery, isOptionsOpen, dataVisualization } = this.state;
+            customQuery, isOptionsOpen, dataVisualization, tagData } = this.state;
 
         let tableColumns = this.makeTableColumns();
 
@@ -530,7 +540,7 @@ export default class Search extends React.Component {
             return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />
         }
         return (<div id="searchContainer">
-            <h1 id="title">Search</h1>
+            <h1 id="title">{dSettings(29, userLang)}</h1>
             <div id="searchBody">
                 {isFilterOpen && <Filter
                     handleClose={this.togglePopup}
