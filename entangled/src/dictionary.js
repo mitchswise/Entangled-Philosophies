@@ -94,6 +94,9 @@ export function dSettings(s, lang) {
 		case 27:
 			if(lang == 'eng') return "Already registered? ";
 			if(lang == 'ger') return "Bereits registriert? ";
+		case 28:
+			if(lang == 'eng') return "About Us";
+			if(lang == 'ger') return "Über Uns";
 		default:
 			return "?";
 	}

@@ -24,7 +24,7 @@ export default class Sidebar extends React.Component {
             <Link to="/">Home</Link>
           </a>
           <a className="menu-item">
-            <Link to="/about">About</Link>
+            <Link to="/about">About Us</Link>
           </a>
           <a className="menu-item">
             <Link to={{ pathname: "/search", state: {} }}>Search</Link>
@@ -46,7 +46,7 @@ export default class Sidebar extends React.Component {
             <Link to="/">Home</Link>
           </a>
           <a className="menu-item">
-            <Link to="/about">About</Link>
+            <Link to="/about">About Us</Link>
           </a>
           <a className="menu-item">
             <Link to={{ pathname: "/search", state: {} }}>Search</Link>
@@ -73,7 +73,7 @@ export default class Sidebar extends React.Component {
             <Link to="/">Home</Link>
           </a>
           <a className="menu-item">
-            <Link to="/about">About</Link>
+            <Link to="/about">About Us</Link>
           </a>
           <a className="menu-item">
             <Link to="/admin">Admin</Link>

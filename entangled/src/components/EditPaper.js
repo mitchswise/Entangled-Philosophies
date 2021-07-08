@@ -35,7 +35,7 @@ function makeMetadataValues(paperInformation) {
 }
 
 export function loadTags(paperInformation) {
-    var userID = 0, prefLang = userLanguage, paperID = paperInformation.id;
+    var userID = cookies.get('UserID') ? cookies.get('UserID') : 0, prefLang = userLanguage, paperID = paperInformation.id;
     var dict = { userID: userID, language: prefLang, paperID: paperID };
     var data = getPapersTag(dict);
 

@@ -471,27 +471,17 @@ export default class Search extends React.Component {
 
                     {
                         userID != 0 ?
-                            <div id="searchTagsContainer">
-
-                                <div id="searchTagsDisplay" >
-                                    <h4>Public</h4>
-                                    <input value={publicTags.map(item => item.text).join(", ")} disabled />
-                                    <h4>Private</h4>
-                                    <input value={privateTags.map(item => item.text).join(", ")} disabled />
-                                </div>
-
+                            <>
+                                <p ><b>Public:</b> {publicTags.map(item => item.text).join(", ")}</p>
+                                <p ><b>Private:</b> {privateTags.map(item => item.text).join(", ")}</p>
                                 <div id="searchTagsInput" >
                                     <button onClick={() => this.updatePrivateTagList(privateTags, true)} id="addTagSearchBtnText">+</button>
                                     <button onClick={() => this.updatePrivateTagList(privateTags, false)} id="addTagSearchBtnText">-</button>
                                     <input type="text" placeholder="Enter a valid tag" id="addPaperTags" />
                                 </div>
-
-                            </div>
-                            :
-                            <div id="searchTagsDisplay" >
-                                <h4 id="tagsPublic">Public:</h4>
-                                <input id="searchTagsDisplayinput" value={publicTags.map(item => item.text).join(", ")} disabled />
-                            </div>
+                            </>
+                        :
+                        <p ><b>Public:</b> {publicTags.map(item => item.text).join(", ")}</p>
                     }
 
                 </div>
@@ -528,7 +518,6 @@ export default class Search extends React.Component {
     }
 
     render() {
-        console.log("TEST? " + this.props.userLang);
         let userLang = this.props.userLang;
 
         const { isFilterOpen, isSaveOpen, filterState,
