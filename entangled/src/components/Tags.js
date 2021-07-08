@@ -5,6 +5,10 @@ import { getTags, addTag, removeTag, getTagTranslation,
     cookies, supported_languages } from '../api.js';
 import Table from "./TagsTable";
 import './Tags.css';
+import { getPermLvl, getGlobalLanguage } from "../api.js";
+
+var userLanguage = getGlobalLanguage();
+var userPermLvl = getPermLvl();
 
 //table set-up functions:
 
@@ -33,7 +37,7 @@ const columnsCategories = [
 //loads all available tags for a user
 function getTagData() {
     if(!cookies.get('UserID')) return [];
-    var prefLang = cookies.get('PrefLang');
+    var prefLang = userLanguage;
     var result = getTags(cookies.get('UserID'), prefLang);
 
     var tagsList = []
@@ -50,7 +54,7 @@ function getTagData() {
 //loads all available categories for a user
 function getCategoryData() {
     if(!cookies.get('UserID')) return [];
-    var prefLang = cookies.get('PrefLang');
+    var prefLang = userLanguage;
     var result = getCats(cookies.get('UserID'), prefLang);
     return result.categories;
 }
@@ -68,7 +72,7 @@ function doAddTag(edit_tag) {
     translations["category"] = tag_category;
     var userID = -1;
 
-    if(cookies.get('PermLvl') < 1) { //user adding it
+    if(userPermLvl < 1) { //user adding it
         userID = cookies.get('UserID');
         var tag_name = document.getElementById("defBox").value;
         if(!tag_name) {
@@ -94,7 +98,7 @@ function doAddTag(edit_tag) {
     }
 
     //SWITCH to calling settings endpoint when it's done
-    var language = cookies.get('PrefLang');
+    var language = userLanguage;
 
     var data = addTag(userID, language, translations, edit_tag);
     // document.getElementById("tagsPageStatus").innerHTML = data.status;
@@ -104,7 +108,7 @@ function doAddTag(edit_tag) {
 function doRemoveTag(rowInfo) {
     var tagName = rowInfo.text;
     var userID = rowInfo.owner;
-    var language = rowInfo.owner == 0 ? cookies.get('PrefLang') : "def"; //Switch!
+    var language = rowInfo.owner == 0 ? userLanguage : "def";
 
     var data = removeTag(tagName, language, userID);
     // document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
@@ -112,11 +116,10 @@ function doRemoveTag(rowInfo) {
 
 //add/edit a category to the database
 function doAddCat(edit_cat) {
-    console.log("Test " + edit_cat);
     var translations = {}
     var userID = -1;
 
-    if(cookies.get('PermLvl') < 1) { //user adding it
+    if(userPermLvl < 1) { //user adding it
         userID = cookies.get('UserID');
         var cat_name = document.getElementById("defBox").value;
         if(!cat_name) {
@@ -149,7 +152,7 @@ function doAddCat(edit_cat) {
 function doRemoveCat(rowInfo) {
     var catName = rowInfo.text;
     var userID = rowInfo.owner;
-    var language = rowInfo.owner == 0 ? cookies.get('PrefLang') : "def"; //Switch!
+    var language = rowInfo.owner == 0 ? userLanguage : "def";
 
     var data = removeCategory(catName, language, userID);
     // document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
@@ -293,7 +296,7 @@ export default class Tags extends React.Component {
     //When a user/admin clicks an entry and wants to edit it.
     loadTag = (rowInformation) => {
         this.setState({ rowInfo: rowInformation });
-        if(cookies.get('PermLvl') < 1) {
+        if(userPermLvl < 1) {
             if(rowInformation.owner !== cookies.get('UserID')) {
                 // document.getElementById("tagsPageStatus").innerHTML = "Status: You can't edit public items.";
                 this.setState({ tagAdditionState: 0 });
@@ -309,7 +312,7 @@ export default class Tags extends React.Component {
 
     //When a user/admin clicks on "Add"
     makeTagAddInputBoxes = () => {
-        if(cookies.get('PermLvl') < 1) { //regular user
+        if(userPermLvl < 1) { //regular user
             this.setState({ tagAdditionState: 2 })
         }
         else { //admin 

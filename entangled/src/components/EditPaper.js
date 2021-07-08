@@ -10,12 +10,13 @@ import {
 } from '../api.js';
 
 import { field_ids, metadata_ids, metadata_categories } from './UploadPaper';
+import { getGlobalLanguage, getPermLvl } from '../api.js';
 
-var tagsList = [];
-var tagIDs = [];
 var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/uploadPaper.php';
 var userID = cookies.get('UserID');
-if (cookies.get('PermLvl') > 0) userID = 0;
+var userLanguage = getGlobalLanguage();
+var userPermLvl = getPermLvl();
+if (userPermLvl > 0) userID = 0;
 
 let header_ids = ["leftTitle", "leftAuthor", "leftContributor", "leftRelations", "leftSubject", "leftDate",
     "leftDescription", "leftType", "leftFormat", "leftLanguage", "leftSource",
@@ -34,14 +35,7 @@ function makeMetadataValues(paperInformation) {
 }
 
 export function loadTags(paperInformation) {
-    var userID = 0, prefLang = "eng", paperID = paperInformation.id;
-    if (cookies.get('UserID') && cookies.get('PermLvl') == 0) {
-        userID = cookies.get('UserID');
-    }
-    if (cookies.get('PrefLang')) {
-        prefLang = cookies.get('PrefLang');
-    }
-
+    var userID = 0, prefLang = userLanguage, paperID = paperInformation.id;
     var dict = { userID: userID, language: prefLang, paperID: paperID };
     var data = getPapersTag(dict);
 
@@ -136,13 +130,10 @@ const doAddPaper = async (paperInformation, currentTags, curMetadataText) => {
 
                 if (found_index != -1) {
                     var curCategory = metadata_categories[found_index];
-                    var result = addMetadataTag(curCategory, "eng", value, -1);
+                    var result = addMetadataTag(curCategory, userLanguage, value, -1);
 
                     tag_data = tagExists(value, "met", 0);
                     tag_id = tag_data.tag_id;
-                }
-                else {
-                    console.log("error?");
                 }
 
             }
@@ -258,7 +249,7 @@ export default class EditPaper extends React.Component {
         const doAddTag = async e => {
             var tag = document.getElementById("tagsearch").value;
 
-            var data = tagExists(tag, cookies.get('PrefLang'), userID);
+            var data = tagExists(tag, userLanguage, userID);
 
             if (data.tag_id >= 0) {
                 var obj = { text: tag, tag_id: data.tag_id, owner: userID };
@@ -280,7 +271,7 @@ export default class EditPaper extends React.Component {
         const doDeleteTag = async e => {
             var tag = document.getElementById("tagsearch").value;
 
-            var data = tagExists(tag, cookies.get('PrefLang'), userID);
+            var data = tagExists(tag, userLanguage, userID);
 
             if (data.tag_id >= 0) {
                 var obj = { text: tag, tag_id: data.tag_id, owner: userID };
@@ -318,7 +309,6 @@ export default class EditPaper extends React.Component {
                 id={field_ids[index]}
                 value={this.state.curMetadataText[index]}
                 placeholder={placeholderValue}
-                disabled={cookies.get('PermLvl') < 1}
                 onChange={doUpdateArr.bind(this, index)} />
 
             metadata.push(header);
@@ -356,7 +346,7 @@ export default class EditPaper extends React.Component {
                                 <br /><br /><br />
 
                                 <div id="fileEditDiv">
-                                    <input type="file" name="file" id="fileUpload" disabled={cookies.get('PermLvl') < 1} onChange={this.changeHandler} />
+                                    <input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
                                     <input type="hidden" id="filename" />
                                     {this.state.isFilePicked ? (
                                         <div>
@@ -365,7 +355,7 @@ export default class EditPaper extends React.Component {
                                     ) : (
                                         <p>Select a file to show details</p>
                                     )}
-                                    <button type="button" id="clearUploadButton" disabled={cookies.get('PermLvl') < 1}
+                                    <button type="button" id="clearUploadButton"
                                         onClick={this.removeUpload}>Remove Upload</button>
                                 </div>
 
@@ -394,11 +384,7 @@ export default class EditPaper extends React.Component {
                         <button type="button" className="editSaveButtons" id="editCancelButton"
                             onClick={() => this.props.closeEdit(false, false)}>Cancel</button>
                         <img src={trashCan} id="deletePaperButton" onClick={() => {
-                            if (cookies.get('PermLvl') < 1) {
-                                window.alert("Regular users can't delete papers.")
-                            }
-                            else if (window.confirm("Are you sure you want to delete this paper? This action is irreversible!")) {
-                                console.log("Deleting...");
+                            if (window.confirm("Are you sure you want to delete this paper? This action is irreversible!")) {
                                 removePaper(this.state.paperInformation.id);
                                 this.props.closeEdit(true, false);
                             }

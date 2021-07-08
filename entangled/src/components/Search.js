@@ -14,12 +14,15 @@ import { metadata_ids, metadata_categories } from './UploadPaper.js';
 import WordCloud from './WordCloud.js';
 import BarChart from './BarChart.js';
 import './Search.css';
+import { getPermLvl, getGlobalLanguage } from '../api.js';
+
+var userLanguage = getGlobalLanguage();
+var userPermLvl = getPermLvl();
 
 //loads all available tags for a user
 function getTagData() {
-    var userID = 0, prefLang = "eng";
+    var userID = 0, prefLang = userLanguage;
     if (cookies.get('UserID')) userID = cookies.get('UserID');
-    if (cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
     var result = getTags(userID, prefLang);
 
     let metadata_ignore = ["17", "23", "32"];
@@ -340,7 +343,7 @@ export default class Search extends React.Component {
         const { paperInformation } = this.state;
         var newTagText = document.getElementById("addPaperTags").value;
         var userID = cookies.get('UserID');
-        var validTag = tagExists(newTagText, cookies.get('PrefLang'), userID);
+        var validTag = tagExists(newTagText, userLanguage, userID);
         if (validTag.tag_id < 0) {
             document.getElementById("addPaperTags").value = "";
             return;
@@ -380,14 +383,14 @@ export default class Search extends React.Component {
     viewPaper = () => {
         const { paperInformation, privateTags, publicTags } = this.state;
         var userID = 0;
-        if (cookies.get('UserID') && cookies.get('PermLvl') == 0) {
+        if (userPermLvl == 0) {
             userID = cookies.get('UserID');
         }
 
         return <div id="rightBoxWrapper">
             <div id="buttonRow">
                 <button id="editPaperButton" onClick={() => { this.setState({ openEditPaper: true }) }}
-                    disabled={!cookies.get('UserID') || cookies.get('PermLvl') == 0}>Edit Paper</button>
+                    disabled={!cookies.get('UserID') || userPermLvl == 0}>Edit Paper</button>
                 <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
             </div>
             <div class="rightBoxPaperInfo">
@@ -500,8 +503,6 @@ export default class Search extends React.Component {
 
     closeEdit = (didDelete, didUpdate) => {
         if (didUpdate || didDelete) {
-            var userID = -1;
-            if (cookies.get('UserID')) userID = cookies.get('UserID');
             this.setState((prevState) => ({ paperData: sendSearchQuery(prevState.filterState) }));
         }
         if (didDelete) {
@@ -521,14 +522,15 @@ export default class Search extends React.Component {
         return columns;
     }
 
-
-
     loadVisualize = (visual_type) => {
         this.setState((prevState) => ({ paperInformation: undefined }));
         this.setState((prevState) => ({ dataVisualization: visual_type }));
     }
 
     render() {
+        console.log("TEST? " + this.props.userLang);
+        let userLang = this.props.userLang;
+
         const { isFilterOpen, isSaveOpen, filterState,
             openEditPaper, paperData, paperInformation,
             customQuery, isOptionsOpen, dataVisualization } = this.state;
@@ -571,8 +573,8 @@ export default class Search extends React.Component {
 
                     {
                         paperInformation !== undefined ? this.viewPaper() :
-                            dataVisualization === 1 ? <WordCloud paperData={paperData} /> :
-                                dataVisualization === 2 ? <BarChart paperData={paperData} /> :
+                            dataVisualization === 1 ? <WordCloud userLang={userLang} paperData={paperData} /> :
+                                dataVisualization === 2 ? <BarChart userLang={userLang} paperData={paperData} /> :
                                 <></>
                     }
 

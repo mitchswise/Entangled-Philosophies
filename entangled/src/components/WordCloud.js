@@ -28,8 +28,7 @@ export default class WordCloud extends React.Component {
 
             var userID = 0;
             if (cookies.get('UserID')) userID = cookies.get('UserID');
-            var prefLang = "eng";
-            if (cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
+            var prefLang = this.props.userLang;
 
             var paperIDs = [];
             for (const idx in paperData) {
@@ -84,6 +83,7 @@ export default class WordCloud extends React.Component {
     render() {
         let wordLimit = this.getWordLimit();
         const words = this.state.words.slice(0, wordLimit);
+
 
         return (
             <>

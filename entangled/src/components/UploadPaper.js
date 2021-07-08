@@ -4,10 +4,14 @@ import './UploadPaper.css';
 import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag } from '../api.js';
 import { CSVReader } from 'react-papaparse';
 import { tagExistsBatch, addTagBatch, addTagToPaperBatch, paperExists } from '../api.js';
+import { getPermLvl, getGlobalLanguage } from '../api.js';
 
 var tagsList = [];
 var tagIDs = [];
 var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/uploadPaper.php';
+
+var userLanguage = getGlobalLanguage();
+var userPermLvl = getPermLvl();
 
 export const field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
 "description", "type", "format", "languageBox", "sourceBox",
@@ -410,7 +414,7 @@ export default class UploadPaper extends React.Component {
 	}
 
 	renderRedirect = () => {
-		if (cookies.get('UserID') == null || cookies.get('PermLvl') < 1) {
+		if (!cookies.get('UserID') || userPermLvl < 1) {
 			return <Redirect to='/' />
 		}
 	}
@@ -419,7 +423,7 @@ export default class UploadPaper extends React.Component {
 		const doAddTag = async e => {
 			var tag = document.getElementById("tagsearch").value;
 
-			var data = tagExists(tag, cookies.get('PrefLang'), 0);
+			var data = tagExists(tag, userLanguage, 0);
 			console.log(data);
 
 			if (data.tag_id >= 0) {
@@ -441,7 +445,7 @@ export default class UploadPaper extends React.Component {
 		const doDeleteTag = async e => {
 			var tag = document.getElementById("tagsearch").value;
 
-			var data = tagExists(tag, cookies.get('PrefLang'), 0);
+			var data = tagExists(tag, userLanguage, 0);
 			console.log(data);
 
 			if (data.tag_id >= 0) {

@@ -4,16 +4,17 @@ import {setPerms} from '../api.js';
 import {getPerms} from '../api.js';
 import {getAdmins, cookies} from '../api.js';
 import { useHistory } from 'react-router-dom';
+import { getPermLvl } from '../api.js';
 
+var userPermLvl = getPermLvl();
 
 const Admin = () => {
 	const history = useHistory([]);
 	const [redirectState, setRedirectState] = useState(false);
 	const [adminList, setAdminList] = useState();
-	//const [permissionLvlMsg, setPermissionLvlMsg] = useState("");
 
 	useEffect(() => {
-		if(!cookies.get('UserID') || cookies.get('PermLvl') < 1) {
+		if(!cookies.get('UserID') || userPermLvl < 1) {
 			setRedirectState(true);
 		}
 	});
@@ -30,7 +31,6 @@ const Admin = () => {
 
 	const doSetPerms = () => {
 		var username = document.getElementById("username").value;
-		//var permission_level = document.getElementById("permission_level").value;
 		var permission_level = 1;
 		var checkData = getPerms(username, permission_level);
 		if (checkData.error != "") {
@@ -44,13 +44,6 @@ const Admin = () => {
 		}
 	};
 	
-	// const doGetPerms = (props) => {
-	// 	var username = props;
-	// 	var data = getPerms(username);
-	// 	document.getElementById("permLevel").innerHTML = data.permission_level;
-	// 	setPermissionLvlMsg(username + " has a permission level of " + data.permission_level);
-	// };
-
 	const handleRemove = (username, id) => {
 		if (id == cookies.get("UserID")) {
 			window.alert("You cannot remove yourself.");
@@ -74,9 +67,8 @@ const Admin = () => {
 			});
 		}
 		setAdminList(list.map((array) => {
-			if (cookies.get("PermLvl") > 1) {
+			if (userPermLvl > 1) {
           		return (
-					//<ul onClick={() => doGetPerms(array.username)} key={array.id}>
 					<details>
 						<summary>
                    			{array.username} - {array.id}
