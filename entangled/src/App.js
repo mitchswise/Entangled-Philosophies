@@ -73,7 +73,7 @@ function App() {
         This website uses cookies to enhance the user experience.
       </CookieConsent>
 
-      <Router basename={'/~ah458967/Entangled-Philosophies/entangled/build'}>
+      <Router basename={'/~entangledPhilosophy/Entangled-Philosophies/entangled/build'}>
         <Sidebar curLang={curLanguage} outerContainerId={'outer-container'} />
         <Switch>
           <Route exact path="/" render={() => <Home userLang={curLanguage} />} />
