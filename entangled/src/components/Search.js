@@ -14,12 +14,19 @@ import { metadata_ids, metadata_categories } from './UploadPaper.js';
 import WordCloud from './WordCloud.js';
 import BarChart from './BarChart.js';
 import './Search.css';
+import { getPermLvl, getGlobalLanguage } from '../api.js';
+import { dSettings } from '../dictionary.js';
+
+var userLanguage = getGlobalLanguage();
+var userPermLvl = getPermLvl();
+var loadedTagData = undefined, loadedTagLanguage = undefined;
 
 //loads all available tags for a user
-function getTagData() {
-    var userID = 0, prefLang = "eng";
+function getTagData(userLang) {
+    if(loadedTagData != undefined && loadedTagLanguage == userLang) return loadedTagData;
+
+    var userID = 0, prefLang = userLang;
     if (cookies.get('UserID')) userID = cookies.get('UserID');
-    if (cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
     var result = getTags(userID, prefLang);
 
     let metadata_ignore = ["17", "23", "32"];
@@ -32,14 +39,18 @@ function getTagData() {
         }
     }
 
+    loadedTagData = tagsList;
+    loadedTagLanguage = userLang;
+
     return tagsList;
 }
-const tagData = getTagData();
 
 //sets up the filter JSON to be used/updated
 //for searching based on filter criteria
-function initState() {
+function initState(userLang) {
     var categories = [];
+
+    const tagData = getTagData(userLang)
     tagData.forEach((item, index) => {
         if (!(item.catText in categories)) {
             categories[item.catText] = [];
@@ -67,7 +78,7 @@ function initState() {
     return initState;
 }
 
-function cleanFilterState(filterState) {
+function cleanFilterState(filterState, userLang) {
     //because of saved queries before a category is added,
     //we need to make sure filter state is up to date with 
     //all new categories + tags that belong to those new categories
@@ -75,6 +86,7 @@ function cleanFilterState(filterState) {
     const newFilter = filterState.slice();
     var textToFilter = {}, tagsSeen = {};
 
+    const tagData = getTagData(userLang);
     tagData.forEach((item, index) => {
         tagsSeen[item.tag_id] = true;
         var foundInFilter = false;
@@ -175,22 +187,22 @@ function translateFilterToCustom(filterState) {
 
 export default class Search extends React.Component {
 
-    getExistingFilter = () => {
+    getExistingFilter = (userLang) => {
         if (!this.props.location || !this.props.location.state
             || !this.props.location.state.filterState) {
-            return initState();
+            return initState(userLang);
         }
-        return cleanFilterState(this.props.location.state.filterState);
+        return cleanFilterState(this.props.location.state.filterState, userLang);
     }
-    getExistingPaperData = () => {
+    getExistingPaperData = (userLang) => {
         if (this.props.location && this.props.location.state
             && this.props.location.state.filterState) {
-            return sendSearchQuery(cleanFilterState(this.props.location.state.filterState));
+            return sendSearchQuery(cleanFilterState(this.props.location.state.filterState, userLang));
         }
         if (this.props.location && this.props.location.state
             && this.props.location.state.customQuery) {
             if (this.props.location.state.customQuery.has_error) {
-                return sendSearchQuery(initState());
+                return sendSearchQuery(initState(userLang));
             }
             else {
                 var customSearchSQL = this.props.location.state.customQuery.original_input;
@@ -201,9 +213,9 @@ export default class Search extends React.Component {
                 return sqlSearch(userID, result.query);
             }
         }
-        return sendSearchQuery(initState());
+        return sendSearchQuery(initState(userLang));
     }
-    getExistingCustomQuery = () => {
+    getExistingCustomQuery = (userLang) => {
         if (!this.props.location || !this.props.location.state
             || !this.props.location.state.customQuery) {
             return { original_input: undefined };
@@ -223,13 +235,14 @@ export default class Search extends React.Component {
     }
 
     state = {
+        tagData: getTagData(this.props.userLang),
         isFilterOpen: false,
         isSaveOpen: false,
-        filterState: this.getExistingFilter(),
-        paperData: this.getExistingPaperData(),
+        filterState: this.getExistingFilter(this.props.userLang),
+        paperData: this.getExistingPaperData(this.props.userLang),
         paperInformation: undefined,
         openEditPaper: false,
-        customQuery: this.getExistingCustomQuery(),
+        customQuery: this.getExistingCustomQuery(this.props.userLang),
         lastQueryTypeUsed: 0,
         publicTags: [],
         privateTags: [],
@@ -340,7 +353,7 @@ export default class Search extends React.Component {
         const { paperInformation } = this.state;
         var newTagText = document.getElementById("addPaperTags").value;
         var userID = cookies.get('UserID');
-        var validTag = tagExists(newTagText, cookies.get('PrefLang'), userID);
+        var validTag = tagExists(newTagText, userLanguage, userID);
         if (validTag.tag_id < 0) {
             document.getElementById("addPaperTags").value = "";
             return;
@@ -380,14 +393,14 @@ export default class Search extends React.Component {
     viewPaper = () => {
         const { paperInformation, privateTags, publicTags } = this.state;
         var userID = 0;
-        if (cookies.get('UserID') && cookies.get('PermLvl') == 0) {
+        if (userPermLvl == 0) {
             userID = cookies.get('UserID');
         }
 
         return <div id="rightBoxWrapper">
             <div id="buttonRow">
                 <button id="editPaperButton" onClick={() => { this.setState({ openEditPaper: true }) }}
-                    disabled={!cookies.get('UserID') || cookies.get('PermLvl') == 0}>Edit Paper</button>
+                    disabled={!cookies.get('UserID') || userPermLvl == 0}>Edit Paper</button>
                 <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
             </div>
             <div class="rightBoxPaperInfo">
@@ -468,27 +481,17 @@ export default class Search extends React.Component {
 
                     {
                         userID != 0 ?
-                            <div id="searchTagsContainer">
-
-                                <div id="searchTagsDisplay" >
-                                    <h4>Public</h4>
-                                    <input value={publicTags.map(item => item.text).join(", ")} disabled />
-                                    <h4>Private</h4>
-                                    <input value={privateTags.map(item => item.text).join(", ")} disabled />
-                                </div>
-
+                            <>
+                                <p ><b>Public:</b> {publicTags.map(item => item.text).join(", ")}</p>
+                                <p ><b>Private:</b> {privateTags.map(item => item.text).join(", ")}</p>
                                 <div id="searchTagsInput" >
                                     <button onClick={() => this.updatePrivateTagList(privateTags, true)} id="addTagSearchBtnText">+</button>
                                     <button onClick={() => this.updatePrivateTagList(privateTags, false)} id="addTagSearchBtnText">-</button>
                                     <input type="text" placeholder="Enter a valid tag" id="addPaperTags" />
                                 </div>
-
-                            </div>
-                            :
-                            <div id="searchTagsDisplay" >
-                                <h4 id="tagsPublic">Public:</h4>
-                                <input id="searchTagsDisplayinput" value={publicTags.map(item => item.text).join(", ")} disabled />
-                            </div>
+                            </>
+                        :
+                        <p ><b>Public:</b> {publicTags.map(item => item.text).join(", ")}</p>
                     }
 
                 </div>
@@ -500,8 +503,6 @@ export default class Search extends React.Component {
 
     closeEdit = (didDelete, didUpdate) => {
         if (didUpdate || didDelete) {
-            var userID = -1;
-            if (cookies.get('UserID')) userID = cookies.get('UserID');
             this.setState((prevState) => ({ paperData: sendSearchQuery(prevState.filterState) }));
         }
         if (didDelete) {
@@ -521,17 +522,17 @@ export default class Search extends React.Component {
         return columns;
     }
 
-
-
     loadVisualize = (visual_type) => {
         this.setState((prevState) => ({ paperInformation: undefined }));
         this.setState((prevState) => ({ dataVisualization: visual_type }));
     }
 
     render() {
+        let userLang = this.props.userLang;
+
         const { isFilterOpen, isSaveOpen, filterState,
             openEditPaper, paperData, paperInformation,
-            customQuery, isOptionsOpen, dataVisualization } = this.state;
+            customQuery, isOptionsOpen, dataVisualization, tagData } = this.state;
 
         let tableColumns = this.makeTableColumns();
 
@@ -539,7 +540,7 @@ export default class Search extends React.Component {
             return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />
         }
         return (<div id="searchContainer">
-            <h1 id="title">Search</h1>
+            <h1 id="title">{dSettings(29, userLang)}</h1>
             <div id="searchBody">
                 {isFilterOpen && <Filter
                     handleClose={this.togglePopup}
@@ -571,8 +572,8 @@ export default class Search extends React.Component {
 
                     {
                         paperInformation !== undefined ? this.viewPaper() :
-                            dataVisualization === 1 ? <WordCloud paperData={paperData} /> :
-                                dataVisualization === 2 ? <BarChart paperData={paperData} /> :
+                            dataVisualization === 1 ? <WordCloud userLang={userLang} paperData={paperData} /> :
+                                dataVisualization === 2 ? <BarChart userLang={userLang} paperData={paperData} /> :
                                 <></>
                     }
 

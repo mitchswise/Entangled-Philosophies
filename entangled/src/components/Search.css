@@ -177,7 +177,6 @@ div.header {
 
 #rowFive {
     width: 100%;
-    top:-10px;
     height:fit-content;
     position: relative;
 }
@@ -191,12 +190,12 @@ div.header {
     width: 100%;
     height:fit-content;
     position: relative;
-    padding-bottom:5px;
+    /* padding-bottom:5px; */
 }
 
-#rowFive h3 {
-    text-align: center;
-    text-decoration: underline;
+#rowFive p {
+    border-bottom:1px solid black;
+    width:100%;
 }
 
 #rowFive button {
@@ -226,10 +225,6 @@ div.header {
     height: 21px;
 }
 
-#searchTagsContainer {
-    display: grid;
-}
-
 #searchTagsDisplay {
     display: flex;
     flex-direction: "row";
@@ -244,6 +239,8 @@ div.header {
     flex-direction: "row";
     align-items: center;
     justify-content: center;
+    padding-top: 1%;
+    padding-bottom: 1%;
 }
 
 #searchTagsDisplay h4 {

@@ -1,6 +1,7 @@
 //Handles translating the Filter into an SQL Query
 
 import { cookies, tagExistsBatch } from "../api.js";
+import { getGlobalLanguage } from "../api.js";
 
 export function isDigit(val) {
     return /^\d+$/.test(val);
@@ -397,8 +398,7 @@ export function parseCustomQuery(equation, userID) {
         var tag = tagsList[index];
         tagsToPass.push({ text:tag });
     }
-    var prefLang = "eng";
-    if(cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
+    var prefLang = getGlobalLanguage();
     var jsonDict = {tagsArray:tagsToPass, userID:userID, language:prefLang};
     var data = tagExistsBatch(jsonDict);
 

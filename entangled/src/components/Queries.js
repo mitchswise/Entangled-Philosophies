@@ -3,7 +3,10 @@ import { Redirect } from 'react-router-dom';
 import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter, useRowSelect } from "react-table";
 import { cookies, getQueries, removeQueries, getTags } from '../api.js'
 import { Checkbox } from './Checkbox.js';
+import { getGlobalLanguage } from "../api.js";
 import './Queries.css';
+
+var userLanguage = getGlobalLanguage();
 
 function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries }) {
     const {
@@ -131,8 +134,7 @@ function getQueryData() {
     if(!cookies.get('UserID')) return [];
     var data = getQueries(cookies.get('UserID'));
 
-    var prefLang = "eng";
-    if(cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
+    var prefLang = userLanguage;
     var allTags = getTags(cookies.get('UserID'), prefLang);
     var tagDict = {};
     for(const index in allTags.tags) {
@@ -268,8 +270,6 @@ export default class Queries extends React.Component {
         else {
             sendState = { customQuery: this.state.redirectCustomQuery };
         }
-
-        console.log("Redirect? " + JSON.stringify(sendState));
 
         return <Redirect
             to={{
