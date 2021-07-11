@@ -21,7 +21,7 @@
 		}
 
 		$columns_insert = $columns_insert . $inData_key;
-		$columns_values = $columns_values . "'" . $inData_value . "'";
+		$columns_values = $columns_values . "'" . addslashes($inData_value) . "'";
 	}
 
 	$query = $query . "(" . $columns_insert . ") VALUES (" . $columns_values . ");";

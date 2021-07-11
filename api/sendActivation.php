@@ -12,7 +12,7 @@
 	}
 
 	$inData = json_decode(file_get_contents('php://input'), true);
-	$sql = "SELECT activation_code, email, id FROM users WHERE username = '" . $inData["username"] . "';";
+	$sql = "SELECT activation_code, email, id FROM users WHERE username = '" . addslashes($inData["username"]) . "';";
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_assoc();

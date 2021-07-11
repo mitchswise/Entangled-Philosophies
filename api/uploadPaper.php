@@ -4,7 +4,7 @@
 	include "database.php";
 
 	if (isset($_FILES['file'])) {
-		$target_path = $paperurl . basename($_FILES['file']['name']);
+		$target_path = $paperurl . addslashes(basename($_FILES['file']['name']));
 		
 		if (move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) {
 			echo '{"status":"The file ' . basename($_FILES['file']['name']) . ' has been uploaded", "url":"' . basename($_FILES['file']['name']) . '"}';

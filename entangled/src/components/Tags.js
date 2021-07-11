@@ -132,7 +132,7 @@ function doAddCat(edit_cat) {
         userID = 0;
         for(const lang in supported_languages) {
             var curLang = supported_languages[lang];
-            var id = curLang+'Box';
+            var id = curLang+'Box2';
             var tag_translate = document.getElementById(id).value;
 
             if(!tag_translate) {
@@ -206,9 +206,9 @@ function AdminEdit({ rowInfo, toggleState }) {
         return <div>
             <h1 id="editTagHeader">Edit Category</h1>
             <h4 class="rightBoxText" id="rightBoxTextCategory">English Category</h4>
-            <input type="text" className="taginputBoxes" id="engBox" placeholder={cat_eng} />
+            <input type="text" className="taginputBoxes" id="engBox2" placeholder={cat_eng} />
             <h4 class="rightBoxText" id="rightBoxTextCategory">German Category</h4>
-            <input type="text" className="taginputBoxes" id="gerBox" placeholder={cat_ger} />
+            <input type="text" className="taginputBoxes" id="gerBox2" placeholder={cat_ger} />
             <button class="editCatButtonsAdmin" onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
             <button class="editCatButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveCat(rowInfo)} >Delete</button>
         </div>

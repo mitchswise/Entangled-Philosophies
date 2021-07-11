@@ -10,7 +10,7 @@
 	}
 
     $inData = json_decode(file_get_contents('php://input'), true);
-    $text = $inData["text"];
+    $text = addslashes($inData["text"]);
     $language = $inData["language"];
     $userID = $inData["userID"];
 

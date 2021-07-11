@@ -16,7 +16,7 @@
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_assoc();	
 		if ($row["url"] != 'none') {
-			$url = '/home/entangledPhilosophy/public_html/paper/' . $row["url"];
+			$url = '/home/entangledPhilosophy/public_html/paper/' . addslashes($row["url"]);
 			if (!unlink($url)) {
 				echo '{"status":"File not found", "url":"' . $url . '"}';
 			}
