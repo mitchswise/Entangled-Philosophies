@@ -5,7 +5,7 @@
 	
 	$inputData = json_decode(file_get_contents('php://input'), true);
 	
-	$user = $inputData["username"];
+	$user = addslashes($inputData["username"]);
 	$perms = $inputData["permission_level"];
 	
 	$conn = mysqli_connect($host, $username, $password, $dbname);

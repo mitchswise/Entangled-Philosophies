@@ -25,7 +25,7 @@
         $row = $result->fetch_assoc();
         if($row["url"] != "none") {
             //need to unlink this file
-            $full_URL = $paperurl . $inData["url"];
+            $full_URL = $paperurl . addslashes($inData["url"]);
             unlink($full_URL);
         }
     	$query = "UPDATE papers SET url = 'none' WHERE id = " . $inData["id"] . ";";

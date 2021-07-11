@@ -10,9 +10,9 @@
 	}
 
     $inData = json_decode(file_get_contents('php://input'), true);
-    $category = $inData["category"];
+    $category = addslashes($inData["category"]);
     $language = $inData["language"]; //language of category
-    $text = $inData["text"];
+    $text = addslashes($inData["text"]);
     $tag_id = $inData["tag_id"]; //-1 if inserting metadata tag
     $category_id = -1;
 

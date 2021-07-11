@@ -13,14 +13,14 @@
 	$activation_code = generateCode(4);
 	$preferred_language = $inData["language"];
 
-	$sql = "SELECT username FROM users WHERE username = '" . $inData["username"] . "';";
+	$sql = "SELECT username FROM users WHERE username = '" . addslashes($inData["username"]) . "';";
 	$result = $conn->query($sql);
 	if($result->num_rows > 0) {
 		echo '{"status": "username already exists"}';
 	}
 	else {
 		$sql = 'INSERT INTO users (username, email, password, language, activation_code) VALUES ("' .
-			$inData["username"] . '", "' . $inData["email"] . '", "' . $hashed_password . '", "' 
+			addslashes($inData["username"]) . '", "' . addslashes($inData["email"]) . '", "' . $hashed_password . '", "' 
 			. $preferred_language . '", "' . $activation_code . '")';
 		$result = $conn->query($sql);
 	
