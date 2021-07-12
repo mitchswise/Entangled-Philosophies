@@ -1,23 +1,159 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import './UploadPaper.css';
 import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag } from '../api.js';
+import { CSVReader } from 'react-papaparse';
+import { tagExistsBatch, addTagBatch, addTagToPaperBatch, paperExists } from '../api.js';
+import { getPermLvl, getGlobalLanguage } from '../api.js';
+import Dialog from "@material-ui/core/Dialog";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Button from "@material-ui/core/Button";
 
 var tagsList = [];
 var tagIDs = [];
 var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/uploadPaper.php';
 
+var userLanguage = getGlobalLanguage();
+var userPermLvl = getPermLvl();
+
 export const field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
-"description", "type", "format", "languageBox", "sourceBox",
-"publisher", "rights", "coverage", "isbn", "urlBox", "location"];
+	"description", "type", "format", "languageBox", "sourceBox",
+	"publisher", "rights", "coverage", "isbn", "urlBox", "location"];
 
 export const metadata_ids = ["title", "author", "contributor", "relation", "subject", "date",
-"description", "type", "format", "language", "source",
-"publisher", "rights", "coverage", "isbn", "paper_url", "location"];
+	"description", "type", "format", "language", "source",
+	"publisher", "rights", "coverage", "isbn", "paper_url", "location"];
 
 export const metadata_categories = ["Title", "Author", "Contributor", "Relation", "Subject", "Date",
-"Description", "Type", "Format", "Language", "Source",
-"Publisher", "Rights", "Coverage", "ISBN", "URL", "Location"];
+	"Description", "Type", "Format", "Language", "Source",
+	"Publisher", "Rights", "Coverage", "ISBN", "URL", "Location"];
+
+export function addSpreadsheetPaper(dict) {
+	var response = { success: false, error: undefined };
+
+	var metadata_dict = {};
+	var tagsList = [];
+
+	for (const key in dict) {
+		var new_key = key.toLowerCase();
+		if (new_key == "url") new_key = "paper_url";
+		if (dict[key].trim().length == 0) continue;
+
+		if (new_key == "manual tags") {
+			tagsList = dict[key].split(";");
+			for (let idx = 0; idx < tagsList.length; idx++) {
+				tagsList[idx] = tagsList[idx].trim();
+			}
+		}
+		else {
+			metadata_dict[new_key] = dict[key];
+		}
+	}
+
+	if (!("title" in metadata_dict)) {
+		response.error = "Missing title";
+		return response;
+	}
+
+	//check for duplicate (title,author) pair?
+	if (("author" in metadata_dict)) {
+		var doesExist = paperExists(metadata_dict["title"], metadata_dict["author"]);
+		if (doesExist.exists == true) {
+			response.error = "Duplicate paper being inserted.";
+			return response;
+		}
+	}
+
+	metadata_dict["url"] = "none";
+
+	var addPaperData = addPaper(metadata_dict);
+	var paper_id = addPaperData.id;
+
+	// //figure out existence of all tags
+	var tagsToPass = [];
+	for (const idx in tagsList) {
+		tagsToPass.push({ text: tagsList[idx] });
+	}
+	for (const key in metadata_dict) {
+		if (key == "url") continue;
+		tagsToPass.push({ text: metadata_dict[key] });
+	}
+
+	//assumptions made because we're in 'add spreadsheet paper'
+	var jsonDict = { tagsArray: tagsToPass, userID: 0, language: "eng" };
+	var data = tagExistsBatch(jsonDict);
+
+	//find any missing tags and add them to the database
+	var tagsToAdd = [];
+
+	for (const idx in tagsList) {
+		if (data.tags[tagsList[idx]] == "-1") {
+			var category = "General";
+			var eng = tagsList[idx];
+			var ger = tagsList[idx] + " - needs German translation";
+			tagsToAdd.push({ category: category, eng: eng, ger: ger });
+		}
+	}
+
+	for (const key in metadata_dict) {
+		if (key == "url") continue;
+		if (data.tags[metadata_dict[key]] == "-1") {
+			var category = "";
+			if (key == "paper_url") category = "URL";
+			else if (key == "isbn") category = "ISBN";
+			else category = key.charAt(0).toUpperCase() + key.slice(1);
+
+			var met = metadata_dict[key];
+
+			tagsToAdd.push({ category: category, met: met });
+		}
+	}
+
+	// console.log("Tags to add: " + JSON.stringify(tagsToAdd));
+
+	if (tagsToAdd.length > 0) {
+		jsonDict = { userID: 0, language: "eng", tagsArray: tagsToAdd };
+		// console.log("dict passed: " + JSON.stringify(jsonDict));
+		data = addTagBatch(jsonDict);
+	}
+
+	//now all the tags exist. Get their IDs by recalling tagExists
+	jsonDict = { tagsArray: tagsToPass, userID: 0, language: "eng" };
+	data = tagExistsBatch(jsonDict);
+
+	// console.log("Do all tags exist? " + JSON.stringify(data));
+
+	//add all these existing tags to a paper
+	var tagToPaper = [];
+	for (const idx in tagsList) {
+		var tag_id = data.tags[tagsList[idx]];
+		if (tag_id == "-1") {
+			response.error = "Tags not added properly";
+			return response;
+		}
+		tagToPaper.push({ tag_id: parseInt(tag_id, 10) });
+	}
+
+	for (const key in metadata_dict) {
+		if (key == "url") continue;
+		var tag_id = data.tags[metadata_dict[key]];
+		if (tag_id == "-1") {
+			response.error = "Tags not added properly";
+			return response;
+		}
+
+		tagToPaper.push({ tag_id: parseInt(tag_id, 10) });
+	}
+
+	jsonDict = { paper_id: paper_id, userID: 0, tagsArray: tagToPaper };
+	data = addTagToPaperBatch(jsonDict);
+
+	response.success = true;
+	return response;
+}
 
 export const doAddPaper = async e => {
 	var title = document.getElementById("titleName").value;
@@ -98,25 +234,248 @@ export const doAddPaper = async e => {
 }
 
 export default class UploadPaper extends React.Component {
-	componentDidMount() {
-		const script = document.createElement("script");
-		script.async = true;
-		script.src = "../src/UploadSubmit.js";
-		this.div.appendChild(script);
+
+	state = {
+		selectedFile: "",
+		isFilePicked: false,
+		isIndividualMode: true,
+		selectedCSV: "",
+		isCSVPicked: false,
+		currentCounter: 0,
+		uploadSuccess: undefined,
+		openParseBox: false
+	}
+
+	handleOnDrop = (data) => {
+		console.log(data);
+		this.setState({ selectedCSV: data }, () => {
+			this.setState({ isCSVPicked: true }, () => {
+				this.setState({ currentCounter: 0 });
+			});
+		});
+	}
+
+	handleOnError = (err, file, inputElem, reason) => {
+		console.log(err);
+	}
+
+	handleOnRemoveFile = (data) => {
+		console.log(data);
+		this.setState({ isCSVPicked: false });
+	}
+
+	changeHandler = (event) => {
+		if (event.target.files[0].type != "application/pdf") {
+			document.getElementById("uploadStatus").innerHTML = "Only PDFs can be uploaded.";
+		} else {
+			this.setState({ selectedFile: event.target.files[0] });
+			this.setState({ isFilePicked: true });
+		}
+	};
+
+	changeMode = () => {
+		if (this.state.isIndividualMode) {
+			this.setState({ isIndividualMode: false });
+		}
+		else {
+			this.setState({ isIndividualMode: true });
+		}
+		console.log(this.state.isIndividualMode);
+	}
+
+	removeUpload = () => {
+		this.setState({ selectedFile: "" });
+		this.setState({ isFilePicked: false });
+		document.getElementById("uploadStatus").innerHTML = "";
+		document.getElementById("fileUpload").value = "";
+	};
+
+	handleSubmission = () => {
+		if (this.state.isFilePicked) {
+			const formData = new FormData();
+
+			formData.append('file', this.state.selectedFile);
+
+			var jsonObject;
+
+			fetch(url, {
+				method: 'POST',
+				body: formData
+			}).then(response => response.text())
+				.then(data => jsonObject = JSON.parse(data))
+				.then(json => {
+					document.getElementById("filename").innerHTML = json.url;
+					document.getElementById("uploadStatus").innerHTML = "Uploaded " + json.url + " with status " + json.status;
+					doAddPaper();
+				});
+		} else if (window.confirm("Are you sure you want to upload the paper without a file?")) {
+			doAddPaper();
+		}
+	};
+
+	handleBatchSubmission = async () => {
+		if (this.state.isCSVPicked) {
+			var csv = this.state.selectedCSV;
+			var paper;
+			var title = -1;
+			var author = -1;
+			var contributor = -1;
+			var relation = -1;
+			var subject = -1;
+			var date = -1;
+			var description = -1;
+			var type = -1;
+			var format = -1;
+			var language = -1;
+			var source = -1;
+			var publisher = -1;
+			var rights = -1;
+			var coverage = -1;
+			var isbn = -1;
+			var url = -1;
+			var location = -1;
+			var editor = -1;
+			var translator = -1;
+			var manual = -1;
+
+			console.log(csv[0]);
+			console.log(csv[0].data.length);
+			paper = csv[0].data;
+			for (let i = 0; i < csv[0].data.length; i++) {
+				if (paper[i].toUpperCase() == "TITLE") title = i;
+				if (paper[i].toUpperCase() == "AUTHOR") author = i;
+				if (paper[i].toUpperCase() == "CONTRIBUTOR") contributor = i;
+				if (paper[i].toUpperCase() == "RELATION") relation = i;
+				if (paper[i].toUpperCase() == "SUBJECT") subject = i;
+				if (paper[i].toUpperCase() == "DATE") date = i;
+				if (paper[i].toUpperCase() == "DESCRIPTION") description = i;
+				if (paper[i].toUpperCase() == "TYPE") type = i;
+				if (paper[i].toUpperCase() == "FORMAT") format = i;
+				if (paper[i].toUpperCase() == "LANGUAGE") language = i;
+				if (paper[i].toUpperCase() == "SOURCE") source = i;
+				if (paper[i].toUpperCase() == "PUBLISHER") publisher = i;
+				if (paper[i].toUpperCase() == "RIGHTS") rights = i;
+				if (paper[i].toUpperCase() == "COVERAGE") coverage = i;
+				if (paper[i].toUpperCase() == "ISBN") isbn = i;
+				if (paper[i].toUpperCase() == "URL") url = i;
+				if (paper[i].toUpperCase() == "LOCATION") location = i;
+				if (paper[i].toUpperCase() == "EDITOR") editor = i;
+				if (paper[i].toUpperCase() == "TRANSLATOR") translator = i;
+				if (paper[i].toUpperCase() == "MANUAL TAGS") manual = i;
+			}
+
+			var newUploadSuccess = [];
+
+			var papers_uploaded = 0;
+			for (let i = 1; i < csv.length - 1; i++) {
+				paper = csv[i].data;
+				if (title == -1 || paper[title] == "") {
+					document.getElementById("uploadStatus").innerHTML = "Not all papers have titles.";
+					newUploadSuccess.push(false);
+					continue;
+				}
+				if (author == -1 || paper[author] == "") {
+					document.getElementById("uploadStatus").innerHTML = "Not all papers have authors.";
+					newUploadSuccess.push(false);
+					continue;
+				}
+
+				var pass = { title: paper[title] };
+				pass["Author"] = paper[author];
+				let finalContrib = "";
+				if (contributor > -1 && paper[contributor] != "") {
+					finalContrib = paper[contributor];
+					if (editor > -1 && paper[editor] != "") finalContrib = finalContrib + ", " + paper[editor] + " - Editor";
+					if (translator > -1 && paper[translator != ""]) finalContrib = finalContrib + ", " + paper[translator] + " - Translator";
+					pass["Contributor"] = finalContrib;
+				}
+				else if (editor > -1 && paper[editor] != "") {
+					finalContrib = csv[i][editor] + " - Editor";
+					if (translator > -1 && paper[translator] != "") finalContrib = finalContrib + ", " + paper[translator] + " - Translator";
+					pass["Contributor"] = finalContrib
+				}
+				else if (translator > -1 && paper[translator] != "") pass["Contributor"] = paper[translator] + " - Translator";
+				if (relation > -1) pass["Relation"] = paper[relation];
+				if (subject > -1) pass["Subject"] = paper[subject];
+				if (date > -1) pass["Date"] = paper[date];
+				if (description > -1) pass["Description"] = paper[description];
+				if (type > -1) pass["Type"] = paper[type];
+				if (format > -1) pass["Format"] = paper[format];
+				if (language > -1) pass["Language"] = paper[language];
+				if (source > -1) pass["Source"] = paper[source];
+				if (publisher > -1) pass["Publisher"] = paper[publisher];
+				if (rights > -1) pass["Rights"] = paper[rights];
+				if (coverage > -1) pass["Coverage"] = paper[coverage];
+				if (isbn > -1) pass["ISBN"] = paper[isbn];
+				if (url > -1) pass["URL"] = paper[url];
+				if (location > -1) pass["Location"] = paper[location];
+				if (manual > -1) pass["Manual Tags"] = paper[manual];
+
+				var result = addSpreadsheetPaper(pass);
+				console.log(JSON.stringify(result));
+				// document.getElementById("uploadStatus").innerHTML = result.error;
+				if (result.error == undefined) {
+					papers_uploaded++;
+					newUploadSuccess.push(true);
+					// document.getElementById("uploadStatus").innerHTML = "All paper successfully uploaded.";
+				}
+				else {
+					newUploadSuccess.push(false);
+				}
+
+				this.setState((prevState) => ({ currentCounter: prevState.currentCounter + 1 }));
+			}
+
+			this.setState({ uploadSuccess: newUploadSuccess });
+			document.getElementById("uploadPaperCounter").innerHTML = "Successfully uploaded " + papers_uploaded + " / " + (csv.length - 2);
+			console.log("We uploaded " + papers_uploaded);
+		}
 	}
 
 	renderRedirect = () => {
-		if (cookies.get('UserID') == null || cookies.get('PermLvl') < 1) {
+		if (!cookies.get('UserID') || userPermLvl < 1) {
 			return <Redirect to='/' />
 		}
+	}
+
+	viewCSVData = () => {
+		if (!this.state.isCSVPicked) return [];
+		var csv = this.state.selectedCSV;
+
+		var listItems = [];
+		for (let i = 1; i < csv.length - 1; i++) {
+			let paper = csv[i].data;
+			var items = [];
+			for (let j = 0; j < paper.length; j++) {
+				if (paper[j].trim().length > 0) {
+					items.push(paper[j]);
+				}
+			}
+
+			var statusColor = "black";
+			if(this.state.uploadSuccess != undefined && i-1 >= 0 && i-1 < this.state.uploadSuccess.length) {
+				var status = this.state.uploadSuccess[i - 1];
+				if(status == true) statusColor = "green";
+				else statusColor = "red";
+			}
+
+			listItems.push(<li style={{color:statusColor}} >{items.join(", ")}</li>)
+		}
+
+		return <ol>
+			{listItems}
+		</ol>;
+	}
+
+	toggleParsedBox = () => {
+		this.setState((prevState) => ({ openParseBox: !prevState.openParseBox }));
 	}
 
 	render() {
 		const doAddTag = async e => {
 			var tag = document.getElementById("tagsearch").value;
 
-			var data = tagExists(tag, cookies.get('PrefLang'), 0);
-			console.log(data);
+			var data = tagExists(tag, userLanguage, 0);
 
 			if (data.tag_id >= 0) {
 				tagsList.push(tag);
@@ -126,7 +485,6 @@ export default class UploadPaper extends React.Component {
 			else {
 				document.getElementById("uploadStatus").innerHTML = "Tag Not Found";
 			}
-			console.log(tagsList);
 
 			document.getElementById("tagsearch").value = '';
 			document.getElementById("tags").value = tagsList.join(", ");
@@ -137,8 +495,7 @@ export default class UploadPaper extends React.Component {
 		const doDeleteTag = async e => {
 			var tag = document.getElementById("tagsearch").value;
 
-			var data = tagExists(tag, cookies.get('PrefLang'), 0);
-			console.log(data);
+			var data = tagExists(tag, userLanguage, 0);
 
 			if (data.tag_id >= 0) {
 				let index = tagsList.indexOf(tag);
@@ -155,7 +512,6 @@ export default class UploadPaper extends React.Component {
 			else {
 				document.getElementById("uploadStatus").innerHTML = "Tag Not Found";
 			}
-			console.log(tagsList);
 
 			document.getElementById("tagsearch").value = '';
 			document.getElementById("tags").value = tagsList.join(", ");
@@ -277,40 +633,75 @@ export default class UploadPaper extends React.Component {
 						</div>
 						<hr id="paper_line"></hr>
 
-						<div id="OtherFields">
-							<h2 id="leftTags">Tags</h2>
-							<input type="text" className="PaperBoxes" id="tags" disabled /><br />
-							<button type="button"
-								className="PaperBoxes"
-								id="addTag"
-								onClick={doAddTag}><div id="addTagBtnTxt">+</div></button>
-							<button type="button"
-								className="PaperBoxes"
-								id="addTag"
-								onClick={doDeleteTag}><div id="addTagBtnTxt">-</div></button>
-							<input type="text" className="PaperBoxes" id="tagsearch" /><br />
+						{this.state.isIndividualMode ? (
+							<div id="OtherFields">
+								<h2 id="leftTags">Tags</h2>
+								<input type="text" className="PaperBoxes" id="tags" disabled /><br />
+								<button type="button"
+									className="PaperBoxes"
+									id="addTag"
+									onClick={doAddTag}><div id="addTagBtnTxt">+</div></button>
+								<button type="button"
+									className="PaperBoxes"
+									id="addTag"
+									onClick={doDeleteTag}><div id="addTagBtnTxt">-</div></button>
+								<input type="text" className="PaperBoxes" id="tagsearch" /><br />
 
-							<div id="fileUploadDiv">
-								<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
-								<input type="hidden" id="filename" />
-								{this.state.isFilePicked ? (
-									// <></>
-									<div>
-										<p>Size: {this.state.selectedFile.size}</p>
+								<div>
+									<div id="fileUploadDiv">
+										<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
+										<input type="hidden" id="filename" />
+										{this.state.isFilePicked ? (
+											// <></>
+											<div>
+												<p>Size: {this.state.selectedFile.size}</p>
+											</div>
+										) : (
+											<p>Select a file to show details</p>
+										)}
+										<button type="button" id="clearUploadButton" onClick={this.removeUpload}>Remove Upload</button>
 									</div>
-								) : (
-									<p>Select a file to show details</p>
-								)}
-								<button type="button" id="clearUploadButton" onClick={this.removeUpload}>Remove Upload</button>
+									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">Upload</div></button>
+									<div id="uploadStatus"></div>
+									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">Upload CSV</div></button>
+								</div>
 							</div>
-
-
-							<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">Upload</div></button>
-							<div id="uploadStatus"></div>
-
-
-						</div>
-
+						) : (
+							<div id="OtherFields">
+								<div id="fileUploadDiv">
+									<Button id="viewParsedPapersButton" variant="outlined" color="primary" disabled={!this.state.isCSVPicked}
+										onClick={this.toggleParsedBox}>
+										View papers parsed
+									</Button>
+									<CSVReader
+										onDrop={this.handleOnDrop}
+										onError={this.handleOnError}
+										addRemoveButton
+										removeButtonColor='#659cef'
+										onRemoveFile={this.handleOnRemoveFile}
+									>
+										<span>Drop CSV file here or click to upload.</span>
+									</CSVReader>
+								</div>
+								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleBatchSubmission}><div id="uploadBtnTxt">Upload</div></button>
+								<div id="uploadStatus"></div>
+								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">Upload Individual File</div></button>
+								<div id="uploadPaperCounter">Uploading {this.state.currentCounter}/{
+									this.state.isCSVPicked ? this.state.selectedCSV.length-2 : 0}</div>
+								<Dialog open={this.state.openParseBox} onClose={this.toggleParsedBox}>
+									<DialogTitle>{"Papers Parsed"}</DialogTitle>
+									<DialogContent>
+										{this.viewCSVData()}
+									</DialogContent>
+									<DialogActions>
+										<Button onClick={this.toggleParsedBox}
+											color="primary" autoFocus>
+											Close
+										</Button>
+									</DialogActions>
+								</Dialog>
+							</div>
+						)}
 					</div>
 				</div>
 			</body>

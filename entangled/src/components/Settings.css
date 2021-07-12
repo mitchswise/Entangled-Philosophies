@@ -7,110 +7,18 @@
     width: 50%;
     height: 550px;
     margin: auto;
-
+    min-width: 900px;
 }
-
-.SettingsLeft {
-    border-style: none;
-    border-color: black;
-    border-width: 1px;
-    width: 45%;
-    height: 600px;
-    padding:20px;
-    float: left;
-    text-align: right;
-}
-
-.SettingsRight {
-    border-style: none;
-    border-color: black;
-    border-width: 1px;
-    width: 45%;
-    height: 600px;
-    padding:20px;
-    float: right;
-    text-align: left;
-}
-
-#addUserStatus {
-    color: red;
-    text-align: center;
-    text-decoration: bold;
-    font-size: 18px;
-    top: -150px;
-    position: relative;
-    margin: auto;
-}
-
-details {
-    width: 300px;
-    padding:3px;
-    border-width: 1px;
-    font-size: 18px;
-    border-style: solid;
-    border-color: black;
-    text-align: center;
-    position: block;
-    float:right;
-}
-
-
-#settingsBtnTxt {
-    vertical-align:middle;
-    bottom:0px;
-    position: relative;
-    color: blue;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-#settings {
-    background-color: white;
-    border: none;
-    top:-27px;
-    height:36px;
-    width: 250px;
-    border-top-style: solid;
-    border-right-style: solid;
-    border-bottom-style: solid;
-    border-left-style: solid;
-    border-width: 1px;
-}
-
 
 #settings:hover {
     background-color: #f75449;
-
-}
-
-
-
-#hr{
-    width:100%;
-    top:54px;
-    color: lightgray;
-    position: relative;
-
-}
-
-
-.dropDownContainer {
-    float: right;
-    margin: 0px;
-    padding: 0px;
-}
-
-#registerContainer
-{
-    text-align: center;
 }
 
 .inputRow {
     position: relative;
-    width: 66%;
+    width: 70%;
     height: 50px;
     padding: 20px;
-    text-align: right;
     margin: auto;
     top:16px;
 }
@@ -118,114 +26,101 @@ details {
 .inputRow h2{
     float:left;
     margin: 0px;
-    padding: 0px
+    width: 45%;
+    font-size: 22px;
 }
 
 .inputRow input{
     float: right;
-    width: 300px;
-    padding: 3px;
-    border-color: black;
-    border-radius: 0px;
-    border-width: 1px;
-    border-style: solid;
+    width: 45% !important;
+    border: 1px solid black;
     font-size: 18px;
-}
-
-.inputRow #password {
-    width: 297px;
-    padding: 0px 0px 0px 0px;
-    margin: 10px 0px 0px 0px;
-    float:left;
 }
 
 #changePassword {
-    width:308px;
-    height:15px;
+    height:21px;
 }
 
 #confirmPassword {
-	width:308px;
-	height:15px;
+	height:21px;
+    border-top: none;
 }
-
-p{
-    padding:0px;
-    margin: 0px;
-}
-
 
 .cookies{
-    padding: 10px;
-    font-size: 18px;
-}
-#OptIn{
-    width:30px;
+    width:45%;
+    float:right;
 }
 
-#OptOut{
-    width:30px;
+#OptIn, #OptOut{
+    margin-right: 25%;
 }
 
-label {
+.dropDownContainer {
     float: right;
+    margin: 0px;
+    padding: 0px;
+    border-top: 1px solid black;
 }
 
 .dropdown button{
-    width: 310px;
     border-style: solid;
     border-color: black;
     border-width: 1px;
     padding: 3px;
+    border-top: none;
     font-size: 18px;
     text-align: center;
     position: relative;
+    width:308px;
 }
 
 .dropdown-content{
-    width: 100%;
+    width:308px;
 }
 
+
 .dropdown-content button{
-    width: 100%;
+    width:308px;
     left:6px;
 }
 
 .dropdown-content button:hover{
     background-color: #ddd;
+    cursor: pointer;
 }
-
-
 
 .button {
     display: flex;
     align-items: center;
     justify-content: center;
-  }
+}
 
 #save {
+    background-color: #f74135;
+    height:36px;
+    width: 110px;
+    border: 1px solid black;
+    top:30px;
+    color: white;
+    font-size: 14px;
+    text-decoration: bold;
+    cursor: pointer;
+}
+
+#removeUser {
     background-color: #f74135;
     border: none;
     height:36px;
     width: 110px;
-    border-top-style: solid;
-    border-right-style: solid;
-    border-bottom-style: solid;
-    border-left-style: solid;
-    border-width: 1px;
-    top:30px;
-}
-
-#saveBtnTxt {
-    vertical-align:middle;
-    bottom:0px;
-    position: relative;
+    top:57px;
+    border: 1px solid black;
     color: white;
     text-decoration: bold;
     font-size: 14px;
+    cursor: pointer;
 }
 
 #saveStatus {
-    top:80px;
+    top:70px;
     position: relative;
 }

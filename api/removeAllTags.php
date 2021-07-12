@@ -10,24 +10,10 @@
 	}
 
     $inData = json_decode(file_get_contents('php://input'), true);
-    $userID = $inData["userID"];
-    $language = $inData["language"];
-    $tag_name = addslashes($inData["name"]);
+    $userID = $inData["id"];
 
-    //does the tag exist?
-    $query = "SELECT tag_id FROM tags_translation WHERE owner = " . $userID . " AND language = '" . $language . "' AND text = '" . $tag_name . "';";
-    $result = $conn->query($query);
-
-    if($result->num_rows == 0) {
-        $message = '{"status":"tag does not exist"}';
-        echo $message;
-        return;
-    }
-    $row = $result->fetch_assoc();
-    $tag_id = $row["tag_id"];
-
-    //remove all translations
-    $query = "DELETE FROM tags_translation WHERE tag_id = " . $tag_id . ";";
+    // delete all tag translations
+    $query = "DELETE FROM tags_translation WHERE owner = " . $userID . ";";
     $result = $conn->query($query);
 
     if(!$result) {
@@ -36,17 +22,8 @@
         return;
     }
 
-    //remove all entries from paper_tags
-    $query = "DELETE FROM paper_tags WHERE tag_id = " . $tag_id . ";";
-    $result = $conn->query($query);
-    if(!$result) {
-        $message = '{"status":"' . $conn->error . '"}';
-        echo $message;
-        return;
-    }
-
-    //remove tag entry from table
-    $query = "DELETE FROM tags WHERE id = " . $tag_id . ";";
+    // delete all tags
+    $query = "DELETE FROM tags WHERE owner_id = " . $userID . ";";
     $result = $conn->query($query);
 
     if(!$result) {
@@ -55,5 +32,25 @@
         return;
     }
 
-    echo '{"status":"successfully deleted tag"}';
+    // delete all category translations
+    $query = "DELETE FROM category_translation WHERE owner = " . $userID . ";";
+    $result = $conn->query($query);
+
+    if(!$result) {
+        $message = '{"status":"' . $conn->error . '"}';
+        echo $message;
+        return;
+    }
+
+    // delete all categories
+    $query = "DELETE FROM category WHERE owner = " . $userID . ";";
+    $result = $conn->query($query);
+
+    if(!$result) {
+        $message = '{"status":"' . $conn->error . '"}';
+        echo $message;
+        return;
+    }
+
+    echo '{"status":"successfully deleted all user tags and categories"}';
 ?>

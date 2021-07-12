@@ -1,10 +1,12 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import './Settings.css';
-import { getUserInfo, updateSettings, changePassword, cookies } from '../api.js';
+import { getUserInfo, updateSettings, changePassword, removeUser, removeAllTags, cookies } from '../api.js';
 import { dSettings } from '../dictionary.js';
+import { getPermLvl, setGlobalLanguage } from '../api.js';
 
 var id;
+var userPermLvl = getPermLvl();
 
 function validateEmail(mail) {
     var regexPattern = /\S+@\S+\.\S+/;
@@ -35,7 +37,8 @@ function setUserInfo() {
 export default class Settings extends React.Component {
 
     state = {
-        userInfo: doGetUserInfo()
+        userInfo: doGetUserInfo(),
+        userLang: this.props.userLang
     }
 
     componentDidMount() {
@@ -47,6 +50,29 @@ export default class Settings extends React.Component {
             return <Redirect to = '/' />
         }
     }
+
+	doRemoveUser = () => {
+		if (window.confirm("Are you sure you want to delete your account? You will lose all your tags, categories, and queries. This cannot be undone.")) {
+			let id = cookies.get("UserID");
+			let perms = userPermLvl;
+
+			if (perms > 1) {
+				document.getElementById("saveStatus").value = "Cannot remove the super admin.";
+			} else if (perms == 0) {
+				// Remove user's tags and categories
+				let removeTagsData = removeAllTags(id);
+				console.log("removeTagsData");
+				console.log(removeTagsData);
+			}
+
+			// Remove user with their saved queries
+			let removeUserData = removeUser(id);
+			console.log("removeUserData");
+			console.log(removeUserData);
+			cookies.remove('UserID', { path: '/' });
+			window.location.reload();
+		}
+	}
 
     doUpdateSettings = () => {
 		let passLetter = /[abcdefghijklmnopqrstuvwxyz]/;
@@ -63,6 +89,7 @@ export default class Settings extends React.Component {
             userCookies = 1;
         }
 
+		let error = 0;
 		let passUpdated = 0;
 		let firstPass = document.getElementById("changePassword").value;
 		let secondPass = document.getElementById("confirmPassword").value;
@@ -110,7 +137,7 @@ export default class Settings extends React.Component {
        	if (data.status == "success") {
 
           	//update cookie (TEMPORARY)
-           	cookies.set('PrefLang', language, { path: '/' });
+           	setGlobalLanguage(language);
 
            	document.getElementById("saveStatus").innerHTML = "Settings have been saved.";
            	window.location.reload();
@@ -128,69 +155,75 @@ export default class Settings extends React.Component {
         var newUserInfo = {...this.state.userInfo};
         newUserInfo.language = newLanguage;
         this.setState({ userInfo: newUserInfo });
+        this.setState({ userLang: newLanguage });
     }
 
     render() {
-        const { userInfo } = this.state;
+        const { userLang } = this.state;
 
         return <div className="container">
             {this.renderRedirect()}
             <div className="header">
-                <h1 id="title">{dSettings(9, userInfo.language)}</h1>
+                <h1 id="title">{dSettings(9, userLang)}</h1>
             </div>
 
             <div className="SettingsBox">
                 <div className="SettingsFields">
                     <div class="inputRow">
-                        <h2>{dSettings(1, userInfo.language)}</h2>
+                        <h2>{dSettings(1, userLang)}</h2>
                         <input type="text" id="username" disabled />
                     </div>
 
                     <div class="inputRow">
-                        <h2>{dSettings(2, userInfo.language)}</h2>
+                        <h2>{dSettings(2, userLang)}</h2>
                         <input disabled={true} type="text" id="email" />
                     </div>
 
                     <div class="inputRow">
-                        <h2>{dSettings(3, userInfo.language)}</h2>
-                        <input type="password" id="changePassword" placeholder={dSettings(4, userInfo.language)}/>
-						<input type="password" id="confirmPassword" placeholder={dSettings(14, userInfo.language)}/>
+                        <h2>{dSettings(3, userLang)}</h2>
+                        <input type="password" id="changePassword" placeholder={dSettings(4, userLang)}/>
+						<input type="password" id="confirmPassword" placeholder={dSettings(14, userLang)}/>
                     </div>
 
                     <div class="inputRow">
-                        <h2>{dSettings(5, userInfo.language)}</h2>
+                        <h2>{dSettings(5, userLang)}</h2>
                         <div class="dropDownContainer">
                             <div class="dropdown" id="test">
-                                <button class="dropbtn" id="chooseLangBtn">{dSettings(12, userInfo.language)}</button>
+                                <button class="dropbtn" id="chooseLangBtn">{dSettings(12, userLang)}</button>
                                 <div class="dropdown-content" id="dropdownRegister">
                                     <button onClick={() => this.setLanguage("eng")}
                                         style={
-                                            userInfo.language === "eng" ? { color: 'green' } :
+                                            userLang === "eng" ? { color: 'green' } :
                                                 { color: 'black' }
-                                        } type="submit" id="englishButton">{dSettings(10, userInfo.language)}</button>
+                                        } type="submit" id="englishButton">English</button>
                                     <button onClick={() => this.setLanguage("ger")}
                                         style={
-                                            userInfo.language === "ger" ? { color: 'green' } :
+                                            userLang === "ger" ? { color: 'green' } :
                                                 { color: 'black' }
-                                        } type="submit" id="germanButton">{dSettings(13, userInfo.language)}</button>
+                                        } type="submit" id="germanButton">Deutsche</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="inputRow">
-                        <h2>{dSettings(6, userInfo.language)}</h2>
+                        <h2>{dSettings(6, userLang)}</h2>
                         <div class="cookies">
                             <input type="radio" id="OptIn" value="OptIn" name="cookieService" />
-                            <label for="OptIn">{dSettings(7, userInfo.language)}</label> <br></br>
+                            <label for="OptIn">{dSettings(7, userLang)}</label> <br></br>
                             <input type="radio" id="OptOut" value="OptOut" name="cookieService" />
-                            <label for="OptOut">{dSettings(8, userInfo.language)}</label> <br></br>
+                            <label for="OptOut">{dSettings(8, userLang)}</label> <br></br>
                         </div>
                     </div>
                 </div>
                 <div class="button">
-                    <button type="button" className="inputBoxes" id="save" onClick={this.doUpdateSettings}><div id="saveBtnTxt">{dSettings(11, userInfo.language)}</div></button>
+                    <button type="button" className="inputBoxes" id="save" onClick={this.doUpdateSettings}><div id="saveBtnTxt">{dSettings(11, userLang)}</div></button>
                 </div>
+				<br></br>
+				<br></br>
+				<div class="button">
+					<button type="button" className="inputBoxes" id="removeUser" onClick={this.doRemoveUser}><div id="removeUserTxt">{dSettings(15, userLang)}</div></button>
+				</div>
                 <div id="saveStatus" align="center"></div>
             </div>
         </div>

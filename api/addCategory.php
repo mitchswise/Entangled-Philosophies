@@ -22,7 +22,7 @@
         for($idx = 0; $idx < $lang_len; $idx++) {
             if($idx > 0) $query = $query . " OR ";
             $cur_lang = supported_languages[$idx];
-            $query = $query . "(text = '" . $inData[$cur_lang] . "' AND language = '" . 
+            $query = $query . "(text = '" . addslashes($inData[$cur_lang]) . "' AND language = '" . 
 		        $cur_lang . "' AND owner = 0 AND category_id != " . $edit_category . ")";
         }
         $query = $query . ";";
@@ -33,7 +33,7 @@
         }
     }
     else {
-        $query = "SELECT * FROM category_translation WHERE text = '" . $inData["def"] . "' AND owner = " . $userID . ";";
+        $query = "SELECT * FROM category_translation WHERE text = '" . addslashes($inData["def"]) . "' AND owner = " . $userID . ";";
         $result = $conn->query($query);
         if($result->num_rows > 0) {
             $duplicate_cat = true;
@@ -56,14 +56,14 @@
             for($idx = 0; $idx < $lang_len; $idx++) {
                 if($idx > 0) $query = $query . ", ";
                 $cur_lang = supported_languages[$idx];
-                $add_to_query = "(" . $category_id . ", '" . $cur_lang . "', '" . $inData[$cur_lang] . "', " . $userID . ")";
+                $add_to_query = "(" . $category_id . ", '" . $cur_lang . "', '" . addslashes($inData[$cur_lang]) . "', " . $userID . ")";
                 $query = $query . $add_to_query;
             }
             $query = $query . ";";
         }
         else { //User inserts just one entry whose langauge is "def".
             $query = "INSERT INTO category_translation (category_id, language, text, owner) VALUES 
-            (" . $category_id . ", 'def', '" . $inData["def"] . "', " . $userID . ");";
+            (" . $category_id . ", 'def', '" . addslashes($inData["def"]) . "', " . $userID . ");";
         }
     
         $result = $conn->query($query);
@@ -81,7 +81,7 @@
         if($userID == 0) {
             for($idx = 0; $idx < $lang_len; $idx++) {
                 $cur_lang = supported_languages[$idx];
-                $query = "UPDATE category_translation SET text = '" . $inData[$cur_lang] . "' WHERE category_id = " . 
+                $query = "UPDATE category_translation SET text = '" . addslashes($inData[$cur_lang]) . "' WHERE category_id = " . 
                     $edit_category . " AND language = '" . $cur_lang . "';";
                 
                 $conn->query($query);
@@ -93,7 +93,7 @@
             }
         }
         else {
-            $query = "UPDATE category_translation SET text = '" . $inData["def"] . "' WHERE category_id = " . $edit_category . ";";
+            $query = "UPDATE category_translation SET text = '" . addslashes($inData["def"]) . "' WHERE category_id = " . $edit_category . ";";
             $conn->query($query);
             if(!$result) {
                 $message = '{"status":"' . $conn->error . '"}';

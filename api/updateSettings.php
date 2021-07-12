@@ -6,7 +6,7 @@
 	$inputData = json_decode(file_get_contents('php://input'), true);
 	
 	$id = $inputData["id"];
-	$email = $inputData["email"];
+	$email = addslashes($inputData["email"]);
 	$language = $inputData["language"];
 	$cookies = $inputData["cookies"];
 	

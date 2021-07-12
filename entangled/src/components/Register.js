@@ -1,7 +1,11 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { addUser, sendActivation, cookies } from '../api.js';
+import { getGlobalLanguage } from "../api.js";
+import { dSettings } from '../dictionary.js';
 import './Register.css';
+
+var userLanguage = getGlobalLanguage();
 
 function validateEmail(mail) {
     var regexPattern = /\S+@\S+\.\S+/;
@@ -90,7 +94,7 @@ function doAddUser(preferredLanguage) {
 export default class Register extends React.Component {
 
     state = {
-        preferredLanguage: undefined
+        preferredLanguage: this.props.userLang
     }
 
     setLanguage = (newLang) => {
@@ -105,49 +109,50 @@ export default class Register extends React.Component {
 
     render() {
         const { preferredLanguage } = this.state;
+        let userLang = this.props.userLang;
         const element = (
             <>
             <div className="container" id="outer-container">
                 <div className="header">
-                    <h1 id="title">Account Registration</h1>
+                    <h1 id="title">{dSettings(22, userLang)}</h1>
                 </div>
                 {this.renderRedirect()}
                 <div className="RegisterBox">
                     <div className="RegisterFields">
-                        <h2 id="leftUsername">Username</h2>
+                        <h2 id="leftUsername">{dSettings(17, userLang)}</h2>
                         <input type="text" className="inputBoxes" id="username" /><br />
-                        <h2 id="leftPassword">Password</h2>
+                        <h2 id="leftPassword">{dSettings(18, userLang)}</h2>
                         <input type="password" className="inputBoxes" id="password" /><br />
-                        <h2 id="leftConfirmPassword">Confirm Password</h2>
+                        <h2 id="leftConfirmPassword">{dSettings(24, userLang)}</h2>
                         <input type="password" className="inputBoxes" id="password2" /><br />
-                        <h2 id="leftEmail">Email</h2>
+                        <h2 id="leftEmail">{dSettings(25, userLang)}</h2>
                         <input type="text" className="inputBoxes" id="email" /><br />
 
                         <div id="registerDownContainer">
                             <div class="dropdown" id="test">
-                                <button class="dropbtn" id="chooseRegisterLangBtn">Choose Language</button>
+                                <button class="dropbtn" id="chooseRegisterLangBtn">{dSettings(12, userLang)}</button>
                                 <div class="dropdown-content" id="dropdownRegister">
                                     <button onClick={() => this.setLanguage("eng")} 
                                         style={ 
                                             preferredLanguage === "eng" ? {color: 'green'} :
                                             { color: 'black' }
-                                        } type="submit" id="englishButton">English</button>
+                                        } type="submit" id="englishButton">{dSettings(10, userLang)}</button>
                                     <button onClick={() => this.setLanguage("ger")} 
                                         style={ 
                                             preferredLanguage === "ger" ? {color: 'green'} :
                                             { color: 'black' }
-                                        } type="submit" id="germanButton">German</button>
+                                        } type="submit" id="germanButton">{dSettings(13, userLang)}</button>
                                 </div>
                             </div>
                         </div>
                         <button type="button" className="inputBoxes" id="login" onClick={() => doAddUser(this.state.preferredLanguage)}>
-                            <div id="loginBtnTxt">Create</div>
+                            <div id="loginBtnTxt">{dSettings(26, userLang)}</div>
                         </button>
 
 
                         <hr id="hr"></hr>
 
-                        <Link to="/login" id="alreadyRegisteredLoginText">Already Registered? Login</Link>
+                        <Link to="/login" id="alreadyRegisteredLoginText">{dSettings(27, userLang)} {dSettings(16, userLang)}</Link>
                     </div>
                 </div>
 

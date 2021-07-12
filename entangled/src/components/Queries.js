@@ -3,7 +3,10 @@ import { Redirect } from 'react-router-dom';
 import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter, useRowSelect } from "react-table";
 import { cookies, getQueries, removeQueries, getTags } from '../api.js'
 import { Checkbox } from './Checkbox.js';
+import { getGlobalLanguage } from "../api.js";
 import './Queries.css';
+
+var userLanguage = getGlobalLanguage();
 
 function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries }) {
     const {
@@ -59,6 +62,7 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
 
     return (
         <>
+        <div id="queriesBox">
         <div id = "queryTopBar">
         <input
             value={filterInput}
@@ -70,7 +74,8 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
         <button id="queriesDelete" onClick={() => deleteQueries(selectedFlatRows.map((row) => row.original))} >Delete</button>
         
         </div>
-        <table {...getTableProps()}>
+        <div id="queriesTableWrapper">
+        <table id="queriesTable" {...getTableProps()}>
             <thead>
             {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
@@ -109,6 +114,7 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
             })}
             </tbody>
         </table>
+        </div>
         <div id="queriesBottom">
         <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
         <span id = "pageNumbers">
@@ -118,6 +124,8 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
         </span>
         <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
         </div>
+        </div>
+
     </>
     );
 }
@@ -126,8 +134,7 @@ function getQueryData() {
     if(!cookies.get('UserID')) return [];
     var data = getQueries(cookies.get('UserID'));
 
-    var prefLang = "eng";
-    if(cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
+    var prefLang = userLanguage;
     var allTags = getTags(cookies.get('UserID'), prefLang);
     var tagDict = {};
     for(const index in allTags.tags) {
@@ -264,8 +271,6 @@ export default class Queries extends React.Component {
             sendState = { customQuery: this.state.redirectCustomQuery };
         }
 
-        console.log("Redirect? " + JSON.stringify(sendState));
-
         return <Redirect
             to={{
                 pathname: "/search",
@@ -296,7 +301,6 @@ export default class Queries extends React.Component {
             {this.renderRedirect()}
             {redirectToSearch ? this.loadSearch() : <></>}
             <body>
-                <div id="queryWrapper">
                     {
                         toggleState === false ? 
                             <QueriesTable columns={columnsSavedQuery} data={savedQueries}
@@ -306,9 +310,10 @@ export default class Queries extends React.Component {
                                 toggleView={this.toggleView} setSearchFlag={this.setSearchFlag} 
                                 deleteQueries={this.handleQueryDelete} />
                     }
-                </div>
+
             </body>
-            
-        </div>);
+
+        </div>
+        );
     }
 }

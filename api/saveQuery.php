@@ -7,9 +7,9 @@
     $owner = $inData["owner"];
     $query_type = $inData["query_type"];
     $is_history = $inData["is_history"];
-    $query_text = $inData["query_text"];
-    $display_query = $inData["display_query"];
-    $name = $is_history == 0 ? $inData["name"] : "";
+    $query_text = addslashes($inData["query_text"]);
+    $display_query = addslashes($inData["display_query"]);
+    $name = $is_history == 0 ? addslashes($inData["name"]) : "";
     
     $conn = new mysqli($host, $username, $password, $dbname);
 	if ($conn->connect_error) {
@@ -19,12 +19,12 @@
     $query = "";
     if($is_history == 0) {
         $query = "INSERT INTO saved_queries (owner, name, date, query_type, query_text, is_history, display_query) VALUES (" .
-            $owner . ", '" . $name . "', now(), '" . $query_type . "', '" . addslashes($query_text) . "', " . $is_history . 
+            $owner . ", '" . $name . "', now(), '" . $query_type . "', '" . $query_text . "', " . $is_history . 
             ", '" . $display_query . "');";
     }
     else {
         $query = "INSERT INTO saved_queries (owner, date, query_type, query_text, is_history, display_query) VALUES (" .
-            $owner . ", now(), '" . $query_type . "', '" . addslashes($query_text) . "', " . $is_history . 
+            $owner . ", now(), '" . $query_type . "', '" . $query_text . "', " . $is_history . 
             ", '" . $display_query . "');";
     }
 

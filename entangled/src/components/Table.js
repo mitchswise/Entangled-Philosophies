@@ -110,7 +110,7 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper,
                 </table>
 
             </div>
-
+            
             <button class="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
             <span class="pageNumbers">
                 Page{' '}
