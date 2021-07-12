@@ -333,3 +333,13 @@
 	position: relative;
 	top: -475px;
 }
+
+#uploadPaperCounter {
+    position: relative;
+    top: -502px;
+}
+
+#viewParsedPapersButton {
+    position: relative;
+    top: -50px;
+}
