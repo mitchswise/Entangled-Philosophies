@@ -7,6 +7,9 @@ import Table from "./TagsTable";
 import './Tags.css';
 import { getPermLvl, getGlobalLanguage } from "../api.js";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+
 var userLanguage = getGlobalLanguage();
 var userPermLvl = getPermLvl();
 
@@ -168,7 +171,7 @@ function UserEdit({ rowInfo, toggleState }) {
             <h1 id="editTagHeader">Edit Category</h1>
             <input type="text" className="taginputBoxes" id="defBox" placeholder={cat} />
             <button id="editCatButtons" onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
-            <button id="editCatButtons" onClick={() => doRemoveCat(rowInfo)} >Delete</button>
+            <button id="editCatButtons" onClick={() => doRemoveCat(rowInfo)} ><FontAwesomeIcon icon={faTrashAlt}/></button>
         </div>
     }
     var tagName = rowInfo.text;
@@ -178,7 +181,7 @@ function UserEdit({ rowInfo, toggleState }) {
         <input type="text" className="taginputBoxes" id="defBox" placeholder={tagName} />
         <input type="text" className="taginputBoxes" id="tagCategoryBox" placeholder={category} />
         <button id="editTagButtons" onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
-        <button id="editTagButtons" onClick={() => doRemoveTag(rowInfo)} >Delete</button>
+        <button id="editTagButtons" onClick={() => doRemoveTag(rowInfo)} ><FontAwesomeIcon icon={faTrashAlt}/></button>
     </div>
 }
 
@@ -210,7 +213,7 @@ function AdminEdit({ rowInfo, toggleState }) {
             <h4 class="rightBoxText" id="rightBoxTextCategory">German Category</h4>
             <input type="text" className="taginputBoxes" id="gerBox2" placeholder={cat_ger} />
             <button class="editCatButtonsAdmin" onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
-            <button class="editCatButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveCat(rowInfo)} >Delete</button>
+            <button class="editCatButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveCat(rowInfo)} ><FontAwesomeIcon icon={faTrashAlt}/></button>
         </div>
     }
 
@@ -229,7 +232,7 @@ function AdminEdit({ rowInfo, toggleState }) {
         <h4 class="rightBoxText" id="rightBoxTextCategory">German Tag</h4>
         <input type="text" className="taginputBoxes" id="gerBox" placeholder={tag_ger} />
         <button class="editTagButtonsAdmin" onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
-        <button class="editTagButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveTag(rowInfo)} >Delete</button>
+        <button class="editTagButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveTag(rowInfo)} ><FontAwesomeIcon icon={faTrashAlt}/></button>
     </div>
 }
 

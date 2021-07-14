@@ -20,6 +20,8 @@ import Logo2 from './components/mag_glass.JPG';
 import { cookies, getGlobalLanguage, getUserInfo, setGlobalLanguage } from './api.js';
 import CookieConsent, { getCookieConsentValue } from "react-cookie-consent";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 function App() {
   const publicIp = require('public-ip');
@@ -36,7 +38,7 @@ function App() {
   return (
     <div className="container" id="outer-container">
       <img src={Logo} id="logo" />
-      <img src={Logo2} id="logo2" />
+      <div id="logo2"><FontAwesomeIcon icon={faSearch}/></div>
       {/* <h1 id="entangledPhilosophies">Entangled Philosophies</h1> */}
 
       {
