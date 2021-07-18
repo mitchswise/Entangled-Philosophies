@@ -19,6 +19,8 @@ import Logo from './components/logo.JPG';
 import Logo2 from './components/mag_glass.JPG';
 import { cookies, getGlobalLanguage, getUserInfo, setGlobalLanguage } from './api.js';
 import CookieConsent, { getCookieConsentValue } from "react-cookie-consent";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faTimes, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { dSettings } from './dictionary';
 
 
@@ -37,6 +39,7 @@ function App() {
   return (
     <div className="container" id="outer-container">
       <img src={Logo} id="logo" />
+      {/* <FontAwesomeIcon icon={faSearch} size="2x" style={{position:"relative"}}  /> */}
       <img src={Logo2} id="logo2" />
       {/* <h1 id="entangledPhilosophies">Entangled Philosophies</h1> */}
 
