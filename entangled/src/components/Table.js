@@ -2,9 +2,10 @@ import React from "react";
 import { useState } from 'react';
 import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter } from "react-table";
 import { cookies } from "../api";
+import { dSettings } from '../dictionary.js';
 import './Table.css';
 
-export default function Table({ columns, data, loadFilter, saveQuery, loadPaper, loadOptions, loadVisualize }) {
+export default function Table({ columns, data, loadFilter, saveQuery, loadPaper, loadOptions, loadVisualize, userLang }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -45,23 +46,23 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper,
         <>
             <div class="leftBoxTop">
 
-                <button id="saveQuery" disabled={!cookies.get('UserID')} onClick={saveQuery}>Save Query</button>
+                <button id="saveQuery" disabled={!cookies.get('UserID')} onClick={saveQuery}>{dSettings(52,userLang)}</button>
 
-                <button id="Filter" onClick={loadFilter}>Filter</button>
+                <button id="Filter" onClick={loadFilter}>{dSettings(32,userLang)}</button>
 
                 <input
                     value={filterInput}
                     id={searchBarID}
                     onChange={handleFilterChange}
-                    placeholder={"Search name"}
+                    placeholder={dSettings(51,userLang)}
                 />
 
 
                 <div class="dropdownSearch">
-                    <button class="dropbtnSearch">Visualize</button>
+                    <button class="dropbtnSearch">{dSettings(54,userLang)}</button>
                     <div class="dropdown-contentSearch">
-                        <button className="rightButton2" onClick={() => loadVisualize(1)}>Word Cloud</button>
-                        <button className="rightButton2" id="barChartButton" onClick={() => loadVisualize(2)}>Bar Chart</button>
+                        <button className="rightButton2" onClick={() => loadVisualize(1)}>{dSettings(55,userLang)}</button>
+                        <button className="rightButton2" id="barChartButton" onClick={() => loadVisualize(2)}>{dSettings(56,userLang)}</button>
                     </div>
                 </div>
 
@@ -111,18 +112,18 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper,
 
             </div>
             
-            <button class="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
+            <button class="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >{dSettings(73,userLang)}</button>
             <span class="pageNumbers">
-                Page{' '}
+                {dSettings(74,userLang)}{' '}
                 {pageIndex + 1} / {pageOptions.length}
                 {' '}
             </span>
-            <button class="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
+            <button class="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >{dSettings(75,userLang)}</button>
             <select class="pageNumbers" value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
                 {
                     [10, 15, 20].map(pageSize => (
                         <option key={pageSize} value={pageSize} >
-                            Show {pageSize}
+                            {dSettings(34,userLang)} {pageSize}
                         </option>
                     ))
                 }

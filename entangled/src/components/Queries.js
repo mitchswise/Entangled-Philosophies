@@ -4,11 +4,12 @@ import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter, useRow
 import { cookies, getQueries, removeQueries, getTags } from '../api.js'
 import { Checkbox } from './Checkbox.js';
 import { getGlobalLanguage } from "../api.js";
+import { dSettings } from '../dictionary.js';
 import './Queries.css';
 
 var userLanguage = getGlobalLanguage();
 
-function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries }) {
+function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries, userLang }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -68,10 +69,10 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
             value={filterInput}
             id="queriesSearchBar"
             onChange={handleFilterChange}
-            placeholder={"Search"}
+            placeholder={dSettings(67,userLang)}
         />
-        <button id="queriesToggle" onClick={toggleView} >Toggle</button>
-        <button id="queriesDelete" onClick={() => deleteQueries(selectedFlatRows.map((row) => row.original))} >Delete</button>
+        <button id="queriesToggle" onClick={toggleView} >{dSettings(68,userLang)}</button>
+        <button id="queriesDelete" onClick={() => deleteQueries(selectedFlatRows.map((row) => row.original))} >{dSettings(69,userLang)}</button>
         
         </div>
         <div id="queriesTableWrapper">
@@ -116,13 +117,13 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
         </table>
         </div>
         <div id="queriesBottom">
-        <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
+        <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >{dSettings(73,userLang)}</button>
         <span id = "pageNumbers">
-            Page{' '}
+            {dSettings(74,userLang)}{' '}
             {pageIndex + 1} / {pageOptions.length}
             {' '}
         </span>
-        <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
+        <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >{dSettings(75,userLang)}</button>
         </div>
         </div>
 
@@ -294,7 +295,7 @@ export default class Queries extends React.Component {
         return (<div id="searchContainer">
             <div className="header">
                 {
-                    toggleState === false ? <h1 id="title">Saved Queries</h1>
+                    toggleState === false ? <h1 id="title">{dSettings(15,this.props.userLang)}</h1>
                     : <h1 id="title">Search History</h1>
                 }
             </div>
@@ -305,10 +306,10 @@ export default class Queries extends React.Component {
                         toggleState === false ? 
                             <QueriesTable columns={columnsSavedQuery} data={savedQueries}
                                 toggleView={this.toggleView} setSearchFlag={this.setSearchFlag}
-                                deleteQueries={this.handleQueryDelete} />
+                                deleteQueries={this.handleQueryDelete} userLang={this.props.userLang} />
                         : <QueriesTable columns={columnsHistoryQuery} data={savedHistory}
                                 toggleView={this.toggleView} setSearchFlag={this.setSearchFlag} 
-                                deleteQueries={this.handleQueryDelete} />
+                                deleteQueries={this.handleQueryDelete} userLang={this.props.userLang} />
                     }
 
             </body>

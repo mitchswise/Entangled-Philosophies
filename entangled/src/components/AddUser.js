@@ -2,6 +2,7 @@ import React from 'react';
 import ReactWordcloud from 'react-wordcloud';
 import { addTagBatch, addTagToPaperBatch, removePaperTagBatch } from '../api';
 import { addSpreadsheetPaper } from './UploadPaper';
+import { dSettings } from '../dictionary.js';
 
 function checkEndpoint() {
   var pass = {title:"Testing Spreadsheet Paper"};

@@ -19,6 +19,7 @@ import Logo from './components/logo.JPG';
 import Logo2 from './components/mag_glass.JPG';
 import { cookies, getGlobalLanguage, getUserInfo, setGlobalLanguage } from './api.js';
 import CookieConsent, { getCookieConsentValue } from "react-cookie-consent";
+import { dSettings } from './dictionary';
 
 
 function App() {
@@ -42,10 +43,10 @@ function App() {
       {
         !cookies.get('UserID') ? //only runs if there is no user logged in
           <div class="dropdown" id="dropdowncontainer">
-            <button class="dropbtn" id="dropdown">Choose Language</button>
+            <button class="dropbtn" id="dropdown">{dSettings(12,curLanguage)}</button>
             <div class="dropdown-content">
-              <button type="submit" id="englishButton" onClick={() => updateLanguage("eng")} >English</button>
-              <button type="submit" id="germanButton" onClick={() => updateLanguage("ger")} >German</button>
+              <button type="submit" id="englishButton" onClick={() => updateLanguage("eng")} >{dSettings(130,curLanguage)}</button>
+              <button type="submit" id="germanButton" onClick={() => updateLanguage("ger")} >{dSettings(131,curLanguage)}</button>
             </div>
           </div>
           : <></>
@@ -57,24 +58,22 @@ function App() {
           let ip = await publicIp.v4({
             fallbackUrls: ["https://ifconfig.co/ip"]
           });
-          console.log(ip + ": Accepted");
         }}
         enableDeclineButton
         onDecline={async () => {
           let ip = publicIp.v4({
             fallbackUrls: ["https://ifconfig.co/ip"]
           });
-          console.log(ip + ": Declined");
           if(cookies.get('PrefLang')) {
             cookies.remove('PrefLang', { path: '/' });
           }
         }}
       >
-        This website uses cookies to enhance the user experience.
+        {dSettings(1,curLanguage)}
       </CookieConsent>
 
       <Router basename={'/~entangledPhilosophy/Entangled-Philosophies/entangled/build'}>
-        <Sidebar curLang={curLanguage} outerContainerId={'outer-container'} />
+        <Sidebar userLang={curLanguage} outerContainerId={'outer-container'} />
         <Switch>
           <Route exact path="/" render={() => <Home userLang={curLanguage} />} />
           <Route exact path="/about" render={() => <About userLang={curLanguage} />} />

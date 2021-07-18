@@ -1,5 +1,6 @@
 import React from 'react';
 import Chart from 'react-google-charts';
+import { dSettings } from '../dictionary.js';
 
 export default class BarChart extends React.Component {
 
@@ -66,9 +67,9 @@ export default class BarChart extends React.Component {
                         }}
                 />
                 <select id="selectBarChart" onChange={this.changeData} >
-                    <option value="date">Date</option>
-                    <option value="language">Language</option>
-                    <option value="location">Location</option>
+                    <option value="date">{dSettings(71,this.props.userLang)}</option>
+                    <option value="language">{dSettings(115,this.props.userLang)}</option>
+                    <option value="location">{dSettings(121,this.props.userLang)}</option>
                 </select>
             </div>
             </>

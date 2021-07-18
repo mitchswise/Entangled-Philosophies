@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import './Admin.css';
-import {setPerms} from '../api.js';
+import {getGlobalLanguage, setPerms} from '../api.js';
 import {getPerms} from '../api.js';
 import {getAdmins, cookies} from '../api.js';
 import { useHistory } from 'react-router-dom';
 import { getPermLvl } from '../api.js';
+import { dSettings } from '../dictionary.js';
 
 var userPermLvl = getPermLvl();
+var curLanguage = getGlobalLanguage();
 
 const Admin = () => {
 	const history = useHistory([]);
@@ -94,19 +96,19 @@ const Admin = () => {
 
         return (<div className="container">
             <div className="header">
-                <h1 id="title">Add Admin</h1>
+                <h1 id="title">{dSettings(58,curLanguage)}</h1>
             </div>
             <div class="AdminBox">
 
 				<div class="AddAdminBox">
-				<h2>Username</h2>
+				<h2>{dSettings(60,curLanguage)}</h2>
                 <input type="text" class="inputBoxes" id="username" /><br />
-                <button type="button" id="btn" onClick={doSetPerms}><div id="btnTxt">Add Admin</div></button>
+                <button type="button" id="btn" onClick={doSetPerms}><div id="btnTxt">{dSettings(58,curLanguage)}</div></button>
                 <div id="ansField_adminPage"></div><br/><br/>
 				</div>
 
 				<div class="UserListBox">
-					<h2>Admins</h2>
+					<h2>{dSettings(59,curLanguage)}</h2>
 					<div id="adminList">{adminList}</div><br/>
 				</div>
 

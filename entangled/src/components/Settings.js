@@ -164,29 +164,29 @@ export default class Settings extends React.Component {
         return <div className="container">
             {this.renderRedirect()}
             <div className="header">
-                <h1 id="title">{dSettings(9, userLang)}</h1>
+                <h1 id="title">{dSettings(10, userLang)}</h1>
             </div>
 
             <div className="SettingsBox">
                 <div className="SettingsFields">
                     <div class="inputRow">
-                        <h2>{dSettings(1, userLang)}</h2>
+                        <h2>{dSettings(60, userLang)}</h2>
                         <input type="text" id="username" disabled />
                     </div>
 
                     <div class="inputRow">
-                        <h2>{dSettings(2, userLang)}</h2>
+                        <h2>{dSettings(77, userLang)}</h2>
                         <input disabled={true} type="text" id="email" />
                     </div>
 
                     <div class="inputRow">
-                        <h2>{dSettings(3, userLang)}</h2>
-                        <input type="password" id="changePassword" placeholder={dSettings(4, userLang)}/>
-						<input type="password" id="confirmPassword" placeholder={dSettings(14, userLang)}/>
+                        <h2>{dSettings(81, userLang)}</h2>
+                        <input type="password" id="changePassword" placeholder={dSettings(89, userLang)}/>
+						<input type="password" id="confirmPassword" placeholder={dSettings(90, userLang)}/>
                     </div>
 
                     <div class="inputRow">
-                        <h2>{dSettings(5, userLang)}</h2>
+                        <h2>{dSettings(82, userLang)}</h2>
                         <div class="dropDownContainer">
                             <div class="dropdown" id="test">
                                 <button class="dropbtn" id="chooseLangBtn">{dSettings(12, userLang)}</button>
@@ -195,34 +195,34 @@ export default class Settings extends React.Component {
                                         style={
                                             userLang === "eng" ? { color: 'green' } :
                                                 { color: 'black' }
-                                        } type="submit" id="englishButton">English</button>
+                                        } type="submit" id="englishButton">{dSettings(130,this.props.userLang)}</button>
                                     <button onClick={() => this.setLanguage("ger")}
                                         style={
                                             userLang === "ger" ? { color: 'green' } :
                                                 { color: 'black' }
-                                        } type="submit" id="germanButton">Deutsche</button>
+                                        } type="submit" id="germanButton">{dSettings(131,this.props.userLang)}</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="inputRow">
-                        <h2>{dSettings(6, userLang)}</h2>
+                        <h2>{dSettings(88, userLang)}</h2>
                         <div class="cookies">
                             <input type="radio" id="OptIn" value="OptIn" name="cookieService" />
-                            <label for="OptIn">{dSettings(7, userLang)}</label> <br></br>
+                            <label for="OptIn">{dSettings(91, userLang)}</label> <br></br>
                             <input type="radio" id="OptOut" value="OptOut" name="cookieService" />
-                            <label for="OptOut">{dSettings(8, userLang)}</label> <br></br>
+                            <label for="OptOut">{dSettings(92, userLang)}</label> <br></br>
                         </div>
                     </div>
                 </div>
                 <div class="button">
-                    <button type="button" className="inputBoxes" id="save" onClick={this.doUpdateSettings}><div id="saveBtnTxt">{dSettings(11, userLang)}</div></button>
+                    <button type="button" className="inputBoxes" id="save" onClick={this.doUpdateSettings}><div id="saveBtnTxt">{dSettings(95, userLang)}</div></button>
                 </div>
 				<br></br>
 				<br></br>
 				<div class="button">
-					<button type="button" className="inputBoxes" id="removeUser" onClick={this.doRemoveUser}><div id="removeUserTxt">{dSettings(15, userLang)}</div></button>
+					<button type="button" className="inputBoxes" id="removeUser" onClick={this.doRemoveUser}><div id="removeUserTxt">{dSettings(98, userLang)}</div></button>
 				</div>
                 <div id="saveStatus" align="center"></div>
             </div>

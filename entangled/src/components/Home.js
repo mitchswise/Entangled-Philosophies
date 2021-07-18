@@ -8,7 +8,7 @@ export default class Home extends React.Component {
 
         return <div className="container">
             <div className="header">
-                <h1 id="title">{dSettings(23, userLang)}</h1>
+                <h1 id="title">{dSettings(4, userLang)}</h1>
             </div>
             <body>
                 

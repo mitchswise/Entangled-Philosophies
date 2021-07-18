@@ -114,45 +114,45 @@ export default class Register extends React.Component {
             <>
             <div className="container" id="outer-container">
                 <div className="header">
-                    <h1 id="title">{dSettings(22, userLang)}</h1>
+                    <h1 id="title">{dSettings(14, userLang)}</h1>
                 </div>
                 {this.renderRedirect()}
                 <div className="RegisterBox">
                     <div className="RegisterFields">
-                        <h2 id="leftUsername">{dSettings(17, userLang)}</h2>
+                        <h2 id="leftUsername">{dSettings(60, userLang)}</h2>
                         <input type="text" className="inputBoxes" id="username" /><br />
-                        <h2 id="leftPassword">{dSettings(18, userLang)}</h2>
+                        <h2 id="leftPassword">{dSettings(62, userLang)}</h2>
                         <input type="password" className="inputBoxes" id="password" /><br />
-                        <h2 id="leftConfirmPassword">{dSettings(24, userLang)}</h2>
+                        <h2 id="leftConfirmPassword">{dSettings(76, userLang)}</h2>
                         <input type="password" className="inputBoxes" id="password2" /><br />
-                        <h2 id="leftEmail">{dSettings(25, userLang)}</h2>
+                        <h2 id="leftEmail">{dSettings(77, userLang)}</h2>
                         <input type="text" className="inputBoxes" id="email" /><br />
 
                         <div id="registerDownContainer">
                             <div class="dropdown" id="test">
-                                <button class="dropbtn" id="chooseRegisterLangBtn">{dSettings(12, userLang)}</button>
+                                <button class="dropbtn" id="chooseRegisterLangBtn">{dSettings(82, userLang)}</button>
                                 <div class="dropdown-content" id="dropdownRegister">
                                     <button onClick={() => this.setLanguage("eng")} 
                                         style={ 
                                             preferredLanguage === "eng" ? {color: 'green'} :
                                             { color: 'black' }
-                                        } type="submit" id="englishButton">{dSettings(10, userLang)}</button>
+                                        } type="submit" id="englishButton">{dSettings(130, userLang)}</button>
                                     <button onClick={() => this.setLanguage("ger")} 
                                         style={ 
                                             preferredLanguage === "ger" ? {color: 'green'} :
                                             { color: 'black' }
-                                        } type="submit" id="germanButton">{dSettings(13, userLang)}</button>
+                                        } type="submit" id="germanButton">{dSettings(131, userLang)}</button>
                                 </div>
                             </div>
                         </div>
                         <button type="button" className="inputBoxes" id="login" onClick={() => doAddUser(this.state.preferredLanguage)}>
-                            <div id="loginBtnTxt">{dSettings(26, userLang)}</div>
+                            <div id="loginBtnTxt">{dSettings(78, userLang)}</div>
                         </button>
 
 
                         <hr id="hr"></hr>
 
-                        <Link to="/login" id="alreadyRegisteredLoginText">{dSettings(27, userLang)} {dSettings(16, userLang)}</Link>
+                        <Link to="/login" id="alreadyRegisteredLoginText">{dSettings(79, userLang)} {dSettings(13, userLang)}</Link>
                     </div>
                 </div>
 

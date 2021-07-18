@@ -1,6 +1,7 @@
 import React from "react";
 import { cookies, tagFilter } from '../api.js';
 import { parseCustomQuery } from './SQLTranslate.js';
+import { dSettings } from '../dictionary.js';
 import './Filter.css';
 
 const TAG_LIMIT = 10; //Only TAG_LIMIT tags per category unless 'expand' is hit
@@ -208,9 +209,9 @@ export default class Popup extends React.Component {
                     <button onClick={() => this.flipExpand(filterIndex)} disabled={tagList.length <= TAG_LIMIT} id="viewRow">
                         {isExpanded ? "Shrink" : "Expand"}
                     </button>
-                    <button onClick={() => this.setAllTags(filterIndex, 1)} id="viewRow">All</button>
-                    <button onClick={() => this.setAllTags(filterIndex, 0)} id="viewRow">Clear</button>
-                    <button onClick={() => this.setAllTags(filterIndex, 2)} id="viewRow">None</button>
+                    <button onClick={() => this.setAllTags(filterIndex, 1)} id="viewRow">{dSettings(40,this.props.userLang)}</button>
+                    <button onClick={() => this.setAllTags(filterIndex, 0)} id="viewRow">{dSettings(41,this.props.userLang)}</button>
+                    <button onClick={() => this.setAllTags(filterIndex, 2)} id="viewRow">{dSettings(42,this.props.userLang)}</button>
 
                     <button onClick={() => this.changeInclude(filterIndex, "include")} style={{ color: '#337ab7' }}
                         id="viewRow">
@@ -408,17 +409,17 @@ export default class Popup extends React.Component {
                         </div>
                         <div id="rightcolumnFilter">
                             <button onClick={this.toggleCustomSearch}>Custom</button>
-                            <button onClick={() => this.setAllView(false)} id="viewRow" >Show All</button>
-                            <button onClick={() => this.setAllView(true)} id="viewRow" >Hide All</button>
-                            <button onClick={() => this.resetFilter()} id="viewRow" >Reset</button>
+                            <button onClick={() => this.setAllView(false)} id="viewRow" >{dSettings(35,this.props.userLang)}</button>
+                            <button onClick={() => this.setAllView(true)} id="viewRow" >{dSettings(36,this.props.userLang)}</button>
+                            <button onClick={() => this.resetFilter()} id="viewRow" >{dSettings(37,this.props.userLang)}</button>
                         </div>
                     </div>
                     <div id="middleBar">
                         {this.state.itemList}
                     </div>
                     <div id="bottomBar">
-                        <button className="bottomSaveButtons" id="filterSaveButton" onClick={() => this.props.handleSave(this.state.filterState, undefined)} >Save</button>
-                        <button className="bottomSaveButtons" id="filterCancelButton" onClick={this.handleCancel}>Cancel</button>
+                        <button className="bottomSaveButtons" id="filterSaveButton" onClick={() => this.props.handleSave(this.state.filterState, undefined)} >{dSettings(43,this.props.userLang)}</button>
+                        <button className="bottomSaveButtons" id="filterCancelButton" onClick={this.handleCancel}>{dSettings(44,this.props.userLang)}</button>
                     </div>
                 </div>
             </div>

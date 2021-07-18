@@ -22,7 +22,7 @@ export default class About extends React.Component {
 
         return <div className="container">
             <div className="header">
-                <h1 id="title">{dSettings(28, userLang)}</h1>
+                <h1 id="title">{dSettings(5, userLang)}</h1>
             </div>
             <body>
                 {
