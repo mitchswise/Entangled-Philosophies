@@ -560,6 +560,7 @@ export default class Search extends React.Component {
                     loadOptions={this.loadOptions}
                     currentOptions={this.state.checkedOptions}
                     saveOptions={this.saveOptions}
+                    userLang={this.props.userLang}
                 />}
                 <div className="box" id="leftBox">
 
