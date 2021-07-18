@@ -67,7 +67,7 @@ function doAddTag(edit_tag) {
     var translations = {}
     var tag_category = document.getElementById("tagCategoryBox").value;
     if(!tag_category) {
-        // document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+        document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
         return;
     }
     translations["category"] = tag_category;
@@ -77,7 +77,7 @@ function doAddTag(edit_tag) {
         userID = cookies.get('UserID');
         var tag_name = document.getElementById("defBox").value;
         if(!tag_name) {
-            // document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+            document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
             return;
         }
         translations["def"] = tag_name;
@@ -90,7 +90,7 @@ function doAddTag(edit_tag) {
             var tag_translate = document.getElementById(id).value;
 
             if(!tag_translate) {
-                // document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+                document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
                 return; 
             }
 
@@ -102,7 +102,7 @@ function doAddTag(edit_tag) {
     var language = userLanguage;
 
     var data = addTag(userID, language, translations, edit_tag);
-    // document.getElementById("tagsPageStatus").innerHTML = data.status;
+    document.getElementById("tagsPageStatus").innerHTML = data.status;
 }
 
 //remove a tag from the database
@@ -112,7 +112,7 @@ function doRemoveTag(rowInfo) {
     var language = rowInfo.owner == 0 ? userLanguage : "def";
 
     var data = removeTag(tagName, language, userID);
-    // document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
+    document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
 }
 
 //add/edit a category to the database
@@ -124,7 +124,7 @@ function doAddCat(edit_cat) {
         userID = cookies.get('UserID');
         var cat_name = document.getElementById("defBox").value;
         if(!cat_name) {
-            // document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+            document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
             return;
         }
         translations["def"] = cat_name;
@@ -137,7 +137,7 @@ function doAddCat(edit_cat) {
             var tag_translate = document.getElementById(id).value;
 
             if(!tag_translate) {
-                // document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+                document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
                 return; 
             }
 
@@ -146,7 +146,7 @@ function doAddCat(edit_cat) {
     }
 
     var data = addCategory(userID, edit_cat, translations);
-    // document.getElementById("tagsPageStatus").innerHTML = data.status;
+    document.getElementById("tagsPageStatus").innerHTML = data.status;
 }
 
 //remove a category from the database
@@ -156,7 +156,7 @@ function doRemoveCat(rowInfo) {
     var language = rowInfo.owner == 0 ? userLanguage : "def";
 
     var data = removeCategory(catName, language, userID);
-    // document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
+    document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
 }
 
 //conditional render functions for TAG AND CATEGORY button clicks:
@@ -168,8 +168,8 @@ function UserEdit({ rowInfo, toggleState }) {
         return <div>
             <h1 id="editTagHeader">Edit Category</h1>
             <input type="text" className="taginputBoxes" id="defBox" placeholder={cat} />
-            <button id="editCatButtons" onClick={() => doAddCat(rowInfo.cat_id)}>{dSettings(27,userLanguage)}</button>
-            <button id="editCatButtons" onClick={() => doRemoveCat(rowInfo)} >{dSettings(28,userLanguage)}</button>
+            <button class = "editCatButtonsAdmin" onClick={() => doAddCat(rowInfo.cat_id)}>{dSettings(27,userLanguage)}</button>
+            <button class = "editCatButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveCat(rowInfo)} >{dSettings(28,userLanguage)}</button>
         </div>
     }
     var tagName = rowInfo.text;
@@ -178,8 +178,8 @@ function UserEdit({ rowInfo, toggleState }) {
         <h1 id="editTagHeader">Edit Tag</h1>
         <input type="text" className="taginputBoxes" id="defBox" placeholder={tagName} />
         <input type="text" className="taginputBoxes" id="tagCategoryBox" placeholder={category} />
-        <button id="editTagButtons" onClick={() => doAddTag(rowInfo.tag_id)}>{dSettings(27,userLanguage)}</button>
-        <button id="editTagButtons" onClick={() => doRemoveTag(rowInfo)} >{dSettings(28,userLanguage)}</button>
+        <button class="editTagButtonsAdmin" onClick={() => doAddTag(rowInfo.tag_id)}>{dSettings(27,userLanguage)}</button>
+        <button class="editTagButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveTag(rowInfo)} >{dSettings(28,userLanguage)}</button>
     </div>
 }
 
@@ -188,14 +188,14 @@ function UserAdd({ toggleState }) {
         return <div>
             <h1 id="editTagHeader2">Add Category</h1>
             <input type="text" className="taginputBoxes" id="defBox" placeholder="Category name" />
-            <button id="addCatButtons" onClick={() => doAddCat(-1)}>{dSettings(27,userLanguage)}</button>
+            <button id="addCatButtonsAdmin" onClick={() => doAddCat(-1)}>{dSettings(27,userLanguage)}</button>
         </div>
     }
     return <div> 
         <h1 id="editTagHeader">Add Tag</h1>
         <input type="text" className="taginputBoxes" id="defBox" placeholder="tag name" />
         <input type="text" className="taginputBoxes" id="tagCategoryBox" placeholder="tag category" />
-        <button id="addTagButtons" onClick={() => doAddTag(-1)}>{dSettings(27,userLanguage)}</button>
+        <button id="addTagButtonsAdmin" onClick={() => doAddTag(-1)}>{dSettings(27,userLanguage)}</button>
     </div>
 }
 
@@ -242,7 +242,7 @@ function AdminAdd({ toggleState }) {
             <input type="text" className="taginputBoxesToggled" id="engBox2" placeholder="English Category" />
             <h4 class="rightBoxText2" id="rightBoxTextGerman">{dSettings(131,userLanguage)}</h4>
             <input type="text" className="taginputBoxesToggled" id="gerBox2" placeholder="German Category" />
-            <button id="addCatButtonsAdmin" onClick={() => doAddCat(-1)}>{dSettings(27,userLanguage)}</button>
+            <button id="addTagButtonsAdmin" onClick={() => doAddCat(-1)}>{dSettings(27,userLanguage)}</button>
         </div>
     }
     return <div>
@@ -287,6 +287,7 @@ export default class Tags extends React.Component {
                 document.getElementById(element).value = "";
             }
         }
+        
     }
 
     //switch from tag to category view (or vice versa)
@@ -297,9 +298,12 @@ export default class Tags extends React.Component {
     //When a user/admin clicks an entry and wants to edit it.
     loadTag = (rowInformation) => {
         this.setState({ rowInfo: rowInformation });
+        if(document.getElementById("tagsPageStatus")) {
+            document.getElementById("tagsPageStatus").innerHTML = "";
+        }
         if(userPermLvl < 1) {
             if(rowInformation.owner !== cookies.get('UserID')) {
-                // document.getElementById("tagsPageStatus").innerHTML = "Status: You can't edit public items.";
+                document.getElementById("tagsPageStatus").innerHTML = "Status: You can't edit public items.";
                 this.setState({ tagAdditionState: 0 });
             }
             else {
@@ -352,8 +356,8 @@ export default class Tags extends React.Component {
                              tagAdditionState === 3 ? <AdminEdit toggleState={toggleState} rowInfo={this.state.rowInfo} /> :
                              tagAdditionState === 4 ? <UserEdit toggleState={toggleState} rowInfo={this.state.rowInfo} /> :
                              <div></div>}
+                            <div id="tagsPageStatus"></div>
                         </div>
-                        {/* <div id="tagsPageStatus">Status:</div> */}
                     </div>
                 </body>
             </div>
