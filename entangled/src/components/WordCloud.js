@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactWordcloud from 'react-wordcloud';
+import { dSettings } from '../dictionary.js';
 import { cookies, getWordCloudTags } from '../api';
 
 const options = {

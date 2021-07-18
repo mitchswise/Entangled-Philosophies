@@ -6,6 +6,7 @@ import { getTags, addTag, removeTag, getTagTranslation,
 import Table from "./TagsTable";
 import './Tags.css';
 import { getPermLvl, getGlobalLanguage } from "../api.js";
+import { dSettings } from '../dictionary.js';
 
 var userLanguage = getGlobalLanguage();
 var userPermLvl = getPermLvl();
@@ -14,22 +15,22 @@ var userPermLvl = getPermLvl();
 
 const columnsTags = [
     {
-        Header: "Tag",
+        Header: dSettings(16,userLanguage),
         accessor: "text"
     },
     {
-        Header: "Category",
+        Header: dSettings(29,userLanguage),
         accessor: "catText"
     },
     {
-        Header: "Papers Tagged",
+        Header: dSettings(21,userLanguage),
         accessor: "frequency"
     }
 ];
 
 const columnsCategories = [
     {
-        Header: "Category",
+        Header: dSettings(29,userLanguage),
         accessor: "text"
     }
 ];
@@ -167,8 +168,8 @@ function UserEdit({ rowInfo, toggleState }) {
         return <div>
             <h1 id="editTagHeader">Edit Category</h1>
             <input type="text" className="taginputBoxes" id="defBox" placeholder={cat} />
-            <button id="editCatButtons" onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
-            <button id="editCatButtons" onClick={() => doRemoveCat(rowInfo)} >Delete</button>
+            <button id="editCatButtons" onClick={() => doAddCat(rowInfo.cat_id)}>{dSettings(27,userLanguage)}</button>
+            <button id="editCatButtons" onClick={() => doRemoveCat(rowInfo)} >{dSettings(28,userLanguage)}</button>
         </div>
     }
     var tagName = rowInfo.text;
@@ -177,8 +178,8 @@ function UserEdit({ rowInfo, toggleState }) {
         <h1 id="editTagHeader">Edit Tag</h1>
         <input type="text" className="taginputBoxes" id="defBox" placeholder={tagName} />
         <input type="text" className="taginputBoxes" id="tagCategoryBox" placeholder={category} />
-        <button id="editTagButtons" onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
-        <button id="editTagButtons" onClick={() => doRemoveTag(rowInfo)} >Delete</button>
+        <button id="editTagButtons" onClick={() => doAddTag(rowInfo.tag_id)}>{dSettings(27,userLanguage)}</button>
+        <button id="editTagButtons" onClick={() => doRemoveTag(rowInfo)} >{dSettings(28,userLanguage)}</button>
     </div>
 }
 
@@ -187,14 +188,14 @@ function UserAdd({ toggleState }) {
         return <div>
             <h1 id="editTagHeader2">Add Category</h1>
             <input type="text" className="taginputBoxes" id="defBox" placeholder="Category name" />
-            <button id="addCatButtons" onClick={() => doAddCat(-1)}>Save</button>
+            <button id="addCatButtons" onClick={() => doAddCat(-1)}>{dSettings(27,userLanguage)}</button>
         </div>
     }
     return <div> 
         <h1 id="editTagHeader">Add Tag</h1>
         <input type="text" className="taginputBoxes" id="defBox" placeholder="tag name" />
         <input type="text" className="taginputBoxes" id="tagCategoryBox" placeholder="tag category" />
-        <button id="addTagButtons" onClick={() => doAddTag(-1)}>Save</button>
+        <button id="addTagButtons" onClick={() => doAddTag(-1)}>{dSettings(27,userLanguage)}</button>
     </div>
 }
 
@@ -205,12 +206,12 @@ function AdminEdit({ rowInfo, toggleState }) {
         var cat_ger = translations.ger;
         return <div>
             <h1 id="editTagHeader">Edit Category</h1>
-            <h4 class="rightBoxText" id="rightBoxTextCategory">English Category</h4>
+            <h4 class="rightBoxText" id="rightBoxTextCategory">{dSettings(130,userLanguage)}</h4>
             <input type="text" className="taginputBoxes" id="engBox2" placeholder={cat_eng} />
-            <h4 class="rightBoxText" id="rightBoxTextCategory">German Category</h4>
+            <h4 class="rightBoxText" id="rightBoxTextCategory">{dSettings(131,userLanguage)}</h4>
             <input type="text" className="taginputBoxes" id="gerBox2" placeholder={cat_ger} />
-            <button class="editCatButtonsAdmin" onClick={() => doAddCat(rowInfo.cat_id)}>Save</button>
-            <button class="editCatButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveCat(rowInfo)} >Delete</button>
+            <button class="editCatButtonsAdmin" onClick={() => doAddCat(rowInfo.cat_id)}>{dSettings(27,userLanguage)}</button>
+            <button class="editCatButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveCat(rowInfo)} >{dSettings(28,userLanguage)}</button>
         </div>
     }
 
@@ -221,38 +222,38 @@ function AdminEdit({ rowInfo, toggleState }) {
     var tag_ger = translations.ger;
 
     return <div>
-        <h1 id="editTagHeader">Edit Tag</h1>
-        <h4 class="rightBoxText" id="rightBoxTextCategory">Tag Category</h4>
+        <h1 id="editTagHeader">{dSettings(26,userLanguage)}</h1>
+        <h4 class="rightBoxText" id="rightBoxTextCategory">{dSettings(29,userLanguage)}</h4>
         <input type="text" className="taginputBoxes" id="tagCategoryBox" placeholder={category} />
-        <h4 class="rightBoxText" id="rightBoxTextCategory">English Tag</h4>
+        <h4 class="rightBoxText" id="rightBoxTextCategory">{dSettings(30,userLanguage)}</h4>
         <input type="text" className="taginputBoxes" id="engBox" placeholder={tag_eng} />
-        <h4 class="rightBoxText" id="rightBoxTextCategory">German Tag</h4>
+        <h4 class="rightBoxText" id="rightBoxTextCategory">{dSettings(31,userLanguage)}</h4>
         <input type="text" className="taginputBoxes" id="gerBox" placeholder={tag_ger} />
-        <button class="editTagButtonsAdmin" onClick={() => doAddTag(rowInfo.tag_id)}>Save</button>
-        <button class="editTagButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveTag(rowInfo)} >Delete</button>
+        <button class="editTagButtonsAdmin" onClick={() => doAddTag(rowInfo.tag_id)}>{dSettings(27,userLanguage)}</button>
+        <button class="editTagButtonsAdmin" id="tagtDeleteButton" onClick={() => doRemoveTag(rowInfo)} >{dSettings(28,userLanguage)}</button>
     </div>
 }
 
 function AdminAdd({ toggleState }) {
     if(toggleState) {
         return <div>
-            <h1 id="editTagHeader2">Add Category</h1>
-            <h4 class="rightBoxText2" id="rightBoxTextEnglish">English Category</h4>
+            <h1 id="editTagHeader2">{dSettings(18,userLanguage)}</h1>
+            <h4 class="rightBoxText2" id="rightBoxTextEnglish">{dSettings(130,userLanguage)}</h4>
             <input type="text" className="taginputBoxesToggled" id="engBox2" placeholder="English Category" />
-            <h4 class="rightBoxText2" id="rightBoxTextGerman">German Category</h4>
+            <h4 class="rightBoxText2" id="rightBoxTextGerman">{dSettings(131,userLanguage)}</h4>
             <input type="text" className="taginputBoxesToggled" id="gerBox2" placeholder="German Category" />
-            <button id="addCatButtonsAdmin" onClick={() => doAddCat(-1)}>Save</button>
+            <button id="addCatButtonsAdmin" onClick={() => doAddCat(-1)}>{dSettings(27,userLanguage)}</button>
         </div>
     }
     return <div>
-        <h1 id="editTagHeader">Add Tag</h1>
-        <h4 class="rightBoxText" id="rightBoxTextCategory">Tag Category</h4>
+        <h1 id="editTagHeader">{dSettings(18,userLanguage)}</h1>
+        <h4 class="rightBoxText" id="rightBoxTextCategory">{dSettings(29,userLanguage)}</h4>
         <input type="text" className="taginputBoxes" id="tagCategoryBox" placeholder="Tag Category" />
-        <h4 class="rightBoxText" id="rightBoxTextEnglishTag">English Tag</h4>
+        <h4 class="rightBoxText" id="rightBoxTextEnglishTag">{dSettings(30,userLanguage)}</h4>
         <input type="text" className="taginputBoxes" id="engBox" placeholder="English Tag" />
-        <h4 class="rightBoxText" id="rightBoxTextGermanTag">German Tag</h4>
+        <h4 class="rightBoxText" id="rightBoxTextGermanTag">{dSettings(31,userLanguage)}</h4>
         <input type="text" className="taginputBoxes" id="gerBox" placeholder="German Tag" />
-        <button id="addTagButtonsAdmin" onClick={() => doAddTag(-1)}>Save</button>
+        <button id="addTagButtonsAdmin" onClick={() => doAddTag(-1)}>{dSettings(27,userLanguage)}</button>
     </div>
 }
 
@@ -326,8 +327,8 @@ export default class Tags extends React.Component {
             <div className="container">
                 <div className="header">
                     {
-                        toggleState === false ? <h1 id="title">Tags</h1>
-                        : <h1 id="title">Categories</h1>
+                        toggleState === false ? <h1 id="title">{dSettings(123,userLanguage)}</h1>
+                        : <h1 id="title">{dSettings(17,userLanguage)}</h1>
                     }
                 </div>
                 {this.renderRedirect()}
@@ -338,10 +339,10 @@ export default class Tags extends React.Component {
                                 toggleState === false ?
                                 <Table class="tagElement" id="tagTable" columns={columnsTags} 
                                 data={tagData} loadTag={this.loadTag} addTags={this.makeTagAddInputBoxes}
-                                toggleView={this.toggleView} /> :
+                                toggleView={this.toggleView} userLang={this.props.userLang} /> :
                                 <Table class="tagElement" id="tagTable" columns={columnsCategories} 
                                 data={categoryData} loadTag={this.loadTag} addTags={this.makeTagAddInputBoxes}
-                                toggleView={this.toggleView} />
+                                toggleView={this.toggleView} userLang={this.props.userLang} />
                             }
                         </div>
                         <div id="rightcolumn">

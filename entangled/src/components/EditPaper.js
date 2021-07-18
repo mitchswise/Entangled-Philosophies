@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import './EditPaper.css';
+import { dSettings } from '../dictionary.js';
 import trashCan from '../images/trash.png';
 
 import {
@@ -317,7 +318,7 @@ export default class EditPaper extends React.Component {
 
         return <div className="container" ref={el => (this.div = el)}>
             <div className="header">
-                <h1 id="title">Edit Paper</h1>
+                <h1 id="title">{dSettings(46,this.props.userLang)}</h1>
             </div>
             {this.renderRedirect()}
             <body>
@@ -353,10 +354,10 @@ export default class EditPaper extends React.Component {
                                             <p>Size: {this.state.selectedFile.size}</p>
                                         </div>
                                     ) : (
-                                        <p>Select a file to show details</p>
+                                        <p>{dSettings(126,this.props.userLang)}</p>
                                     )}
                                     <button type="button" id="clearUploadButton"
-                                        onClick={this.removeUpload}>Remove Upload</button>
+                                        onClick={this.removeUpload}>{dSettings(127,this.props.userLang)}</button>
                                 </div>
 
 

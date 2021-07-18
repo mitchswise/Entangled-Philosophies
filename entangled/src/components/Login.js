@@ -67,22 +67,22 @@ export default class Login extends React.Component {
         
         return <div className="container">
             <div className="header">
-                <h1 id="title">{dSettings(16, userLang)}</h1>
+                <h1 id="title">{dSettings(13, userLang)}</h1>
             </div>
             {this.renderRedirect()}
             <div className="LoginBox">
                 <div className="LoginFields">
-                    <h2 id="leftUsername">{dSettings(17, userLang)}</h2>
+                    <h2 id="leftUsername">{dSettings(60, userLang)}</h2>
                     <input type="text" className="inputBoxes" id="username" /><br />
-                    <h2 id="leftPassword">{dSettings(18, userLang)}</h2>
+                    <h2 id="leftPassword">{dSettings(62, userLang)}</h2>
                     <input type="password" className="inputBoxes" id="password" /><br />
-                    <button type="button" className="inputBoxes" id="login" onClick={doLogin}><div id="loginBtnTxt">{dSettings(19, userLang)}</div></button>
+                    <button type="button" className="inputBoxes" id="login" onClick={doLogin}><div id="loginBtnTxt">{dSettings(65, userLang)}</div></button>
 
 
                     <hr id="hr"></hr>
 
-                    <Link to="/register" id="dontHaveAccountText">{dSettings(20, userLang)}{ }{dSettings(22, userLang)}</Link>
-                    <Link to="/forgotpass" id="forgotPasswordText">{dSettings(21, userLang)}</Link>
+                    <Link to="/register" id="dontHaveAccountText">{dSettings(64, userLang)}{ }{dSettings(14, userLang)}</Link>
+                    <Link to="/forgotpass" id="forgotPasswordText">{dSettings(63, userLang)}</Link>
 
 
                 </div>

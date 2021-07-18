@@ -11,6 +11,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Button from "@material-ui/core/Button";
+import { dSettings } from '../dictionary.js';
 
 var tagsList = [];
 var tagIDs = [];
@@ -521,109 +522,109 @@ export default class UploadPaper extends React.Component {
 
 		return <div className="container" ref={el => (this.div = el)}>
 			<div className="header">
-				<h1 id="title">Upload Paper</h1>
+				<h1 id="title">{dSettings(105,this.props.userLang)}</h1>
 			</div>
 			{this.renderRedirect()}
 			<body>
 				<div className="PaperBox">
 					<div className="PaperFields">
 						<div id="MetadataFields">
-							<h2 id="leftTitle">Title</h2>
+							<h2 id="leftTitle">{dSettings(106,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="titleName"
 							/>
-							<h2 id="leftAuthor">Author</h2>
+							<h2 id="leftAuthor">{dSettings(107,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="authorBox"
 								placeholder="Optional Author"
 							/>
-							<h2 id="leftContributor">Contributor</h2>
+							<h2 id="leftContributor">{dSettings(108,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="contributor"
 								placeholder="Optional Contributor"
 							/>
-							<h2 id="leftRelations">Relation</h2>
+							<h2 id="leftRelations">{dSettings(109,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="relation"
 								placeholder="Optional Relations"
 							/>
-							<h2 id="leftSubject">Subject</h2>
+							<h2 id="leftSubject">{dSettings(110,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="subject"
 								placeholder="Optional Subject"
 							/>
-							<h2 id="leftDate">Dates</h2>
+							<h2 id="leftDate">{dSettings(111,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="date"
 								placeholder="Optional Date"
 							/>
-							<h2 id="leftDescription">Description</h2>
+							<h2 id="leftDescription">{dSettings(112,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="description"
 								placeholder="Optional Description"
 							/>
-							<h2 id="leftType">Type</h2>
+							<h2 id="leftType">{dSettings(113,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="type"
 								placeholder="Optional Type"
 							/>
-							<h2 id="leftFormat">Format</h2>
+							<h2 id="leftFormat">{dSettings(114,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="format"
 								placeholder="Optional Format"
 							/>
-							<h2 id="leftLanguage">Language</h2>
+							<h2 id="leftLanguage">{dSettings(115,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="languageBox"
 								placeholder="Optional Language"
 							/>
-							<h2 id="leftSource">Source</h2>
+							<h2 id="leftSource">{dSettings(116,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="sourceBox"
 								placeholder="Optional Source"
 							/>
-							<h2 id="leftPublisher">Publisher</h2>
+							<h2 id="leftPublisher">{dSettings(117,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="publisher"
 								placeholder="Optional Publisher"
 							/>
-							<h2 id="leftRights">Rights</h2>
+							<h2 id="leftRights">{dSettings(118,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="rights"
 								placeholder="Optional Rights"
 							/>
-							<h2 id="leftCoverage">Coverage</h2>
+							<h2 id="leftCoverage">{dSettings(119,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="coverage"
 								placeholder="Optional Coverage"
 							/>
-							<h2 id="leftISBN">ISBN</h2>
+							<h2 id="leftISBN">{dSettings(120,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="isbn"
 								placeholder="Optional ISBN"
 							/>
-							<h2 id="leftURL">URL</h2>
+							<h2 id="leftURL">{dSettings(122,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="urlBox"
 								placeholder="Optional URL"
 							/>
-							<h2 id="leftLocation">Location</h2>
+							<h2 id="leftLocation">{dSettings(121,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="location"
@@ -635,7 +636,7 @@ export default class UploadPaper extends React.Component {
 
 						{this.state.isIndividualMode ? (
 							<div id="OtherFields">
-								<h2 id="leftTags">Tags</h2>
+								<h2 id="leftTags">{dSettings(123,this.props.userLang)}</h2>
 								<input type="text" className="PaperBoxes" id="tags" disabled /><br />
 								<button type="button"
 									className="PaperBoxes"
@@ -657,13 +658,13 @@ export default class UploadPaper extends React.Component {
 												<p>Size: {this.state.selectedFile.size}</p>
 											</div>
 										) : (
-											<p>Select a file to show details</p>
+											<p>{dSettings(126,this.props.userLang)}</p>
 										)}
-										<button type="button" id="clearUploadButton" onClick={this.removeUpload}>Remove Upload</button>
+										<button type="button" id="clearUploadButton" onClick={this.removeUpload}>{dSettings(127,this.props.userLang)}</button>
 									</div>
-									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">Upload</div></button>
+									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">{dSettings(128,this.props.userLang)}</div></button>
 									<div id="uploadStatus"></div>
-									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">Upload CSV</div></button>
+									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">{dSettings(128,this.props.userLang)} CSV</div></button>
 								</div>
 							</div>
 						) : (
@@ -683,7 +684,7 @@ export default class UploadPaper extends React.Component {
 										<span>Drop CSV file here or click to upload.</span>
 									</CSVReader>
 								</div>
-								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleBatchSubmission}><div id="uploadBtnTxt">Upload</div></button>
+								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleBatchSubmission}><div id="uploadBtnTxt">{dSettings(128,this.props.userLang)}</div></button>
 								<div id="uploadStatus"></div>
 								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">Upload Individual File</div></button>
 								<div id="uploadPaperCounter">Uploading {this.state.currentCounter}/{

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { dSettings } from "../dictionary";
 import './saveQueryPopup.css';
 
 export default class QueryPopup extends React.Component {
@@ -22,9 +23,9 @@ export default class QueryPopup extends React.Component {
                             <button className="bottomSaveButtons" id="querySaveButton" 
                                 onClick={() => this.props.handleSave(this.state.queryName)}
                                 disabled={!this.state.queryName}
-                                >Save</button>
+                                >{dSettings(27,this.props.userLang)}</button>
                             <button className="bottomSaveButtons" id="queryCancelButton" 
-                                onClick={this.props.handleClose}>Cancel</button>
+                                onClick={this.props.handleClose}>{dSettings(44,this.props.userLang)}</button>
                         </div>
                     </div>
                 </div>

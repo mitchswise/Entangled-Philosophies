@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import './ForgotPass.css';
 import { resetPassword, cookies } from '../api.js';
+import { dSettings } from '../dictionary';
 
 function doResetPassword() {
     var username = document.getElementById("username").value;
@@ -27,7 +28,7 @@ export default class ForgotPass extends React.Component {
     render() {
         return <div className="container">
             <div className="header">
-                <h1 id="title">Forgot Password</h1>
+                <h1 id="title">{dSettings(132,this.props.userLang)}</h1>
             </div>
             {this.renderRedirect()}
             <div className="ForgotBox">
@@ -36,7 +37,7 @@ export default class ForgotPass extends React.Component {
                     <input type="text" className="inputBoxes" id="username" /><br />
                     <h2 id="leftPassword">Email</h2>
                     <input type="text" className="inputBoxes" id="forgotEmail" /><br />
-                    <button type="button" className="inputBoxes" id="login" onClick={doResetPassword}><div id="loginBtnTxt">Log In</div></button>
+                    <button type="button" className="inputBoxes" id="login" onClick={doResetPassword}><div id="loginBtnTxt">{dSettings(65,this.props.userLang)}</div></button>
 
 
                     <hr id="hr"></hr>

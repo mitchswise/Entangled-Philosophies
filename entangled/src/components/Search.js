@@ -400,8 +400,8 @@ export default class Search extends React.Component {
         return <div id="rightBoxWrapper">
             <div id="buttonRow">
                 <button id="editPaperButton" onClick={() => { this.setState({ openEditPaper: true }) }}
-                    disabled={!cookies.get('UserID') || userPermLvl == 0}>Edit Paper</button>
-                <button id="closePaperButton" onClick={this.closePaper}>Close Paper</button>
+                    disabled={!cookies.get('UserID') || userPermLvl == 0}>{dSettings(46, this.props.userLang)}</button>
+                <button id="closePaperButton" onClick={this.closePaper}>{dSettings(47, this.props.userLang)}</button>
             </div>
             <div class="rightBoxPaperInfo">
 
@@ -409,9 +409,9 @@ export default class Search extends React.Component {
 
                     <h3>General Information</h3>
 
-                    <p><b>Title:</b> {paperInformation.title}</p>
+                    <p><b>{dSettings(106,this.props.userLang)}:</b> {paperInformation.title}</p>
 
-                    <p><b>Author:</b> {paperInformation.author}</p>
+                    <p><b>{dSettings(107,this.props.userLang)}:</b> {paperInformation.author}</p>
 
                 </div>
 
@@ -419,13 +419,13 @@ export default class Search extends React.Component {
 
                     <h3>Description Information</h3>
 
-                    <p ><b>Subject:</b> {paperInformation.subject}</p>
+                    <p ><b>{dSettings(110,this.props.userLang)}:</b> {paperInformation.subject}</p>
 
-                    <p ><b>Type/Genre:</b> {paperInformation.type}</p>
+                    <p ><b>{dSettings(113,this.props.userLang)}:</b> {paperInformation.type}</p>
 
-                    <p ><b>Coverage:</b> {paperInformation.coverage}</p>
+                    <p ><b>{dSettings(119,this.props.userLang)}:</b> {paperInformation.coverage}</p>
 
-                    <p><b>Description</b> {paperInformation.description}</p>
+                    <p><b>{dSettings(112,this.props.userLang)}</b> {paperInformation.description}</p>
 
                 </div>
 
@@ -433,17 +433,17 @@ export default class Search extends React.Component {
 
                     <h3>Identifying Information</h3>
 
-                    <p><b>Date:</b> {paperInformation.date}</p>
+                    <p><b>{dSettings(71,this.props.userLang)}:</b> {paperInformation.date}</p>
 
-                    <p ><b>Format:</b> {paperInformation.format}</p>
+                    <p ><b>{dSettings(114,this.props.userLang)}:</b> {paperInformation.format}</p>
 
-                    <p ><b>Language:</b> {paperInformation.language}</p>
+                    <p ><b>{dSettings(115,this.props.userLang)}:</b> {paperInformation.language}</p>
 
-                    <p ><b>Location:</b> {paperInformation.location}</p>
+                    <p ><b>{dSettings(121,this.props.userLang)}:</b> {paperInformation.location}</p>
 
-                    <p ><b>ISBN:</b> {paperInformation.isbn}</p>
+                    <p ><b>{dSettings(120,this.props.userLang)}:</b> {paperInformation.isbn}</p>
 
-                    <p ><b>URL:</b> {
+                    <p ><b>{dSettings(122,this.props.userLang)}:</b> {
                         paperInformation.paper_url !== null ?
                             <a id="currentFile" href={paperInformation.paper_url}
                                 target="_blank" >{paperInformation.paper_url}</a>
@@ -465,19 +465,19 @@ export default class Search extends React.Component {
 
                     <h3>Legal Information</h3>
 
-                    <p ><b>Source:</b> {paperInformation.source}</p>
+                    <p ><b>{dSettings(116,this.props.userLang)}:</b> {paperInformation.source}</p>
 
-                    <p ><b>Publisher:</b> {paperInformation.publisher}</p>
+                    <p ><b>{dSettings(117,this.props.userLang)}:</b> {paperInformation.publisher}</p>
 
-                    <p ><b>Rights:</b> {paperInformation.rights}</p>
+                    <p ><b>{dSettings(118,this.props.userLang)}:</b> {paperInformation.rights}</p>
 
-                    <p id="rowFourRelation"><b>Relation:</b> {paperInformation.relation}</p>
+                    <p id="rowFourRelation"><b>{dSettings(109,this.props.userLang)}:</b> {paperInformation.relation}</p>
 
                 </div>
 
                 <div id="rowFive">
 
-                    <h3>Tags</h3>
+                    <h3>{dSettings(123,this.props.userLang)}</h3>
 
                     {
                         userID != 0 ?
@@ -537,22 +537,24 @@ export default class Search extends React.Component {
         let tableColumns = this.makeTableColumns();
 
         if (openEditPaper) {
-            return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} />
+            return <EditPaper paperInformation={paperInformation} closeEdit={this.closeEdit} userLang={userLang} />
         }
         return (<div id="searchContainer">
-            <h1 id="title">{dSettings(29, userLang)}</h1>
+            <h1 id="title">{dSettings(53, userLang)}</h1>
             <div id="searchBody">
                 {isFilterOpen && <Filter
                     handleClose={this.togglePopup}
                     tagData={tagData}
                     filterState={filterState}
                     customQuery={customQuery.original_input}
+                    userLang={userLang}
                     handleSave={this.handleFilterSave}
                 />}
                 {isSaveOpen && <QueryPopup
                     queryType={this.state.lastQueryTypeUsed}
                     handleClose={this.toggleSavePopup}
                     handleSave={this.handleQuerySave}
+                    userLang={userLang}
                 />}
                 {isOptionsOpen && <OptionsPopup
                     loadOptions={this.loadOptions}
@@ -564,7 +566,7 @@ export default class Search extends React.Component {
                     <Table class="tagElement" id="tagTable" columns={tableColumns}
                         data={paperData} loadFilter={this.togglePopup} saveQuery={this.toggleSavePopup}
                         loadPaper={this.loadPaper} loadOptions={this.loadOptions}
-                        loadVisualize={this.loadVisualize} />
+                        loadVisualize={this.loadVisualize} userLang={userLang} />
 
                 </div>
 
