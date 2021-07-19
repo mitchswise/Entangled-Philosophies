@@ -4,7 +4,7 @@ import { parseCustomQuery } from './SQLTranslate.js';
 import { dSettings } from '../dictionary.js';
 import './Filter.css';
 
-const TAG_LIMIT = 10; //Only TAG_LIMIT tags per category unless 'expand' is hit
+const TAG_LIMIT = 20; //Only TAG_LIMIT tags per category unless 'expand' is hit
 
 function getValidTags(forced_tags) {
     var userID = 0;
