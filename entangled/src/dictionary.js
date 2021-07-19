@@ -65,8 +65,8 @@ export function dSettings(s, lang) {
 			if (lang=='ger') return "Tag";
 			break;
 		case 17:
-			if (lang=='eng') return "Category/Categories";
-			if (lang=='ger') return "Kategorie / Kategorien";
+			if (lang=='eng') return "Categories";
+			if (lang=='ger') return "Kategorien";
 			break;
 		case 18:
 			if (lang=='eng') return "Add";
@@ -74,11 +74,11 @@ export function dSettings(s, lang) {
 			break;
 		case 19:
 			if (lang=='eng') return "Toggle";
-			if (lang=='ger') return "Umschalten";
+			if (lang=='ger') return "Wechseln";
 			break;
 		case 20:
 			if (lang=='eng') return "Search Name";
-			if (lang=='ger') return "Namen Suchen";
+			if (lang=='ger') return "Namen suchen";
 			break;
 		case 21:
 			if (lang=='eng') return "Papers Tagged";
@@ -138,15 +138,15 @@ export function dSettings(s, lang) {
 			break;
 		case 35:
 			if (lang=='eng') return "Show All";
-			if (lang=='ger') return "Alles Einblenden";
+			if (lang=='ger') return "Alles einblenden";
 			break;
 		case 36:
 			if (lang=='eng') return "Hide All";
-			if (lang=='ger') return "Alles Ausblenden";
+			if (lang=='ger') return "Alles ausblenden";
 			break;
 		case 37:
 			if (lang=='eng') return "Reset";
-			if (lang=='ger') return "Zurücksetzen";
+			if (lang=='ger') return "zurücksetzen";
 			break;
 		case 38:
 			if (lang=='eng') return "Expand";
@@ -162,7 +162,7 @@ export function dSettings(s, lang) {
 			break;
 		case 41:
 			if (lang=='eng') return "Clear";
-			if (lang=='ger') return "Löschen";
+			if (lang=='ger') return "löschen";
 			break;
 		case 42:
 			if (lang=='eng') return "None";
@@ -230,7 +230,7 @@ export function dSettings(s, lang) {
 			break;
 		case 58:
 			if (lang=='eng') return "Add Admin";
-			if (lang=='ger') return "Admin Hinzufügen";
+			if (lang=='ger') return "Admin hinzufügen";
 			break;
 		case 59:
 			if (lang=='eng') return "Admins";
@@ -270,7 +270,7 @@ export function dSettings(s, lang) {
 			break;
 		case 68:
 			if (lang=='eng') return "Toggle";
-			if (lang=='ger') return "Umschalten";
+			if (lang=='ger') return "Wechseln";
 			break;
 		case 69:
 			if (lang=='eng') return "Delete";
@@ -362,11 +362,11 @@ export function dSettings(s, lang) {
 			break;
 		case 91:
 			if (lang=='eng') return "Opt In";
-			if (lang=='ger') return "akzeptieren";
+			if (lang=='ger') return "Akzeptieren";
 			break;
 		case 92:
 			if (lang=='eng') return "Opt Out";
-			if (lang=='ger') return "ablehnen";
+			if (lang=='ger') return "Ablehnen";
 			break;
 		case 93:
 			if (lang=='eng') return "Change Email";
@@ -517,12 +517,12 @@ export function dSettings(s, lang) {
 			if (lang=='ger') return "Durchsuchen";
 			break;
 		case 130:
-			if (lang == 'eng') return "English";
-			if (lang == 'ger') return "Englisch";
+			if (lang=='eng') return "English";
+			if (lang=='ger') return "Englisch";
 			break;
 		case 131:
-			if(lang == 'eng') return "German";
-			if(lang == 'ger') return "Deutsche";
+			if (lang=='eng') return "German";
+			if (lang=='ger') return "Deutsche";
 			break;
 		case 132:
 			if (lang=='eng') return "Forgot Password?";
