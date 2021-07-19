@@ -206,23 +206,23 @@ export default class Popup extends React.Component {
                     <p>{x}</p>
                 </div>
                 <div id="rightcolumnFilter">
-                    <button onClick={() => this.flipExpand(filterIndex)} disabled={tagList.length <= TAG_LIMIT} id="viewRow">
+                    <button class="filterTopRows" onClick={() => this.flipExpand(filterIndex)} disabled={tagList.length <= TAG_LIMIT} id="viewRow">
                         {isExpanded ? "Shrink" : "Expand"}
                     </button>
-                    <button onClick={() => this.setAllTags(filterIndex, 1)} id="viewRow">{dSettings(40,this.props.userLang)}</button>
-                    <button onClick={() => this.setAllTags(filterIndex, 0)} id="viewRow">{dSettings(41,this.props.userLang)}</button>
-                    <button onClick={() => this.setAllTags(filterIndex, 2)} id="viewRow">{dSettings(42,this.props.userLang)}</button>
+                    <button class="filterTopRows" onClick={() => this.setAllTags(filterIndex, 1)} id="viewRow">{dSettings(40,this.props.userLang)}</button>
+                    <button class="filterTopRows" onClick={() => this.setAllTags(filterIndex, 0)} id="viewRow">{dSettings(41,this.props.userLang)}</button>
+                    <button class="filterTopRows" onClick={() => this.setAllTags(filterIndex, 2)} id="viewRow">{dSettings(42,this.props.userLang)}</button>
 
-                    <button onClick={() => this.changeInclude(filterIndex, "include")} style={{ color: '#337ab7' }}
+                    <button class="filterTopRows" onClick={() => this.changeInclude(filterIndex, "include")} style={{ color: '#337ab7' }}
                         id="viewRow">
                         {includeState == "OR" ? "OR" : "AND"}
                     </button>
-                    <button onClick={() => this.changeInclude(filterIndex, "exclude")} style={{ color: '#b73333' }}
+                    <button class="filterTopRows" onClick={() => this.changeInclude(filterIndex, "exclude")} style={{ color: '#b73333' }}
                         id="viewRow">
                         {excludeState == "OR" ? "OR" : "AND"}
                     </button>
 
-                    <button onClick={() => this.toggleHide(filterIndex)} id="viewRow">
+                    <button class="filterTopRows" onClick={() => this.toggleHide(filterIndex)} id="viewRow">
                         {isHidden == false ? 'Hide' : 'Show'}
                     </button>
                 </div>
@@ -354,7 +354,7 @@ export default class Popup extends React.Component {
                             placeholder={"Custom Query..."}
                         />
                         <div id="customQueryStatus"></div>
-                        <div id="customQueryRules">
+                        {/* <div id="customQueryRules">
                             
                             <button onClick={this.toggleRules}>Show Rules</button>
                             {
@@ -363,9 +363,9 @@ export default class Popup extends React.Component {
                                     : <></>
                             }
 
-                        </div>
+                        </div> */}
                         <div id="customFilterBottomButtons">
-                            <button onClick={this.toggleCustomSearch}>Regular</button>
+                            <button class="filterTopRows" onClick={this.toggleCustomSearch}>Regular</button>
                             <button className="bottomSaveButtonsFilter" id="customFilterSaveButton" onClick={() => this.parseCustomQueryToSQL(customSearchQuery)}>Save</button>
                             <button className="bottomSaveButtonsFilter" id="customFilterCancelButton" onClick={this.handleCancel}>Cancel</button>
                         </div>
@@ -408,10 +408,10 @@ export default class Popup extends React.Component {
                             </button>
                         </div>
                         <div id="rightcolumnFilter">
-                            <button onClick={this.toggleCustomSearch}>Custom</button>
-                            <button onClick={() => this.setAllView(false)} id="viewRow" >{dSettings(35,this.props.userLang)}</button>
-                            <button onClick={() => this.setAllView(true)} id="viewRow" >{dSettings(36,this.props.userLang)}</button>
-                            <button onClick={() => this.resetFilter()} id="viewRow" >{dSettings(37,this.props.userLang)}</button>
+                            <button class="filterTopRows" onClick={this.toggleCustomSearch}>Custom</button>
+                            <button class="filterTopRows" onClick={() => this.setAllView(false)} id="viewRow" >{dSettings(35,this.props.userLang)}</button>
+                            <button class="filterTopRows" onClick={() => this.setAllView(true)} id="viewRow" >{dSettings(36,this.props.userLang)}</button>
+                            <button class="filterTopRows" onClick={() => this.resetFilter()} id="viewRow" >{dSettings(37,this.props.userLang)}</button>
                         </div>
                     </div>
                     <div id="middleBar">

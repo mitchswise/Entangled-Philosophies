@@ -76,6 +76,10 @@ export default class WordCloud extends React.Component {
         this.setState({ wordLimit: value })
     }
 
+    resetNumber = () => {
+        this.setState({ wordLimit: this.state.words.length });
+    }
+
     getWordLimit = () => {
         if(!this.state.wordLimit) return this.state.words.length;
         return this.state.wordLimit;
@@ -100,6 +104,7 @@ export default class WordCloud extends React.Component {
                     <input type="number" id="quantity" name="quantity" min="0" 
                         max={this.state.words.length} />
                     <button onClick={this.changeNumber}>Update</button>
+                    <button onClick={this.resetNumber}>Reset</button>
                 </div>
             </div>
             </>
