@@ -25,6 +25,11 @@
 
 .filterButtons {
     float: left;
+    position: relative;
+    display: grid;
+    /* width: 5%; */
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 #filterSearchBar {

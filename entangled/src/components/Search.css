@@ -1,5 +1,5 @@
 div.header {
-    padding-top: 100px; 
+    padding-top: 100px;
 }
 
 .box {
@@ -11,39 +11,43 @@ div.header {
     border-color: black;
     position: relative;
     text-align: center;
-    margin:auto;
-    width:44%;
-    height:740px;
-    top:-62px;
+    margin: auto;
+    width: 44%;
+    height: 740px;
+    top: -62px;
 }
 
 .rightBoxPaperInfo {
     position: relative;
     overflow-y: scroll;
-    height:737px;
-    top:-32px;}
+    height: 737px;
+    top: -32px;
+}
 
 #buttonRow {
-    height:34px;
-    width:100%;
-    position:sticky;
+    height: 34px;
+    width: 100%;
+    position: sticky;
     z-index: 1;
-    top:0px;
+    top: 0px;
     background-color: white;
     border-bottom: 1px solid black;
 }
 
 #closePaperButton {
-    height:34px;
+    margin: 0;
+    top: 0px;
+    left: 10%;
+    /* height:34px; */
+    height: 100%;
+    width: 10%;
+    border-top: none;
+    border-left: none;
     position: absolute;
-    left:74px;
-    border-top: none !important;
-    border: 1px solid black;
-    margin:0;
-    border-radius: 0px;
-    border-bottom:none;
-    cursor:pointer;
-
+    border-bottom: 0px solid black;
+    border-right: 1px solid black;
+    border-left: 0px solid black;
+    cursor: pointer;
 }
 
 #closePaperButton:hover {
@@ -51,23 +55,26 @@ div.header {
 }
 
 #editPaperButton {
-    height:34px;
+    margin: 0;
     position: absolute;
-    border-top: none !important;
-    border: 1px solid black;
-    left:-1px;
-    border-radius: 0px;
-    border-bottom:none;
-    cursor: pointer;
+    left: 0px;
+    top: 0px !important;
+    height: 100%;
+    width: 10%;
+    border-left: none;
+    border-top: none;
+    border-bottom: 0px solid black;
+    border-right: 1px solid black;
 }
 
 #editPaperButton:hover {
-    background-color: #ddd;;
+    background-color: #ddd;
+    ;
 }
 
 #leftBox, #rightBox {
-    min-height: 350px; 
-} 
+    min-height: 350px;
+}
 
 #leftBox {
     margin-left: 4%;
@@ -90,33 +97,32 @@ div.header {
 
 #rowOne {
     width: 100%;
-    height:fit-content;
+    height: fit-content;
     position: relative;
-    padding-bottom:5px;
+    padding-bottom: 5px;
 }
 
 #rowOne h3 {
-    padding-top:30px;
+    padding-top: 30px;
     text-align: center;
     text-decoration: underline;
 }
 
 #rowOne p {
-    border-bottom:1px solid black;
-    width:100%;
+    border-bottom: 1px solid black;
+    width: 100%;
 }
 
 #rowTwo h3, #rowThree h3, #rowFour h3 {
-    margin-top:11.82px;
-    margin-bottom:18.720px;
+    margin-top: 11.82px;
+    margin-bottom: 18.720px;
 }
-
 
 #rowTwo {
     width: 100%;
-    height:fit-content;
+    height: fit-content;
     position: relative;
-    padding-bottom:5px;
+    padding-bottom: 5px;
 }
 
 #rowTwo h3 {
@@ -125,15 +131,15 @@ div.header {
 }
 
 #rowTwo p {
-    border-bottom:1px solid black;
-    width:100%;
+    border-bottom: 1px solid black;
+    width: 100%;
 }
 
 #rowThree {
     width: 100%;
-    height:fit-content;
+    height: fit-content;
     position: relative;
-    padding-bottom:5px;
+    padding-bottom: 5px;
 }
 
 #rowThree h3 {
@@ -142,14 +148,13 @@ div.header {
 }
 
 #rowThree p {
-    border-bottom:1px solid black;
-    width:100%;
+    border-bottom: 1px solid black;
+    width: 100%;
 }
-
 
 #rowFour {
     width: 100%;
-    height:fit-content;
+    height: fit-content;
     position: relative;
 }
 
@@ -159,13 +164,13 @@ div.header {
 }
 
 #rowFour p {
-    border-bottom:1px solid black;
-    width:100%;
+    border-bottom: 1px solid black;
+    width: 100%;
 }
 
 #rowFive {
     width: 100%;
-    height:fit-content;
+    height: fit-content;
     position: relative;
 }
 
@@ -176,13 +181,13 @@ div.header {
 
 #rowFive {
     width: 100%;
-    height:fit-content;
+    height: fit-content;
     position: relative;
 }
 
 #rowFive p {
-    border-bottom:1px solid black;
-    width:100%;
+    border-bottom: 1px solid black;
+    width: 100%;
 }
 
 #rowFive button {
@@ -199,8 +204,8 @@ div.header {
 }
 
 #addTagSearchBtnText {
-    vertical-align:middle;
-    bottom:0px;
+    vertical-align: middle;
+    bottom: 0px;
     position: relative;
     color: white;
     text-decoration: bold;
@@ -218,7 +223,7 @@ div.header {
     align-items: center;
     justify-content: center;
     position: relative;
-    height:20px;
+    height: 20px;
 }
 
 #searchTagsInput {
@@ -236,11 +241,10 @@ div.header {
 }
 
 @media screen and (max-width: 1300px) {
-
     #leftBox {
-        margin-left: 15%;        
+        margin-left: 15%;
         float: none;
-        position:relative;
+        position: relative;
         max-height: 40vh;
         text-align: center !important;
         display: block;
@@ -250,31 +254,25 @@ div.header {
         margin-left: 15%;
         float: none;
         display: block;
-        top:-23px;
+        top: -23px;
         position: relative;
-
     }
-    
     .box {
-     
-        position:unset;
+        position: unset;
         text-align: center;
-        margin:auto;
-        width:70%;
-        height:740px;
+        margin: auto;
+        width: 70%;
+        height: 740px;
         display: block;
     }
-
     #saveQuery {
         font-size: 12px;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
     #Filter {
-        font-size:12px;
+        font-size: 12px;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
 }
