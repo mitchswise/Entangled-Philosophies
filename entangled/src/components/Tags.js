@@ -6,7 +6,7 @@ import { getTags, addTag, removeTag, getTagTranslation,
 import Table from "./TagsTable";
 import './Tags.css';
 import { getPermLvl, getGlobalLanguage } from "../api.js";
-import { dSettings } from '../dictionary.js';
+import { dSettings, wordLookup } from '../dictionary.js';
 
 var userLanguage = getGlobalLanguage();
 var userPermLvl = getPermLvl();
@@ -67,7 +67,7 @@ function doAddTag(edit_tag) {
     var translations = {}
     var tag_category = document.getElementById("tagCategoryBox").value;
     if(!tag_category) {
-        document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+        document.getElementById("tagsPageStatus").innerHTML = dSettings(147, userLanguage);
         return;
     }
     translations["category"] = tag_category;
@@ -77,7 +77,7 @@ function doAddTag(edit_tag) {
         userID = cookies.get('UserID');
         var tag_name = document.getElementById("defBox").value;
         if(!tag_name) {
-            document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+            document.getElementById("tagsPageStatus").innerHTML = dSettings(147, userLanguage);
             return;
         }
         translations["def"] = tag_name;
@@ -90,7 +90,7 @@ function doAddTag(edit_tag) {
             var tag_translate = document.getElementById(id).value;
 
             if(!tag_translate) {
-                document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+                document.getElementById("tagsPageStatus").innerHTML = dSettings(147, userLanguage);
                 return; 
             }
 
@@ -102,7 +102,7 @@ function doAddTag(edit_tag) {
     var language = userLanguage;
 
     var data = addTag(userID, language, translations, edit_tag);
-    document.getElementById("tagsPageStatus").innerHTML = data.status;
+    document.getElementById("tagsPageStatus").innerHTML = wordLookup(data.status, userLanguage);
 }
 
 //remove a tag from the database
@@ -112,7 +112,7 @@ function doRemoveTag(rowInfo) {
     var language = rowInfo.owner == 0 ? userLanguage : "def";
 
     var data = removeTag(tagName, language, userID);
-    document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
+    document.getElementById("tagsPageStatus").innerHTML = wordLookup(data.status, userLanguage);
 }
 
 //add/edit a category to the database
@@ -124,7 +124,7 @@ function doAddCat(edit_cat) {
         userID = cookies.get('UserID');
         var cat_name = document.getElementById("defBox").value;
         if(!cat_name) {
-            document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+            document.getElementById("tagsPageStatus").innerHTML = dSettings(147, userLanguage);
             return;
         }
         translations["def"] = cat_name;
@@ -137,7 +137,7 @@ function doAddCat(edit_cat) {
             var tag_translate = document.getElementById(id).value;
 
             if(!tag_translate) {
-                document.getElementById("tagsPageStatus").innerHTML = "Please fill out empty fields.";
+                document.getElementById("tagsPageStatus").innerHTML = dSettings(147, userLanguage);
                 return; 
             }
 
@@ -146,7 +146,7 @@ function doAddCat(edit_cat) {
     }
 
     var data = addCategory(userID, edit_cat, translations);
-    document.getElementById("tagsPageStatus").innerHTML = data.status;
+    document.getElementById("tagsPageStatus").innerHTML = wordLookup(data.status, userLanguage);
 }
 
 //remove a category from the database
@@ -156,7 +156,7 @@ function doRemoveCat(rowInfo) {
     var language = rowInfo.owner == 0 ? userLanguage : "def";
 
     var data = removeCategory(catName, language, userID);
-    document.getElementById("tagsPageStatus").innerHTML = "Status: " + data.status;
+    document.getElementById("tagsPageStatus").innerHTML = wordLookup(data.status, userLanguage);
 }
 
 //conditional render functions for TAG AND CATEGORY button clicks:
@@ -303,7 +303,7 @@ export default class Tags extends React.Component {
         }
         if(userPermLvl < 1) {
             if(rowInformation.owner !== cookies.get('UserID')) {
-                document.getElementById("tagsPageStatus").innerHTML = "Status: You can't edit public items.";
+                document.getElementById("tagsPageStatus").innerHTML = dSettings(168, this.props.userLang);
                 this.setState({ tagAdditionState: 0 });
             }
             else {

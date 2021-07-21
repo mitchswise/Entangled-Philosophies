@@ -41,7 +41,7 @@
     }
     
     if($duplicate_cat == TRUE) {
-        echo '{"status":"duplicate category name."}';
+        echo '{"status":"duplicate category name"}';
         return;
     }
 
@@ -73,7 +73,7 @@
             return;
         }
         
-        $message = '{"status":"Successfully added category"}';
+        $message = '{"status":"Successfully updated category"}';
         echo $message;
     }
     else { //okay editing a category

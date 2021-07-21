@@ -98,13 +98,13 @@ export default class WordCloud extends React.Component {
                 </div>
                 <div id="wordCloudOptions" style={{paddingLeft:"30%", display:"flex"}}>
                     <select id="selectSort" onChange={this.changeSort} >
-                        <option value="Descending">Most frequent</option>
-                        <option value="Ascending">Least frequent</option>
+                        <option value="Descending">{dSettings(199, this.props.userLang)}</option>
+                        <option value="Ascending">{dSettings(200, this.props.userLang)}</option>
                     </select>
                     <input type="number" id="quantity" name="quantity" min="0" 
                         max={this.state.words.length} />
-                    <button onClick={this.changeNumber}>Update</button>
-                    <button onClick={this.resetNumber}>Reset</button>
+                    <button onClick={this.changeNumber}>{dSettings(201, this.props.userLang)}</button>
+                    <button onClick={this.resetNumber}>{dSettings(37, this.props.userLang)}</button>
                 </div>
             </div>
             </>

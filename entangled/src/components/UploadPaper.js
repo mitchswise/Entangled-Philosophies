@@ -159,7 +159,7 @@ export function addSpreadsheetPaper(dict) {
 export const doAddPaper = async e => {
 	var title = document.getElementById("titleName").value;
 	if (title == "") {
-		document.getElementById("uploadStatus").innerHTML = "Paper must include a title";
+		document.getElementById("uploadStatus").innerHTML = dSettings(179, userLanguage);
 		return;
 	}
 	var filename = document.getElementById("filename").innerHTML;
@@ -186,7 +186,7 @@ export const doAddPaper = async e => {
 	var i;
 	for (i = 0; i < tagIDs.length; i++) {
 		data = addTagToPaper(id, tagIDs[i], 0);
-		document.getElementById("uploadStatus").innerHTML = data.status;
+		// document.getElementById("uploadStatus").innerHTML = data.status;
 	}
 
 	//add all metadata as tags
@@ -219,7 +219,6 @@ export const doAddPaper = async e => {
 		}
 
 		if (tag_id == -1 || tag_id == undefined) {
-			console.log("Error getting metadata tag " + value + " key = " + keyVal);
 			continue;
 		}
 
@@ -231,7 +230,7 @@ export const doAddPaper = async e => {
 	}
 	document.getElementById("filename").innerHTML = "";
 
-	document.getElementById("uploadStatus").innerHTML = "Uploaded Paper";
+	document.getElementById("uploadStatus").innerHTML = dSettings(180, userLanguage);
 }
 
 export default class UploadPaper extends React.Component {
@@ -306,7 +305,7 @@ export default class UploadPaper extends React.Component {
 				.then(data => jsonObject = JSON.parse(data))
 				.then(json => {
 					document.getElementById("filename").innerHTML = json.url;
-					document.getElementById("uploadStatus").innerHTML = "Uploaded " + json.url + " with status " + json.status;
+					// document.getElementById("uploadStatus").innerHTML = "Uploaded " + json.url + " with status " + json.status;
 					doAddPaper();
 				});
 		} else if (window.confirm("Are you sure you want to upload the paper without a file?")) {
@@ -413,7 +412,7 @@ export default class UploadPaper extends React.Component {
 				if (manual > -1) pass["Manual Tags"] = paper[manual];
 
 				var result = addSpreadsheetPaper(pass);
-				console.log(JSON.stringify(result));
+				// console.log(JSON.stringify(result));
 				// document.getElementById("uploadStatus").innerHTML = result.error;
 				if (result.error == undefined) {
 					papers_uploaded++;
@@ -538,103 +537,104 @@ export default class UploadPaper extends React.Component {
 							<input type="text"
 								className="PaperBoxes"
 								id="authorBox"
-								placeholder="Optional Author"
+								placeholder={"Optional "+dSettings(107,this.props.userLang)}
 							/>
 							<h2 id="leftContributor">{dSettings(108,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="contributor"
-								placeholder="Optional Contributor"
+								placeholder={"Optional "+dSettings(108,this.props.userLang)}
 							/>
 							<h2 id="leftRelations">{dSettings(109,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="relation"
-								placeholder="Optional Relations"
+								placeholder={"Optional "+dSettings(109,this.props.userLang)}
 							/>
 							<h2 id="leftSubject">{dSettings(110,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="subject"
-								placeholder="Optional Subject"
+								placeholder={"Optional "+dSettings(110,this.props.userLang)}
 							/>
 							<h2 id="leftDate">{dSettings(111,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="date"
-								placeholder="Optional Date"
+								placeholder={"Optional "+dSettings(111,this.props.userLang)}
 							/>
 							<h2 id="leftDescription">{dSettings(112,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="description"
-								placeholder="Optional Description"
+								placeholder={"Optional "+dSettings(112,this.props.userLang)}
 							/>
 							<h2 id="leftType">{dSettings(113,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="type"
-								placeholder="Optional Type"
+								placeholder={"Optional "+dSettings(113,this.props.userLang)}
 							/>
 							<h2 id="leftFormat">{dSettings(114,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="format"
-								placeholder="Optional Format"
+								placeholder={"Optional "+dSettings(114,this.props.userLang)}
 							/>
 							<h2 id="leftLanguage">{dSettings(115,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="languageBox"
-								placeholder="Optional Language"
+								placeholder={"Optional "+dSettings(115,this.props.userLang)}
 							/>
 							<h2 id="leftSource">{dSettings(116,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="sourceBox"
-								placeholder="Optional Source"
+								placeholder={"Optional "+dSettings(116,this.props.userLang)}
 							/>
 							<h2 id="leftPublisher">{dSettings(117,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="publisher"
-								placeholder="Optional Publisher"
+								placeholder={"Optional "+dSettings(117,this.props.userLang)}
 							/>
 							<h2 id="leftRights">{dSettings(118,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="rights"
-								placeholder="Optional Rights"
+								placeholder={"Optional "+dSettings(118,this.props.userLang)}
 							/>
 							<h2 id="leftCoverage">{dSettings(119,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="coverage"
-								placeholder="Optional Coverage"
+								placeholder={"Optional "+dSettings(119,this.props.userLang)}
 							/>
 							<h2 id="leftISBN">{dSettings(120,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="isbn"
-								placeholder="Optional ISBN"
+								placeholder={"Optional "+dSettings(120,this.props.userLang)}
 							/>
 							<h2 id="leftURL">{dSettings(122,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="urlBox"
-								placeholder="Optional URL"
+								placeholder={"Optional "+dSettings(122,this.props.userLang)}
 							/>
 							<h2 id="leftLocation">{dSettings(121,this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="location"
-								placeholder="Optional Location"
+								placeholder={"Optional "+dSettings(121,this.props.userLang)}
 							/>
 
 						</div>
 						<hr id="paper_line"></hr>
 
 						{this.state.isIndividualMode ? (
+							<>
 							<div id="OtherFields">
 								<h2 id="leftTags">{dSettings(123,this.props.userLang)}</h2>
 								<input type="text" className="PaperBoxes" id="tags" disabled /><br />
@@ -663,16 +663,17 @@ export default class UploadPaper extends React.Component {
 										<button type="button" id="clearUploadButton" onClick={this.removeUpload}>{dSettings(127,this.props.userLang)}</button>
 									</div>
 									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">{dSettings(128,this.props.userLang)}</div></button>
-									<div id="uploadStatus"></div>
 									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">{dSettings(128,this.props.userLang)} CSV</div></button>
 								</div>
 							</div>
+							<div id="uploadStatus"></div>
+							</>
 						) : (
 							<div id="OtherFields">
 								<div id="fileUploadDiv">
 									<Button id="viewParsedPapersButton" variant="outlined" color="primary" disabled={!this.state.isCSVPicked}
 										onClick={this.toggleParsedBox}>
-										View papers parsed
+										{dSettings(175, this.props.userLang)}
 									</Button>
 									<CSVReader
 										onDrop={this.handleOnDrop}
@@ -681,16 +682,16 @@ export default class UploadPaper extends React.Component {
 										removeButtonColor='#659cef'
 										onRemoveFile={this.handleOnRemoveFile}
 									>
-										<span>Drop CSV file here or click to upload.</span>
+										<span>{dSettings(174, this.props.userLang)}</span>
 									</CSVReader>
 								</div>
 								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleBatchSubmission}><div id="uploadBtnTxt">{dSettings(128,this.props.userLang)}</div></button>
 								<div id="uploadStatus"></div>
-								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">Upload Individual File</div></button>
-								<div id="uploadPaperCounter">Uploading {this.state.currentCounter}/{
+								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">{dSettings(183, this.props.userLang)}</div></button>
+								<div id="uploadPaperCounter">{dSettings(173, this.props.userLang)} {this.state.currentCounter}/{
 									this.state.isCSVPicked ? this.state.selectedCSV.length-2 : 0}</div>
 								<Dialog open={this.state.openParseBox} onClose={this.toggleParsedBox}>
-									<DialogTitle>{"Papers Parsed"}</DialogTitle>
+									<DialogTitle>{dSettings(175, this.props.userLang)}</DialogTitle>
 									<DialogContent>
 										{this.viewCSVData()}
 									</DialogContent>

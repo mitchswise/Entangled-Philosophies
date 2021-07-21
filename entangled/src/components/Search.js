@@ -15,7 +15,7 @@ import WordCloud from './WordCloud.js';
 import BarChart from './BarChart.js';
 import './Search.css';
 import { getPermLvl, getGlobalLanguage } from '../api.js';
-import { dSettings } from '../dictionary.js';
+import { dSettings, wordLookup } from '../dictionary.js';
 
 var userLanguage = getGlobalLanguage();
 var userPermLvl = getPermLvl();
@@ -209,7 +209,7 @@ export default class Search extends React.Component {
 
                 var userID = -1;
                 if (cookies.get('UserID')) userID = cookies.get('UserID');
-                var result = parseCustomQuery(customSearchSQL, userID);
+                var result = parseCustomQuery(customSearchSQL, userID, this.props.userLang);
                 return sqlSearch(userID, result.query);
             }
         }
@@ -317,7 +317,7 @@ export default class Search extends React.Component {
         }
         else {
             //custom search!
-            var result = parseCustomQuery(customSearchSQL, userID);
+            var result = parseCustomQuery(customSearchSQL, userID, this.props.userLang);
             this.closePopup();
             var newPaperData = sqlSearch(userID, result.query);
             this.setState({ paperData: newPaperData });
@@ -407,7 +407,7 @@ export default class Search extends React.Component {
 
                 <div id="rowOne">
 
-                    <h3>General Information</h3>
+                    <h3>{dSettings(136, this.props.userLang)}</h3>
 
                     <p><b>{dSettings(106,this.props.userLang)}:</b> {paperInformation.title}</p>
 
@@ -417,7 +417,7 @@ export default class Search extends React.Component {
 
                 <div id="rowTwo">
 
-                    <h3>Description Information</h3>
+                    <h3>{dSettings(137, this.props.userLang)}</h3>
 
                     <p ><b>{dSettings(110,this.props.userLang)}:</b> {paperInformation.subject}</p>
 
@@ -431,7 +431,7 @@ export default class Search extends React.Component {
 
                 <div id="rowThree">
 
-                    <h3>Identifying Information</h3>
+                    <h3>{dSettings(138, this.props.userLang)}</h3>
 
                     <p><b>{dSettings(71,this.props.userLang)}:</b> {paperInformation.date}</p>
 
@@ -451,7 +451,7 @@ export default class Search extends React.Component {
                         ""
                     }</p>
 
-                    <p ><b>File Link:</b> {
+                    <p ><b>{dSettings(142, this.props.userLang)}:</b> {
                         paperInformation.url !== "none" ?
                             <a id="currentFile" href={fileURLBase + paperInformation.url}
                                 target="_blank" >{paperInformation.url}</a>
@@ -463,7 +463,7 @@ export default class Search extends React.Component {
 
                 <div id="rowFour">
 
-                    <h3>Legal Information</h3>
+                    <h3>{dSettings(139, this.props.userLang)}</h3>
 
                     <p ><b>{dSettings(116,this.props.userLang)}:</b> {paperInformation.source}</p>
 
@@ -482,8 +482,8 @@ export default class Search extends React.Component {
                     {
                         userID != 0 ?
                             <>
-                                <p ><b>Public:</b> {publicTags.map(item => item.text).join(", ")}</p>
-                                <p ><b>Private:</b> {privateTags.map(item => item.text).join(", ")}</p>
+                                <p ><b>{dSettings(140, this.props.userLang)}:</b> {publicTags.map(item => item.text).join(", ")}</p>
+                                <p ><b>{dSettings(141, this.props.userLang)}:</b> {privateTags.map(item => item.text).join(", ")}</p>
                                 <div id="searchTagsInput" >
                                     <button onClick={() => this.updatePrivateTagList(privateTags, true)} id="addTagSearchBtnText">+</button>
                                     <button onClick={() => this.updatePrivateTagList(privateTags, false)} id="addTagSearchBtnText">-</button>
@@ -491,7 +491,7 @@ export default class Search extends React.Component {
                                 </div>
                             </>
                         :
-                        <p ><b>Public:</b> {publicTags.map(item => item.text).join(", ")}</p>
+                        <p ><b>{dSettings(140, this.props.userLang)}:</b> {publicTags.map(item => item.text).join(", ")}</p>
                     }
 
                 </div>
@@ -516,7 +516,7 @@ export default class Search extends React.Component {
         var columns = [];
         for (const idx in metadata_ids) {
             if (checkedOptions[metadata_ids[idx]] == true) {
-                columns.push({ Header: metadata_categories[idx], accessor: metadata_ids[idx] });
+                columns.push({ Header: wordLookup(metadata_categories[idx], this.props.userLang), accessor: metadata_ids[idx] });
             }
         }
         return columns;

@@ -2,6 +2,7 @@
 
 import { cookies, tagExistsBatch } from "../api.js";
 import { getGlobalLanguage } from "../api.js";
+import { dSettings } from "../dictionary.js";
 
 export function isDigit(val) {
     return /^\d+$/.test(val);
@@ -115,7 +116,7 @@ class ParseNode {
 
 var parseIndex = 0;
 
-export function parseSubsegment(equation, userID) {
+export function parseSubsegment(equation, userID, userLang) {
     // console.log("Running...");
     var node = new ParseNode();
     var expectingClose = false;
@@ -139,7 +140,7 @@ export function parseSubsegment(equation, userID) {
                 parseIndex++;
                 expectingClose = true;
 
-                var child = parseSubsegment(equation, userID);
+                var child = parseSubsegment(equation, userID, userLang);
                 if (node.nodeChildrenNotModifier.length == node.nodeChildren.length) {
                     node.nodeChildrenNotModifier.push(false);
                 }
@@ -154,7 +155,7 @@ export function parseSubsegment(equation, userID) {
                 break;
             case ')':
                 if (expecting == 0) {
-                    node.errorMessage = "Expected EQUATION and got END OF EQUATION at index = " + parseIndex;
+                    node.errorMessage = dSettings(151, userLang) + " : " + parseIndex;
                     return node;
                 }
 
@@ -172,7 +173,7 @@ export function parseSubsegment(equation, userID) {
             case 'A':
                 //AND operator
                 if (expecting == 0) {
-                    node.errorMessage = "Expected EQUATION and got OPERATOR 'AND' at index = " + parseIndex;
+                    node.errorMessage = dSettings(151, userLang) + " : " + parseIndex;
                     return node;
                 }
 
@@ -183,7 +184,7 @@ export function parseSubsegment(equation, userID) {
             case 'O':
                 //OR operator
                 if (expecting == 0) {
-                    node.errorMessage = "Expected EQUATION and got OPERATOR 'OR' at index = " + parseIndex;
+                    node.errorMessage = dSettings(151, userLang) + " : " + parseIndex;
                     return node;
                 }
 
@@ -194,7 +195,7 @@ export function parseSubsegment(equation, userID) {
             case 'N':
                 //NOT modifier
                 if (expecting == 1) {
-                    node.errorMessage = "Expected OPERATOR and got 'NOT' modifier at index = " + parseIndex;
+                    node.errorMessage = dSettings(152, userLang) + " : " + parseIndex;
                     return node;
                 }
 
@@ -205,11 +206,11 @@ export function parseSubsegment(equation, userID) {
             default:
                 //should be strictly digits, get tag
                 if (expecting == 1) {
-                    node.errorMessage = "Expected OPERATOR and got Tag at index = " + parseIndex;
+                    node.errorMessage = dSettings(152, userLang) + " : " + parseIndex;
                     return node;
                 }
                 if (!isDigit(equation[parseIndex])) {
-                    node.errorMessage = "Expected Tag and got " + equation[parseIndex];
+                    node.errorMessage = dSettings(151, userLang) + " : " + parseIndex;
                     return node;
                 }
                 var now = parseIndex;
@@ -235,7 +236,7 @@ export function parseSubsegment(equation, userID) {
     }
 
     if (!node.isResolved) {
-        node.errorMessage = "Reached end of equation";
+        node.errorMessage = dSettings(147, userLang);
         return node;
     }
     else {
@@ -276,7 +277,7 @@ export function parseSubsegment(equation, userID) {
     return node;
 }
 
-export function parseCustomQuery(equation, userID) {
+export function parseCustomQuery(equation, userID, userLang) {
     parseIndex = 0;
     var result = {errorMessage:undefined, query:undefined, 
         display_query: undefined, original_input: equation};
@@ -299,7 +300,7 @@ export function parseCustomQuery(equation, userID) {
                 j++;
             }
             if (j == equation.length || i + 1 == j) {
-                result.errorMessage = "Bad expression at index = " + i;
+                result.errorMessage = dSettings(148, userLang) + " " + i;
                 return result;
             }
             newExpression += equation[j];
@@ -325,7 +326,7 @@ export function parseCustomQuery(equation, userID) {
             tagIndex++;
             if(i + 1 < equation.length) {
                 if(equation[i+1] == '(' || equation[i+1] == '`' || equation[i+1] == 'N') {
-                    result.errorMessage = "Bad expression expected operator at index = " + i;
+                    result.errorMessage = dSettings(148, userLang) + " " + i;
                     return result;
                 }
             }
@@ -339,11 +340,11 @@ export function parseCustomQuery(equation, userID) {
                 break;
             case ')':
                 if (bracketList.length == 0 || bracketList[bracketList.length - 1] != '(') {
-                    result.errorMessage = "Bad expression detected on closing ')' at index = " + i;
+                    result.errorMessage = dSettings(148, userLang) + " " + i;
                     return result;
                 }
                 if(i > 0 && equation[i-1] == '(') {
-                    result.errorMessage = "Empty pair of () at index = " + i;
+                    result.errorMessage = dSettings(148, userLang) + " " + i;
                     return result;
                 }
                 bracketList.pop();
@@ -352,7 +353,7 @@ export function parseCustomQuery(equation, userID) {
             case 'A':
                 if (lastSeen !== 0 || i + 4 > equation.length || (equation.substring(i, i + 4) !== "AND("
                     && equation.substring(i, i + 4) !== "AND`" && equation.substring(i,i+4) !== "ANDN" )) {
-                    result.errorMessage = "Failed parse on AND " + i;
+                    result.errorMessage = dSettings(150, userLang) + " AND " + i;
                     return result;
                 }
                 i += 2;
@@ -361,7 +362,7 @@ export function parseCustomQuery(equation, userID) {
             case 'O':
                 if (lastSeen !== 0 || i + 3 > equation.length || (equation.substring(i, i + 3) !== "OR("
                     && equation.substring(i, i + 3) !== "OR`" && equation.substring(i,i+3) !== "ORN")) {
-                    result.errorMessage = "Failed parse on OR " + i;
+                    result.errorMessage = dSettings(150, userLang) + " OR " + i;
                     return result;
                 }
                 i++;
@@ -370,26 +371,26 @@ export function parseCustomQuery(equation, userID) {
             case 'N':
                 if (i + 4 > equation.length || (equation.substring(i, i + 4) !== "NOT("
                     && equation.substring(i, i + 4) !== "NOT`")) {
-                    result.errorMessage = "Failed parse on NOT " + i;
+                    result.errorMessage = dSettings(150, userLang) + " NOT " + i;
                     return result;
                 }
                 i += 2;
                 lastSeen = 5;
                 break;
             default:
-                result.errorMessage = "Bad expression " + i + " " + equation[i];
+                result.errorMessage = dSettings(148, userLang) + " " + i + " " + equation[i];
                 return result;
         }
     }
     if (bracketList.length > 0) {
-        result.errorMessage = "Bad expression detected on unmatched '(' at end of string";
+        result.errorMessage = dSettings(148, userLang);// "Bad expression detected on unmatched '(' at end of string";
         return result;
     }
 
     //VERIFY THAT THESE TAGS tagsList EXIST!
 
     if(tagsList.length === 0) {
-        result.errorMessage = "No tags found in the expression";
+        result.errorMessage = dSettings(147, userLang);// "No tags found in the expression";
         return result;
     }
 
@@ -409,7 +410,7 @@ export function parseCustomQuery(equation, userID) {
         }
     }
     if(badTags.length > 0) {
-        result.errorMessage = "The tags [" + badTags.join(", ") + "] do not exist.";
+        result.errorMessage = dSettings(149, userLang) + ": " + badTags.join(", ");
         return result;
     }
 
@@ -456,7 +457,7 @@ export function parseCustomQuery(equation, userID) {
     equation = newExpression;
     // console.log("Converted: " + equation);
 
-    var x = parseSubsegment(equation, userID);
+    var x = parseSubsegment(equation, userID, userLang);
     result.errorMessage = x.errorMessage;
 
     x.finalSQL = x.finalSQL.replace("SELECT", "SELECT DISTINCT");

@@ -1,5 +1,12 @@
 import React from 'react';
-import Chart from 'react-google-charts';
+import Paper from '@material-ui/core/Paper';
+import {
+    ArgumentAxis,
+    ValueAxis,
+    Chart,
+    BarSeries,
+    Title,
+} from '@devexpress/dx-react-chart-material-ui';
 import { dSettings } from '../dictionary.js';
 
 export default class BarChart extends React.Component {
@@ -20,17 +27,17 @@ export default class BarChart extends React.Component {
 
         var capitalized = this.capitalizeString(field_type);
 
-        var results = [ [capitalized, ''] ];
-        for (const key in data) {
-            results.push([key, data[key]]);
+        var result = []
+        for(const key in data) {
+            result.push({ argument:key, value:data[key] });
         }
 
-        return results;
+        return result;
     }
 
     state = {
-        field_type: 'date',
-        barChartData: this.collectBarChartData('date')
+        field_type: 'language',
+        barChartData: this.collectBarChartData('language')
     }
 
     changeData = () => {
@@ -46,32 +53,28 @@ export default class BarChart extends React.Component {
 
         return (
             <>
-            <div id="barChartWrapper" style={{width: '90%', height:'90%', paddingLeft: "10%", paddingTop: "5%"}} >
-                <Chart 
-                    width={'100%'}
-                    height={'100%'}
-                    chartType="Bar"
-                    loader={<div>Loading Chart</div>}
-                    data={this.state.barChartData}
-                    options={{
-                        title: '',
-                        chartArea: { width: '50%' },
-                        hAxis: {
-                            title: '',
-                            minValue: 0,
-                        },
-                        vAxis: {
-                            title: barChartTitle,
-                            format: '#'
-                        },
-                        }}
-                />
-                <select id="selectBarChart" onChange={this.changeData} >
-                    <option value="date">{dSettings(71,this.props.userLang)}</option>
-                    <option value="language">{dSettings(115,this.props.userLang)}</option>
-                    <option value="location">{dSettings(121,this.props.userLang)}</option>
-                </select>
-            </div>
+                <div id="barChartWrapper" style={{ width: '100%', height: '100%', paddingTop: "5%" }} >
+                    <Paper>
+                        <Chart
+                            data={this.state.barChartData}
+                        >
+                            <ArgumentAxis />
+                            <ValueAxis  />
+
+                            <BarSeries valueField="value" argumentField="argument">
+                                {/* <Label>
+
+                                </Label> */}
+                            </BarSeries>
+                            <Title text={barChartTitle} />
+                        </Chart>
+                    </Paper>
+                    <select id="selectBarChart" onChange={this.changeData} >
+                        <option value="language">{dSettings(115, this.props.userLang)}</option>
+                        <option value="date">{dSettings(71, this.props.userLang)}</option>
+                        <option value="location">{dSettings(121, this.props.userLang)}</option>
+                    </select>
+                </div>
             </>
         );
     }

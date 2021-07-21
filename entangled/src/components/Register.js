@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { addUser, sendActivation, cookies } from '../api.js';
 import { getGlobalLanguage } from "../api.js";
-import { dSettings } from '../dictionary.js';
+import { dSettings, wordLookup } from '../dictionary.js';
 import './Register.css';
 
 var userLanguage = getGlobalLanguage();
@@ -12,9 +12,9 @@ function validateEmail(mail) {
     return regexPattern.test(mail);
 }
 
-function doAddUser(preferredLanguage) {
+function doAddUser(preferredLanguage, userLang) {
     if(!preferredLanguage) {
-        document.getElementById("registerUserStatus").innerHTML = ("Please set your preferred language.");    
+        document.getElementById("registerUserStatus").innerHTML = dSettings(157, userLang);
         return;
     }
     document.getElementById("registerUserStatus").innerHTML = ("");
@@ -30,61 +30,61 @@ function doAddUser(preferredLanguage) {
 	var passSpecial = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
 
     if (!username) {
-        document.getElementById("registerUserStatus").innerHTML = ("Enter a username.");
+        document.getElementById("registerUserStatus").innerHTML = dSettings(154, userLang);
         return;
     }
     if (!firstPass) {
-        document.getElementById("registerUserStatus").innerHTML = ("Enter a password.");
+        document.getElementById("registerUserStatus").innerHTML = dSettings(153, userLang);
         return;
     }
     if (!secondPass) {
-        document.getElementById("registerUserStatus").innerHTML = ("Confirm your password.");
+        document.getElementById("registerUserStatus").innerHTML = dSettings(76, userLang);
         return;
     }
 
     if (firstPass != secondPass) {
-        document.getElementById("registerUserStatus").innerHTML = ("Passwords do not match");
+        document.getElementById("registerUserStatus").innerHTML = dSettings(99, userLang);
         return;
     }
 
 	if (firstPass.length < 8) {
-		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 8 characters.");
+		document.getElementById("registerUserStatus").innerHTML = dSettings(100, userLang);
 		return;
 	}
 
 	if (!passLetter.test(firstPass) || !passUpper.test(firstPass)) {
-		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 1 lowercase and uppercase letter.");
+		document.getElementById("registerUserStatus").innerHTML = dSettings(101, userLang);
 		return;
 	}
 
 	if (!passNum.test(firstPass)) {	
-		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 1 number.");
+		document.getElementById("registerUserStatus").innerHTML = dSettings(102, userLang);
 		return;
 	}
 
 	if (!passSpecial.test(firstPass)) {
-		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 1 special character.");
+		document.getElementById("registerUserStatus").innerHTML = dSettings(103, userLang);
 		return;
 	}
 
 	if (firstPass.includes(" ")) {
-		document.getElementById("registerUserStatus").innerHTML = ("Password must not contain spaces.");
+		document.getElementById("registerUserStatus").innerHTML = dSettings(104, userLang);
 	}
 
     if (!validateEmail(email)) {
-        document.getElementById("registerUserStatus").innerHTML = ("Invalid email");
+        document.getElementById("registerUserStatus").innerHTML = dSettings(158, userLang);
         return;
     }
 
     var response = addUser(username, email, firstPass, language);
     if (response.status != "success") {
-        document.getElementById("registerUserStatus").innerHTML = ("Error: " + response.status);
+        document.getElementById("registerUserStatus").innerHTML = (dSettings(147, userLang) + ": " + wordLookup(response.status, userLang));
         return;
     }
 
     sendActivation(username);
 
-    document.getElementById("registerUserStatus").innerHTML = ("Account created! Check your email for verification before logging in.");
+    document.getElementById("registerUserStatus").innerHTML = dSettings(159, userLang);
     document.getElementById("password").value = "";
     document.getElementById("password2").value = "";
     document.getElementById("username").value = "";
@@ -145,7 +145,7 @@ export default class Register extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <button type="button" className="inputBoxes" id="login" onClick={() => doAddUser(this.state.preferredLanguage)}>
+                        <button type="button" className="inputBoxes" id="login" onClick={() => doAddUser(this.state.preferredLanguage, this.props.userLang)}>
                             <div id="loginBtnTxt">{dSettings(78, userLang)}</div>
                         </button>
 
