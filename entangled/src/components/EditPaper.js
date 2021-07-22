@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import './EditPaper.css';
-import { dSettings } from '../dictionary.js';
+import { dSettings, wordLookup } from '../dictionary.js';
 import trashCan from '../images/trash.png';
 
 import {
@@ -51,7 +51,7 @@ function doRemoveFile(id, url) {
 const doAddPaper = async (paperInformation, currentTags, curMetadataText) => {
     var title = document.getElementById("titleName").value;
     if (title == "") {
-        document.getElementById("paperStatus").innerHTML = "Paper must include a title";
+        document.getElementById("paperStatus").innerHTML =  dSettings(179, this.props.userLang);
         return;
     }
     var filename = document.getElementById("filename").innerHTML;
@@ -140,7 +140,6 @@ const doAddPaper = async (paperInformation, currentTags, curMetadataText) => {
             }
 
             if (tag_id == -1 || tag_id == undefined) {
-                console.log("Error getting metadata tag " + value + " key = " + keyVal);
                 continue;
             }
 
@@ -168,7 +167,7 @@ export default class EditPaper extends React.Component {
 
     changeHandler = (event) => {
         if (event.target.files[0].type != "application/pdf") {
-            document.getElementById("uploadStatus").innerHTML = "Only PDFs can be uploaded.";
+            document.getElementById("uploadStatus").innerHTML =  dSettings(181, this.props.userLang);
         } else {
             this.setState({ selectedFile: event.target.files[0] });
             this.setState({ isFilePicked: true });
@@ -201,7 +200,7 @@ export default class EditPaper extends React.Component {
                     doAddPaper(this.state.paperInformation, this.state.currentTags, this.state.curMetadataText);
                     this.props.closeEdit(false, true);
                 });
-        } else if (window.confirm("Are you sure you want to upload the paper without a file?")) {
+        } else if (window.confirm(dSettings(178, this.props.userLang))) {
             doAddPaper(this.state.paperInformation, this.state.currentTags, this.state.curMetadataText);
             this.props.closeEdit(false, true);
         }
@@ -261,7 +260,7 @@ export default class EditPaper extends React.Component {
                 document.getElementById("paperStatus").innerHTML = "";
             }
             else {
-                document.getElementById("paperStatus").innerHTML = "Tag Not Found";
+                document.getElementById("paperStatus").innerHTML = dSettings(182, this.props.userLang);
             }
 
             document.getElementById("tagsearch").value = '';
@@ -302,9 +301,9 @@ export default class EditPaper extends React.Component {
         }
 
         for (let index in field_ids) {
-            var curHeader = metadata_categories[index];
+            var curHeader = wordLookup(metadata_categories[index], this.props.userLang);
             var header = <h2 id={header_ids[index]}>{curHeader}</h2>
-            var placeholderValue = "Optional " + metadata_categories[index];
+            var placeholderValue = dSettings(176, this.props.userLang) + " " + curHeader;
             var input = <input
                 className="editPaperBoxes"
                 id={field_ids[index]}
@@ -369,23 +368,24 @@ export default class EditPaper extends React.Component {
                                     <div>
                                         <br />
                                         <a id="currentFile" href={fileURLBase + this.state.paperInformation.url}
-                                            target="_blank" >Current File: {this.state.paperInformation.url}</a>
+                                            target="_blank" >{dSettings(197, this.props.userLang)}: {this.state.paperInformation.url}</a>
                                         <br /><button type="button" id="removeCurrentFile" onClick={this.remFile}>Remove Current File</button>
                                     </div>
                                     : <div>
                                         <br />
-                                        <a id="currentFile" >Current File: None</a>
+                                        <a id="currentFile" >{dSettings(197, this.props.userLang)}: {dSettings(42, this.props.userLang)}</a>
                                     </div>
                             }
 
                         </div>
                     </div>
                     <div id="bottomRowButtons">
-                        <button type="button" className="editSaveButtons" id="editSaveButton" onClick={this.handleSubmission}>Save</button>
+                        <button type="button" className="editSaveButtons" id="editSaveButton" onClick={this.handleSubmission}>{dSettings(27, this.props.userLang)}</button>
                         <button type="button" className="editSaveButtons" id="editCancelButton"
-                            onClick={() => this.props.closeEdit(false, false)}>Cancel</button>
+                            onClick={() => this.props.closeEdit(false, false)}>{dSettings(44, this.props.userLang)}</button>
                         <img src={trashCan} id="deletePaperButton" onClick={() => {
-                            if (window.confirm("Are you sure you want to delete this paper? This action is irreversible!")) {
+                            var phrase = dSettings(198, this.props.userLang)
+                            if (window.confirm(phrase)) {
                                 removePaper(this.state.paperInformation.id);
                                 this.props.closeEdit(true, false);
                             }

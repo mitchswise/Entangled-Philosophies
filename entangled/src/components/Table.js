@@ -68,7 +68,7 @@ export default function Table({ columns, data, loadFilter, saveQuery, loadPaper,
 
 
 
-                <button id="rightButtons" onClick={loadOptions}>Options</button>
+                <button id="rightButtons" onClick={loadOptions}>{dSettings(135, userLang)}</button>
 
             </div>
 

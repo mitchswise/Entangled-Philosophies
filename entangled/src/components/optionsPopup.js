@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import './optionsPopup.css';
 import { metadata_categories, metadata_ids } from "./UploadPaper";
-import { dSettings } from '../dictionary.js';
+import { dSettings, wordLookup } from '../dictionary.js';
 
 export default class OptionsPopup extends React.Component {
 
@@ -19,8 +19,8 @@ export default class OptionsPopup extends React.Component {
         const { currentOptions } = this.state;
         var result = [];
         for(const idx in metadata_categories) {
-            var name = metadata_categories[idx];
-            var id = "options_"+name;
+            var name = wordLookup(metadata_categories[idx], this.props.userLang);
+            var id = "options_"+metadata_categories[idx];
             result.push(
                 <>
                 <label class="label" >

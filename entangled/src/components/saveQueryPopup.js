@@ -13,11 +13,11 @@ export default class QueryPopup extends React.Component {
                 <div className="queryBox">
                     <div id="saveWrapper">
                         <div id="topSaveBar">
-                            <input id="querySearchBar" placeholder="Query name"
+                            <input id="querySearchBar" placeholder={dSettings(164, this.props.userLang)}
                                 onChange= {(e) => { this.setState({queryName:e.target.value}) }} />
                         </div>
                         <div>
-                            <p>Saving a {this.props.queryType === 0 ? "Regular" : "Custom"} Query</p>
+                            <p>{this.props.queryType === 0 ? dSettings(162, this.props.userLang) : dSettings(163, this.props.userLang)}</p>
                         </div>
                         <div id="bottomSaveBar">
                             <button className="bottomSaveButtons" id="querySaveButton" 

@@ -7,26 +7,26 @@ import { dSettings } from '../dictionary';
 
 var userLanguage = getGlobalLanguage();
 
-function doLogin() {
+function doLogin(userLang) {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
 
     if (!username) {
-        document.getElementById("loginUserStatus").innerHTML = "Enter a username.";
+        document.getElementById("loginUserStatus").innerHTML = dSettings(154, userLang);
         return;
     }
     if (!password) {
-        document.getElementById("loginUserStatus").innerHTML = "Enter a password.";
+        document.getElementById("loginUserStatus").innerHTML = dSettings(153, userLang);
         return;
     }
 
     var data = login(username, password);
     if (data.error_code == 1) {
-        document.getElementById("loginUserStatus").innerHTML = "Username and password combination does not exist.";
+        document.getElementById("loginUserStatus").innerHTML = dSettings(156, userLang);
         return;
     }
     else if (data.error_code == 2) {
-        document.getElementById("loginUserStatus").innerHTML = "Account not verified. Please check your email.";
+        document.getElementById("loginUserStatus").innerHTML = dSettings(155, userLang);
         return;
     }
 
@@ -76,7 +76,7 @@ export default class Login extends React.Component {
                     <input type="text" className="inputBoxes" id="username" /><br />
                     <h2 id="leftPassword">{dSettings(62, userLang)}</h2>
                     <input type="password" className="inputBoxes" id="password" /><br />
-                    <button type="button" className="inputBoxes" id="login" onClick={doLogin}><div id="loginBtnTxt">{dSettings(65, userLang)}</div></button>
+                    <button type="button" className="inputBoxes" id="login" onClick={() => doLogin(this.props.userLang)}><div id="loginBtnTxt">{dSettings(65, userLang)}</div></button>
 
 
                     <hr id="hr"></hr>

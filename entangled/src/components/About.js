@@ -17,7 +17,6 @@ export default class About extends React.Component {
                 cookies.remove('PrefLang', { path:"/" });
             }
         }
-        console.log("Cookie consent? " + cookies.get('CookieConsent'));
     }
 
     render() {
@@ -29,7 +28,7 @@ export default class About extends React.Component {
             </div>
             <body>
                 <div id="CreditsText">
-                    <h2>Developers:</h2>
+                    <h2>{dSettings(133,this.props.userLang)}:</h2>
                     <ul>
                         <li>Mitchell Wise</li>
                         <li>Zachary Sutrich</li>
@@ -37,14 +36,14 @@ export default class About extends React.Component {
                         <li>Isabelle D’Oleo</li>
                         <li>Ahmad Barhamje</li>
                     </ul>
-                    <h2>Translator:</h2><p>Daria Sinyagovskaya</p>
+                    <h2>{dSettings(134,this.props.userLang)}:</h2><p>Daria Sinyagovskaya</p>
                 {
                     !cookies.get('UserID') ? 
                     <>
                     <div id="cookiesConsent" >
-                            <h2>Cookies:</h2>
-                            <button id="optIn" onClick={() => this.updateCookiePerms(false)}>Opt in</button>
-                            <button id="optOut" onClick={() => this.updateCookiePerms(true)}>Opt out</button>
+                            <h2>{dSettings(88,this.props.userLang)}:</h2>
+                            <button id="optIn" onClick={() => this.updateCookiePerms(false)}>{dSettings(91,this.props.userLang)}</button>
+                            <button id="optOut" onClick={() => this.updateCookiePerms(true)}>{dSettings(92,this.props.userLang)}</button>
                             <div id="cookiesOptStatus"></div>
                     </div>
                     </>

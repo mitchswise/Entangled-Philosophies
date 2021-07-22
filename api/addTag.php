@@ -43,7 +43,7 @@
     }
 
     if($category_id == -1) {
-        $message = '{"status":"category does not exist."}';
+        $message = '{"status":"category does not exist"}';
         echo $message;
         return;
     }
@@ -84,7 +84,7 @@
     }
 
     if($duplicate_tag == TRUE) {
-        echo '{"status":"duplicate tag name."}';
+        echo '{"status":"duplicate tag name"}';
         return;
     }
 
@@ -117,7 +117,7 @@
             return;
         }
         
-        $message = '{"status":"Successfully added tag"}';
+        $message = '{"status":"Successfully updated tag"}';
         echo $message;
     }
     else { //okay editing a tag

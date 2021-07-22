@@ -18,8 +18,8 @@
 	$result = $conn->query($sql);
 
 	if ($conn->affected_rows > 0) {
-		echo '{"status":"Password has been updated.", "error":0}';
+		echo '{"status":"Success", "error":0}';
 	} else {
-		echo '{"status":"Error changing password.", "error":1}';
+		echo '{"status":"Error", "error":1}';
 	}
 ?>

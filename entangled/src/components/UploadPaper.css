@@ -67,6 +67,7 @@
     border-bottom-style: solid;
     border-left-style: solid;
     border-width: 1px;
+    /* position: relative; */
 }
 
 #fileUploadDiv {
@@ -331,7 +332,7 @@
 
 #uploadStatus{
 	position: relative;
-	top: -475px;
+	top: 110px;
 }
 
 #uploadPaperCounter {

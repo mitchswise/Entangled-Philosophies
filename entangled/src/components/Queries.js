@@ -203,26 +203,26 @@ function getSavedHistory() {
 
 const columnsSavedQuery = [
     {
-        Header: "Name",
+        Header: dSettings(48, userLanguage),
         accessor: "name"
     },
     {
-        Header: "Date",
+        Header: dSettings(71, userLanguage),
         accessor: "date"
     },
     {
-        Header: "Query",
+        Header: dSettings(72, userLanguage),
         accessor: "display_query"
     }
 ];
 
 const columnsHistoryQuery = [
     {
-        Header: "Date",
+        Header: dSettings(71, userLanguage),
         accessor: "date"
     },
     {
-        Header: "Query",
+        Header: dSettings(72, userLanguage),
         accessor: "display_query"
     }
 ];
