@@ -8,7 +8,7 @@ import { getPermLvl } from '../api.js';
 import { dSettings } from '../dictionary.js';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faTimes, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 var userPermLvl = getPermLvl();
 var curLanguage = getGlobalLanguage();
@@ -100,6 +100,9 @@ const Admin = () => {
 	return (<div className="container">
 		<div className="header">
 			<h1 id="title">{dSettings(58, curLanguage)}</h1>
+			<div id="iconWrapper">
+				<FontAwesomeIcon icon={faQuestionCircle} id="HomeQuestionCircle" size='2x' />
+			</div>
 		</div>
 		<div class="AdminBox">
 

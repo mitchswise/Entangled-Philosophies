@@ -4,6 +4,12 @@ import './Login.css';
 import { login, cookies } from '../api.js';
 import { getGlobalLanguage } from "../api.js";
 import { dSettings } from '../dictionary';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Button from "@material-ui/core/Button";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 var userLanguage = getGlobalLanguage();
 
@@ -41,6 +47,10 @@ export default class Login extends React.Component {
         this.enterLogin = this.enterLogin.bind(this);
     }
 
+    state = {
+        helpVideo: false
+    }
+
     renderRedirect = () => {
         if (cookies.get('UserID')) {
             return <Redirect to='/' />
@@ -62,12 +72,19 @@ export default class Login extends React.Component {
         document.getElementById("password").removeEventListener("keydown", this.enterLogin, false);
     }
 
+    openHelpVideo = () => {
+        this.setState((prevState) => ({ helpVideo: !prevState.helpVideo }));
+    }
+
     render() {
         let userLang = this.props.userLang;
         
         return <div className="container">
             <div className="header">
                 <h1 id="title">{dSettings(13, userLang)}</h1>
+                <div id="iconWrapper" onClick={this.openHelpVideo}>
+                    <FontAwesomeIcon icon={faQuestionCircle} id="HomeQuestionCircle" size='2x' />
+                </div>
             </div>
             {this.renderRedirect()}
             <div className="LoginBox">

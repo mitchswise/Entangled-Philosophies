@@ -839,7 +839,6 @@ export function wordLookup(phrase, userLang) {
 			break;
 		}
 	}
-	console.log("Looking for: " + phrase + " LOC " + loc);
 	if(loc < 0) return '?';
 	if(userLang == 'ger') return germanWords[loc];
 	else return englishWords[loc];

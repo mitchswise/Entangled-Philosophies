@@ -1,13 +1,24 @@
-div.header {
-    padding-top: 100px; 
+
+div.img {
+    background-image: url('../images/HomePage.png');
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 100vw;
+    height: 80vh;
 }
 
 #title {
-        top: -184px;
-        position:relative;
-        color: #f74135;
-        text-align: center;
-        font-size: 38px;
+    top: -184px;
+    position: relative;
+    color: #f74135;
+    text-align: center;
+    font-size: 38px;
 }
 
-
+#iconWrapper {
+    top: -176px;
+    position: relative;
+    right: 0.5%;
+    float: right;
+}
