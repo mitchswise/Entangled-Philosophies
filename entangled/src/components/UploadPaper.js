@@ -6,11 +6,12 @@ import { CSVReader } from 'react-papaparse';
 import { tagExistsBatch, addTagBatch, addTagToPaperBatch, paperExists } from '../api.js';
 import { getPermLvl, getGlobalLanguage } from '../api.js';
 import Dialog from "@material-ui/core/Dialog";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Button from "@material-ui/core/Button";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { dSettings } from '../dictionary.js';
 
 var tagsList = [];
@@ -243,7 +244,8 @@ export default class UploadPaper extends React.Component {
 		isCSVPicked: false,
 		currentCounter: 0,
 		uploadSuccess: undefined,
-		openParseBox: false
+		openParseBox: false,
+		helpVideo: false
 	}
 
 	handleOnDrop = (data) => {
@@ -425,7 +427,7 @@ export default class UploadPaper extends React.Component {
 
 				this.setState((prevState) => ({ currentCounter: prevState.currentCounter + 1 }));
 			}
-			
+
 			this.setState({ uploadSuccess: newUploadSuccess });
 			document.getElementById("uploadPaperCounter").innerHTML = "Successfully uploaded " + papers_uploaded + " / " + (csv.length - 2);
 			console.log("We uploaded " + papers_uploaded);
@@ -453,13 +455,13 @@ export default class UploadPaper extends React.Component {
 			}
 
 			var statusColor = "black";
-			if(this.state.uploadSuccess != undefined && i-1 >= 0 && i-1 < this.state.uploadSuccess.length) {
+			if (this.state.uploadSuccess != undefined && i - 1 >= 0 && i - 1 < this.state.uploadSuccess.length) {
 				var status = this.state.uploadSuccess[i - 1];
-				if(status == true) statusColor = "green";
+				if (status == true) statusColor = "green";
 				else statusColor = "red";
 			}
 
-			listItems.push(<li style={{color:statusColor}} >{items.join(", ")}</li>)
+			listItems.push(<li style={{ color: statusColor }} >{items.join(", ")}</li>)
 		}
 
 		return <ol>
@@ -469,6 +471,10 @@ export default class UploadPaper extends React.Component {
 
 	toggleParsedBox = () => {
 		this.setState((prevState) => ({ openParseBox: !prevState.openParseBox }));
+	}
+
+	openHelpVideo = () => {
+		this.setState((prevState) => ({ helpVideo: !prevState.helpVideo }));
 	}
 
 	render() {
@@ -521,113 +527,116 @@ export default class UploadPaper extends React.Component {
 
 		return <div className="container" ref={el => (this.div = el)}>
 			<div className="header">
-				<h1 id="title">{dSettings(105,this.props.userLang)}</h1>
+				<h1 id="title">{dSettings(105, this.props.userLang)}</h1>
+				<div id="iconWrapper" onClick={this.openHelpVideo}>
+					<FontAwesomeIcon icon={faQuestionCircle} id="HomeQuestionCircle" size='2x' />
+				</div>
 			</div>
 			{this.renderRedirect()}
 			<body>
 				<div className="PaperBox">
 					<div className="PaperFields">
 						<div id="MetadataFields">
-							<h2 id="leftTitle">{dSettings(106,this.props.userLang)}</h2>
+							<h2 id="leftTitle">{dSettings(106, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="titleName"
 							/>
-							<h2 id="leftAuthor">{dSettings(107,this.props.userLang)}</h2>
+							<h2 id="leftAuthor">{dSettings(107, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="authorBox"
-								placeholder={"Optional "+dSettings(107,this.props.userLang)}
+								placeholder={"Optional " + dSettings(107, this.props.userLang)}
 							/>
-							<h2 id="leftContributor">{dSettings(108,this.props.userLang)}</h2>
+							<h2 id="leftContributor">{dSettings(108, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="contributor"
-								placeholder={"Optional "+dSettings(108,this.props.userLang)}
+								placeholder={"Optional " + dSettings(108, this.props.userLang)}
 							/>
-							<h2 id="leftRelations">{dSettings(109,this.props.userLang)}</h2>
+							<h2 id="leftRelations">{dSettings(109, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="relation"
-								placeholder={"Optional "+dSettings(109,this.props.userLang)}
+								placeholder={"Optional " + dSettings(109, this.props.userLang)}
 							/>
-							<h2 id="leftSubject">{dSettings(110,this.props.userLang)}</h2>
+							<h2 id="leftSubject">{dSettings(110, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="subject"
-								placeholder={"Optional "+dSettings(110,this.props.userLang)}
+								placeholder={"Optional " + dSettings(110, this.props.userLang)}
 							/>
-							<h2 id="leftDate">{dSettings(111,this.props.userLang)}</h2>
+							<h2 id="leftDate">{dSettings(111, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="date"
-								placeholder={"Optional "+dSettings(111,this.props.userLang)}
+								placeholder={"Optional " + dSettings(111, this.props.userLang)}
 							/>
-							<h2 id="leftDescription">{dSettings(112,this.props.userLang)}</h2>
+							<h2 id="leftDescription">{dSettings(112, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="description"
-								placeholder={"Optional "+dSettings(112,this.props.userLang)}
+								placeholder={"Optional " + dSettings(112, this.props.userLang)}
 							/>
-							<h2 id="leftType">{dSettings(113,this.props.userLang)}</h2>
+							<h2 id="leftType">{dSettings(113, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="type"
-								placeholder={"Optional "+dSettings(113,this.props.userLang)}
+								placeholder={"Optional " + dSettings(113, this.props.userLang)}
 							/>
-							<h2 id="leftFormat">{dSettings(114,this.props.userLang)}</h2>
+							<h2 id="leftFormat">{dSettings(114, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="format"
-								placeholder={"Optional "+dSettings(114,this.props.userLang)}
+								placeholder={"Optional " + dSettings(114, this.props.userLang)}
 							/>
-							<h2 id="leftLanguage">{dSettings(115,this.props.userLang)}</h2>
+							<h2 id="leftLanguage">{dSettings(115, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="languageBox"
-								placeholder={"Optional "+dSettings(115,this.props.userLang)}
+								placeholder={"Optional " + dSettings(115, this.props.userLang)}
 							/>
-							<h2 id="leftSource">{dSettings(116,this.props.userLang)}</h2>
+							<h2 id="leftSource">{dSettings(116, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="sourceBox"
-								placeholder={"Optional "+dSettings(116,this.props.userLang)}
+								placeholder={"Optional " + dSettings(116, this.props.userLang)}
 							/>
-							<h2 id="leftPublisher">{dSettings(117,this.props.userLang)}</h2>
+							<h2 id="leftPublisher">{dSettings(117, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="publisher"
-								placeholder={"Optional "+dSettings(117,this.props.userLang)}
+								placeholder={"Optional " + dSettings(117, this.props.userLang)}
 							/>
-							<h2 id="leftRights">{dSettings(118,this.props.userLang)}</h2>
+							<h2 id="leftRights">{dSettings(118, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="rights"
-								placeholder={"Optional "+dSettings(118,this.props.userLang)}
+								placeholder={"Optional " + dSettings(118, this.props.userLang)}
 							/>
-							<h2 id="leftCoverage">{dSettings(119,this.props.userLang)}</h2>
+							<h2 id="leftCoverage">{dSettings(119, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="coverage"
-								placeholder={"Optional "+dSettings(119,this.props.userLang)}
+								placeholder={"Optional " + dSettings(119, this.props.userLang)}
 							/>
-							<h2 id="leftISBN">{dSettings(120,this.props.userLang)}</h2>
+							<h2 id="leftISBN">{dSettings(120, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="isbn"
-								placeholder={"Optional "+dSettings(120,this.props.userLang)}
+								placeholder={"Optional " + dSettings(120, this.props.userLang)}
 							/>
-							<h2 id="leftURL">{dSettings(122,this.props.userLang)}</h2>
+							<h2 id="leftURL">{dSettings(122, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="urlBox"
-								placeholder={"Optional "+dSettings(122,this.props.userLang)}
+								placeholder={"Optional " + dSettings(122, this.props.userLang)}
 							/>
-							<h2 id="leftLocation">{dSettings(121,this.props.userLang)}</h2>
+							<h2 id="leftLocation">{dSettings(121, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="location"
-								placeholder={"Optional "+dSettings(121,this.props.userLang)}
+								placeholder={"Optional " + dSettings(121, this.props.userLang)}
 							/>
 
 						</div>
@@ -635,38 +644,38 @@ export default class UploadPaper extends React.Component {
 
 						{this.state.isIndividualMode ? (
 							<>
-							<div id="OtherFields">
-								<h2 id="leftTags">{dSettings(123,this.props.userLang)}</h2>
-								<input type="text" className="PaperBoxes" id="tags" disabled /><br />
-								<button type="button"
-									className="PaperBoxes"
-									id="addTag"
-									onClick={doAddTag}><div id="addTagBtnTxt">+</div></button>
-								<button type="button"
-									className="PaperBoxes"
-									id="addTag"
-									onClick={doDeleteTag}><div id="addTagBtnTxt">-</div></button>
-								<input type="text" className="PaperBoxes" id="tagsearch" /><br />
+								<div id="OtherFields">
+									<h2 id="leftTags">{dSettings(123, this.props.userLang)}</h2>
+									<input type="text" className="PaperBoxes" id="tags" disabled /><br />
+									<button type="button"
+										className="PaperBoxes"
+										id="addTag"
+										onClick={doAddTag}><div id="addTagBtnTxt">+</div></button>
+									<button type="button"
+										className="PaperBoxes"
+										id="addTag"
+										onClick={doDeleteTag}><div id="addTagBtnTxt">-</div></button>
+									<input type="text" className="PaperBoxes" id="tagsearch" /><br />
 
-								<div>
-									<div id="fileUploadDiv">
-										<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
-										<input type="hidden" id="filename" />
-										{this.state.isFilePicked ? (
-											// <></>
-											<div>
-												<p>Size: {this.state.selectedFile.size}</p>
-											</div>
-										) : (
-											<p>{dSettings(126,this.props.userLang)}</p>
-										)}
-										<button type="button" id="clearUploadButton" onClick={this.removeUpload}>{dSettings(127,this.props.userLang)}</button>
+									<div>
+										<div id="fileUploadDiv">
+											<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
+											<input type="hidden" id="filename" />
+											{this.state.isFilePicked ? (
+												// <></>
+												<div>
+													<p>Size: {this.state.selectedFile.size}</p>
+												</div>
+											) : (
+												<p>{dSettings(126, this.props.userLang)}</p>
+											)}
+											<button type="button" id="clearUploadButton" onClick={this.removeUpload}>{dSettings(127, this.props.userLang)}</button>
+										</div>
+										<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">{dSettings(128, this.props.userLang)}</div></button>
+										<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">{dSettings(128, this.props.userLang)} CSV</div></button>
 									</div>
-									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">{dSettings(128,this.props.userLang)}</div></button>
-									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">{dSettings(128,this.props.userLang)} CSV</div></button>
 								</div>
-							</div>
-							<div id="uploadStatus"></div>
+								<div id="uploadStatus"></div>
 							</>
 						) : (
 							<div id="OtherFields">
@@ -685,11 +694,11 @@ export default class UploadPaper extends React.Component {
 										<span>{dSettings(174, this.props.userLang)}</span>
 									</CSVReader>
 								</div>
-								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleBatchSubmission}><div id="uploadBtnTxt">{dSettings(128,this.props.userLang)}</div></button>
+								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleBatchSubmission}><div id="uploadBtnTxt">{dSettings(128, this.props.userLang)}</div></button>
 								<div id="uploadStatus"></div>
 								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">{dSettings(183, this.props.userLang)}</div></button>
 								<div id="uploadPaperCounter">{dSettings(173, this.props.userLang)} {this.state.currentCounter}/{
-									this.state.isCSVPicked ? this.state.selectedCSV.length-2 : 0}</div>
+									this.state.isCSVPicked ? this.state.selectedCSV.length - 2 : 0}</div>
 								<Dialog open={this.state.openParseBox} onClose={this.toggleParsedBox}>
 									<DialogTitle>{dSettings(175, this.props.userLang)}</DialogTitle>
 									<DialogContent>
@@ -704,6 +713,23 @@ export default class UploadPaper extends React.Component {
 								</Dialog>
 							</div>
 						)}
+					</div>
+					<div id="extrDiv">
+						<Dialog open={this.state.helpVideo} onClose={this.openHelpVideo}>
+							<DialogContent>
+								{this.state.isIndividualMode ? 
+									<iframe width="560" height="315" src="https://www.youtube.com/embed/XsOf1Or0KR8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+									:
+									<iframe width="560" height="315" src="https://www.youtube.com/embed/XsC7SOLw5iU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+								}
+							</DialogContent>
+							<DialogActions>
+								<Button onClick={this.openHelpVideo}
+									color="primary" autoFocus>
+									Close
+								</Button>
+							</DialogActions>
+						</Dialog>
 					</div>
 				</div>
 			</body>

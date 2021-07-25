@@ -9,9 +9,14 @@ import {
     addMetadataTag, removeTagFromPaper, getPapersTag, fileURLBase,
     removePaper, removeFile
 } from '../api.js';
-
 import { field_ids, metadata_ids, metadata_categories } from './UploadPaper';
 import { getGlobalLanguage, getPermLvl } from '../api.js';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Button from "@material-ui/core/Button";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/uploadPaper.php';
 var userID = cookies.get('UserID');
@@ -163,6 +168,7 @@ export default class EditPaper extends React.Component {
         currentTags: loadTags(this.props.paperInformation),
         selectedFile: "",
         isFilePicked: false,
+        helpVideo: false
     }
 
     changeHandler = (event) => {
@@ -245,6 +251,11 @@ export default class EditPaper extends React.Component {
         }
     }
 
+    openHelpVideo = () => {
+        this.setState((prevState) => ({ helpVideo: !prevState.helpVideo }));
+    }
+
+
     render() {
         const doAddTag = async e => {
             var tag = document.getElementById("tagsearch").value;
@@ -318,6 +329,9 @@ export default class EditPaper extends React.Component {
         return <div className="container" ref={el => (this.div = el)}>
             <div className="header">
                 <h1 id="title">{dSettings(46,this.props.userLang)}</h1>
+                <div id="iconWrapper" onClick={this.openHelpVideo}>
+                    <FontAwesomeIcon icon={faQuestionCircle} id="HomeQuestionCircle" size='2x' />
+                </div>
             </div>
             {this.renderRedirect()}
             <body>
@@ -392,6 +406,19 @@ export default class EditPaper extends React.Component {
                         }} />
                     </div>
                     <div id="paperStatus"></div>
+                </div>
+                <div id="extrDiv">
+                    <Dialog open={this.state.helpVideo} onClose={this.openHelpVideo}>
+                        <DialogContent>
+                            <iframe width="560" height="315" src="https://www.youtube.com/embed/fSl_mB3FY44" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.openHelpVideo}
+                                color="primary" autoFocus>
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </div>
             </body>
         </div>

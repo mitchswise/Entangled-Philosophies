@@ -6,6 +6,12 @@ import { Checkbox } from './Checkbox.js';
 import { getGlobalLanguage } from "../api.js";
 import { dSettings } from '../dictionary.js';
 import './Queries.css';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Button from "@material-ui/core/Button";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 var userLanguage = getGlobalLanguage();
 
@@ -236,7 +242,8 @@ export default class Queries extends React.Component {
         toggleState: false,
         redirectToSearch: false,
         redirectFilter: undefined,
-        redirectCustomQuery: undefined
+        redirectCustomQuery: undefined,
+        helpVideo: false
     }
 
     renderRedirect = () => {
@@ -290,6 +297,10 @@ export default class Queries extends React.Component {
         window.location.reload();
     }
 
+    openHelpVideo = () => {
+        this.setState((prevState) => ({ helpVideo: !prevState.helpVideo }));
+    }
+
     render() {
         const { toggleState, savedQueries, savedHistory, redirectToSearch } = this.state;
         return (<div id="searchContainer">
@@ -298,6 +309,9 @@ export default class Queries extends React.Component {
                     toggleState === false ? <h1 id="title">{dSettings(15,this.props.userLang)}</h1>
                     : <h1 id="title">Search History</h1>
                 }
+                <div id="iconWrapper" onClick={this.openHelpVideo}>
+                    <FontAwesomeIcon icon={faQuestionCircle} id="HomeQuestionCircle" size='2x' />
+                </div>
             </div>
             {this.renderRedirect()}
             {redirectToSearch ? this.loadSearch() : <></>}

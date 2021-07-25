@@ -4,6 +4,12 @@ import './Settings.css';
 import { getUserInfo, updateSettings, changePassword, removeUser, removeAllTags, cookies } from '../api.js';
 import { dSettings } from '../dictionary.js';
 import { getPermLvl, setGlobalLanguage } from '../api.js';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Button from "@material-ui/core/Button";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 var id;
 var userPermLvl = getPermLvl();
@@ -38,7 +44,8 @@ export default class Settings extends React.Component {
 
     state = {
         userInfo: doGetUserInfo(),
-        userLang: this.props.userLang
+        userLang: this.props.userLang,
+        helpVideo: false
     }
 
     componentDidMount() {
@@ -158,6 +165,10 @@ export default class Settings extends React.Component {
         this.setState({ userLang: newLanguage });
     }
 
+    openHelpVideo = () => {
+        this.setState((prevState) => ({ helpVideo: !prevState.helpVideo }));
+    }
+
     render() {
         const { userLang } = this.state;
 
@@ -165,6 +176,9 @@ export default class Settings extends React.Component {
             {this.renderRedirect()}
             <div className="header">
                 <h1 id="title">{dSettings(10, userLang)}</h1>
+                <div id="iconWrapper" onClick={this.openHelpVideo}>
+                    <FontAwesomeIcon icon={faQuestionCircle} id="HomeQuestionCircle" size='2x' />
+                </div>
             </div>
 
             <div className="SettingsBox">

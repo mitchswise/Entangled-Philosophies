@@ -16,6 +16,12 @@ import BarChart from './BarChart.js';
 import './Search.css';
 import { getPermLvl, getGlobalLanguage } from '../api.js';
 import { dSettings, wordLookup } from '../dictionary.js';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Button from "@material-ui/core/Button";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 var userLanguage = getGlobalLanguage();
 var userPermLvl = getPermLvl();
@@ -23,7 +29,7 @@ var loadedTagData = undefined, loadedTagLanguage = undefined;
 
 //loads all available tags for a user
 function getTagData(userLang) {
-    if(loadedTagData != undefined && loadedTagLanguage == userLang) return loadedTagData;
+    if (loadedTagData != undefined && loadedTagLanguage == userLang) return loadedTagData;
 
     var userID = 0, prefLang = userLang;
     if (cookies.get('UserID')) userID = cookies.get('UserID');
@@ -248,7 +254,8 @@ export default class Search extends React.Component {
         privateTags: [],
         isOptionsOpen: false,
         checkedOptions: this.makeInitialOptions(),
-        dataVisualization: 0
+        dataVisualization: 0,
+        helpVideo: false
     }
 
     updateHistory = (newFitlerState, userID) => {
@@ -409,9 +416,9 @@ export default class Search extends React.Component {
 
                     <h3>{dSettings(136, this.props.userLang)}</h3>
 
-                    <p><b>{dSettings(106,this.props.userLang)}:</b> {paperInformation.title}</p>
+                    <p><b>{dSettings(106, this.props.userLang)}:</b> {paperInformation.title}</p>
 
-                    <p><b>{dSettings(107,this.props.userLang)}:</b> {paperInformation.author}</p>
+                    <p><b>{dSettings(107, this.props.userLang)}:</b> {paperInformation.author}</p>
 
                 </div>
 
@@ -419,13 +426,13 @@ export default class Search extends React.Component {
 
                     <h3>{dSettings(137, this.props.userLang)}</h3>
 
-                    <p ><b>{dSettings(110,this.props.userLang)}:</b> {paperInformation.subject}</p>
+                    <p ><b>{dSettings(110, this.props.userLang)}:</b> {paperInformation.subject}</p>
 
-                    <p ><b>{dSettings(113,this.props.userLang)}:</b> {paperInformation.type}</p>
+                    <p ><b>{dSettings(113, this.props.userLang)}:</b> {paperInformation.type}</p>
 
-                    <p ><b>{dSettings(119,this.props.userLang)}:</b> {paperInformation.coverage}</p>
+                    <p ><b>{dSettings(119, this.props.userLang)}:</b> {paperInformation.coverage}</p>
 
-                    <p><b>{dSettings(112,this.props.userLang)}</b> {paperInformation.description}</p>
+                    <p><b>{dSettings(112, this.props.userLang)}</b> {paperInformation.description}</p>
 
                 </div>
 
@@ -433,22 +440,22 @@ export default class Search extends React.Component {
 
                     <h3>{dSettings(138, this.props.userLang)}</h3>
 
-                    <p><b>{dSettings(71,this.props.userLang)}:</b> {paperInformation.date}</p>
+                    <p><b>{dSettings(71, this.props.userLang)}:</b> {paperInformation.date}</p>
 
-                    <p ><b>{dSettings(114,this.props.userLang)}:</b> {paperInformation.format}</p>
+                    <p ><b>{dSettings(114, this.props.userLang)}:</b> {paperInformation.format}</p>
 
-                    <p ><b>{dSettings(115,this.props.userLang)}:</b> {paperInformation.language}</p>
+                    <p ><b>{dSettings(115, this.props.userLang)}:</b> {paperInformation.language}</p>
 
-                    <p ><b>{dSettings(121,this.props.userLang)}:</b> {paperInformation.location}</p>
+                    <p ><b>{dSettings(121, this.props.userLang)}:</b> {paperInformation.location}</p>
 
-                    <p ><b>{dSettings(120,this.props.userLang)}:</b> {paperInformation.isbn}</p>
+                    <p ><b>{dSettings(120, this.props.userLang)}:</b> {paperInformation.isbn}</p>
 
-                    <p ><b>{dSettings(122,this.props.userLang)}:</b> {
+                    <p ><b>{dSettings(122, this.props.userLang)}:</b> {
                         paperInformation.paper_url !== null ?
                             <a id="currentFile" href={paperInformation.paper_url}
                                 target="_blank" >{paperInformation.paper_url}</a>
-                        :
-                        ""
+                            :
+                            ""
                     }</p>
 
                     <p ><b>{dSettings(142, this.props.userLang)}:</b> {
@@ -465,19 +472,19 @@ export default class Search extends React.Component {
 
                     <h3>{dSettings(139, this.props.userLang)}</h3>
 
-                    <p ><b>{dSettings(116,this.props.userLang)}:</b> {paperInformation.source}</p>
+                    <p ><b>{dSettings(116, this.props.userLang)}:</b> {paperInformation.source}</p>
 
-                    <p ><b>{dSettings(117,this.props.userLang)}:</b> {paperInformation.publisher}</p>
+                    <p ><b>{dSettings(117, this.props.userLang)}:</b> {paperInformation.publisher}</p>
 
-                    <p ><b>{dSettings(118,this.props.userLang)}:</b> {paperInformation.rights}</p>
+                    <p ><b>{dSettings(118, this.props.userLang)}:</b> {paperInformation.rights}</p>
 
-                    <p id="rowFourRelation"><b>{dSettings(109,this.props.userLang)}:</b> {paperInformation.relation}</p>
+                    <p id="rowFourRelation"><b>{dSettings(109, this.props.userLang)}:</b> {paperInformation.relation}</p>
 
                 </div>
 
                 <div id="rowFive">
 
-                    <h3>{dSettings(123,this.props.userLang)}</h3>
+                    <h3>{dSettings(123, this.props.userLang)}</h3>
 
                     {
                         userID != 0 ?
@@ -490,8 +497,8 @@ export default class Search extends React.Component {
                                     <input type="text" placeholder="Enter a valid tag" id="addPaperTags" />
                                 </div>
                             </>
-                        :
-                        <p ><b>{dSettings(140, this.props.userLang)}:</b> {publicTags.map(item => item.text).join(", ")}</p>
+                            :
+                            <p ><b>{dSettings(140, this.props.userLang)}:</b> {publicTags.map(item => item.text).join(", ")}</p>
                     }
 
                 </div>
@@ -527,6 +534,10 @@ export default class Search extends React.Component {
         this.setState((prevState) => ({ dataVisualization: visual_type }));
     }
 
+    openHelpVideo = () => {
+        this.setState((prevState) => ({ helpVideo: !prevState.helpVideo }));
+    }
+
     render() {
         let userLang = this.props.userLang;
 
@@ -541,6 +552,9 @@ export default class Search extends React.Component {
         }
         return (<div id="searchContainer">
             <h1 id="title">{dSettings(53, userLang)}</h1>
+            <div id="iconWrapper" onClick={this.openHelpVideo}>
+                <FontAwesomeIcon icon={faQuestionCircle} id="HomeQuestionCircle" size='2x' />
+            </div>
             <div id="searchBody">
                 {isFilterOpen && <Filter
                     handleClose={this.togglePopup}
@@ -577,10 +591,25 @@ export default class Search extends React.Component {
                         paperInformation !== undefined ? this.viewPaper() :
                             dataVisualization === 1 ? <WordCloud userLang={userLang} paperData={paperData} /> :
                                 dataVisualization === 2 ? <BarChart userLang={userLang} paperData={paperData} /> :
-                                <></>
+                                    <></>
                     }
 
                 </div>
+            </div>
+            <div id="extrDiv">
+                <Dialog open={this.state.helpVideo} onClose={this.openHelpVideo}>
+                    <DialogContent>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/OQ2sDejb-bg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/pTTtCoFtv_I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/8xNW0mOtqVE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.openHelpVideo}
+                            color="primary" autoFocus>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </div>);
     }

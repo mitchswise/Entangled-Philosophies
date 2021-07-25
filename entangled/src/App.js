@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect, Link } from 'react-router-dom';
 import { useState } from 'react';
 import Home from './components/Home.js';
 import About from './components/About.js';
@@ -19,9 +19,8 @@ import Logo from './components/logo.JPG';
 import Logo2 from './components/mag_glass.JPG';
 import { cookies, getGlobalLanguage, getUserInfo, setGlobalLanguage } from './api.js';
 import CookieConsent, { getCookieConsentValue } from "react-cookie-consent";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faTimes, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { dSettings } from './dictionary';
+
 
 
 function App() {
@@ -38,44 +37,49 @@ function App() {
 
   return (
     <div className="container" id="outer-container">
-      <img src={Logo} id="logo" />
-      {/* <FontAwesomeIcon icon={faSearch} size="2x" style={{position:"relative"}}  /> */}
-      <img src={Logo2} id="logo2" />
-      {/* <h1 id="entangledPhilosophies">Entangled Philosophies</h1> */}
-
-      {
-        !cookies.get('UserID') ? //only runs if there is no user logged in
-          <div class="dropdown" id="dropdowncontainer">
-            <button class="dropbtn" id="dropdown">{dSettings(12,curLanguage)}</button>
-            <div class="dropdown-content">
-              <button type="submit" id="englishButton" onClick={() => updateLanguage("eng")} >{dSettings(130,curLanguage)}</button>
-              <button type="submit" id="germanButton" onClick={() => updateLanguage("ger")} >{dSettings(131,curLanguage)}</button>
-            </div>
-          </div>
-          : <></>
-      }
-
-
-      <CookieConsent
-        onAccept={async () => {
-          let ip = await publicIp.v4({
-            fallbackUrls: ["https://ifconfig.co/ip"]
-          });
-        }}
-        enableDeclineButton
-        onDecline={async () => {
-          let ip = publicIp.v4({
-            fallbackUrls: ["https://ifconfig.co/ip"]
-          });
-          if(cookies.get('PrefLang')) {
-            cookies.remove('PrefLang', { path: '/' });
-          }
-        }}
-      >
-        {dSettings(1,curLanguage)}
-      </CookieConsent>
-
       <Router basename={'/~entangledPhilosophy/Entangled-Philosophies/entangled/build'}>
+        <div id="images" >
+          <Link to="/">
+            <img src={Logo} id="logo" />
+          </Link>
+          <Link to={{ pathname: "/search", state: {} }}>
+            <img src={Logo2} id="logo2"/>
+          </Link>
+        </div>
+
+        {
+          !cookies.get('UserID') ? //only runs if there is no user logged in
+            <div class="dropdown" id="dropdowncontainer">
+              <button class="dropbtn" id="dropdown">{dSettings(12, curLanguage)}</button>
+              <div class="dropdown-content">
+                <button type="submit" id="englishButton" onClick={() => updateLanguage("eng")} >{dSettings(130, curLanguage)}</button>
+                <button type="submit" id="germanButton" onClick={() => updateLanguage("ger")} >{dSettings(131, curLanguage)}</button>
+              </div>
+            </div>
+            : <></>
+        }
+
+
+        <CookieConsent
+          onAccept={async () => {
+            let ip = await publicIp.v4({
+              fallbackUrls: ["https://ifconfig.co/ip"]
+            });
+          }}
+          enableDeclineButton
+          onDecline={async () => {
+            let ip = publicIp.v4({
+              fallbackUrls: ["https://ifconfig.co/ip"]
+            });
+            if (cookies.get('PrefLang')) {
+              cookies.remove('PrefLang', { path: '/' });
+            }
+          }}
+        >
+          {dSettings(1, curLanguage)}
+        </CookieConsent>
+
+
         <Sidebar userLang={curLanguage} outerContainerId={'outer-container'} />
         <Switch>
           <Route exact path="/" render={() => <Home userLang={curLanguage} />} />
@@ -89,8 +93,8 @@ function App() {
           <Route exact path="/forgotpass" render={() => <ForgotPass userLang={curLanguage} />} />
           <Route exact path="/tags" render={() => <Tags userLang={curLanguage} />} />
           <Route exact path="/search" render={(props) => <Search userLang={curLanguage} {...props} />} />
-          <Route exact path="/settings"render={() => <Settings userLang={curLanguage} />} />
-          <Route exact path="/queries"render={() => <Queries userLang={curLanguage} />} />
+          <Route exact path="/settings" render={() => <Settings userLang={curLanguage} />} />
+          <Route exact path="/queries" render={() => <Queries userLang={curLanguage} />} />
         </Switch>
       </Router>
     </div>
