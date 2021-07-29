@@ -7,7 +7,7 @@ import trashCan from '../images/trash.png';
 import {
     cookies, editPaper, tagExists, addTagToPaper,
     addMetadataTag, removeTagFromPaper, getPapersTag, fileURLBase,
-    removePaper, removeFile
+    removePaper, removeFile, HelpVideoURLS
 } from '../api.js';
 import { field_ids, metadata_ids, metadata_categories } from './UploadPaper';
 import { getGlobalLanguage, getPermLvl } from '../api.js';
@@ -410,7 +410,7 @@ export default class EditPaper extends React.Component {
                 <div id="extrDiv">
                     <Dialog open={this.state.helpVideo} onClose={this.openHelpVideo}>
                         <DialogContent>
-                            <iframe width="560" height="315" src="https://www.youtube.com/embed/fSl_mB3FY44" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                            <iframe width="560" height="315" src={HelpVideoURLS[0]} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={this.openHelpVideo}

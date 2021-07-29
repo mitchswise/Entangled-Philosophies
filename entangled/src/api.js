@@ -4,6 +4,16 @@ export const supported_languages = ["eng", "ger"];
 export const urlBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api';
 export const fileURLBase = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/paper/';
 
+export const HelpVideoURLS = [
+	"https://www.youtube.com/embed/fSl_mB3FY44", //Edit Paper video
+	"https://www.youtube.com/embed/OQ2sDejb-bg", //Search Page video
+	"https://www.youtube.com/embed/pTTtCoFtv_I", //Search Filter video
+	"https://www.youtube.com/embed/8xNW0mOtqVE", //Search Advanced Filter video
+	"https://www.youtube.com/embed/ZGqpHkFNVQc", //Tags Page video
+	"https://www.youtube.com/embed/XsOf1Or0KR8", //Upload Paper video
+	"https://www.youtube.com/embed/XsC7SOLw5iU", //Upload CSV video
+];
+
 export var globalLanguage = undefined;
 
 export function getGlobalLanguage() {

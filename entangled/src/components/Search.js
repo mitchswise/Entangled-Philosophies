@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Filter from './Filter.js';
 import {
     cookies, getTags, tagExists, sqlSearch, handleHistory, saveQuery, fileURLBase,
-    removeTagFromPaper, addTagToPaper, getWordCloudTags
+    removeTagFromPaper, addTagToPaper, getWordCloudTags, HelpVideoURLS
 } from '../api.js'
 import { loadTags } from './EditPaper.js';
 import Table from "./Table.js";
@@ -599,9 +599,9 @@ export default class Search extends React.Component {
             <div id="extrDiv">
                 <Dialog open={this.state.helpVideo} onClose={this.openHelpVideo}>
                     <DialogContent>
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/OQ2sDejb-bg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/pTTtCoFtv_I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/8xNW0mOtqVE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                        <iframe width="560" height="315" src={HelpVideoURLS[1]} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                        <iframe width="560" height="315" src={HelpVideoURLS[2]} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                        <iframe width="560" height="315" src={HelpVideoURLS[3]} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.openHelpVideo}

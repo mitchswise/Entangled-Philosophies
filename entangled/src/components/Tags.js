@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import {
     getTags, addTag, removeTag, getTagTranslation,
     getCats, addCategory, removeCategory, getCategoryTranslation,
-    cookies, supported_languages
+    cookies, supported_languages, HelpVideoURLS
 } from '../api.js';
 import Table from "./TagsTable";
 import './Tags.css';
@@ -380,7 +380,7 @@ export default class Tags extends React.Component {
                     <div id="extrDiv">
                         <Dialog open={this.state.helpVideo} onClose={this.openHelpVideo}>
                             <DialogContent>
-                                <iframe width="560" height="315" src="https://www.youtube.com/embed/ZGqpHkFNVQc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                                <iframe width="560" height="315" src={HelpVideoURLS[4]} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.openHelpVideo}

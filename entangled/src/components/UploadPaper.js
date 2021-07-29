@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import './UploadPaper.css';
-import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag } from '../api.js';
+import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag, HelpVideoURLS } from '../api.js';
 import { CSVReader } from 'react-papaparse';
 import { tagExistsBatch, addTagBatch, addTagToPaperBatch, paperExists } from '../api.js';
 import { getPermLvl, getGlobalLanguage } from '../api.js';
@@ -718,9 +718,9 @@ export default class UploadPaper extends React.Component {
 						<Dialog open={this.state.helpVideo} onClose={this.openHelpVideo}>
 							<DialogContent>
 								{this.state.isIndividualMode ? 
-									<iframe width="560" height="315" src="https://www.youtube.com/embed/XsOf1Or0KR8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+									<iframe width="560" height="315" src={HelpVideoURLS[5]} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
 									:
-									<iframe width="560" height="315" src="https://www.youtube.com/embed/XsC7SOLw5iU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+									<iframe width="560" height="315" src={HelpVideoURLS[6]} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
 								}
 							</DialogContent>
 							<DialogActions>
