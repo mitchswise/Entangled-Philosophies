@@ -6,7 +6,7 @@
 	
 	$inputData = json_decode(file_get_contents('php://input'), true);
 	
-	$_username = $inputData["username"];
+	$_username = addslashes($inputData["username"]);
 	$_password = $inputData["password"];
 	
 	$conn = mysqli_connect($host, $username, $password, $dbname);

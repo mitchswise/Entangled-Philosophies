@@ -1,40 +1,52 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import './UploadPaper.css';
-import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag } from '../api.js';
+import { cookies, addPaper, tagExists, addTagToPaper, addMetadataTag, HelpVideoURLS } from '../api.js';
 import { CSVReader } from 'react-papaparse';
 import { tagExistsBatch, addTagBatch, addTagToPaperBatch, paperExists } from '../api.js';
+import { getPermLvl, getGlobalLanguage } from '../api.js';
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Button from "@material-ui/core/Button";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { dSettings } from '../dictionary.js';
 
 var tagsList = [];
 var tagIDs = [];
 var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/uploadPaper.php';
 
+var userLanguage = getGlobalLanguage();
+var userPermLvl = getPermLvl();
+
 export const field_ids = ["titleName", "authorBox", "contributor", "relation", "subject", "date",
-"description", "type", "format", "languageBox", "sourceBox",
-"publisher", "rights", "coverage", "isbn", "urlBox", "location"];
+	"description", "type", "format", "languageBox", "sourceBox",
+	"publisher", "rights", "coverage", "isbn", "urlBox", "location"];
 
 export const metadata_ids = ["title", "author", "contributor", "relation", "subject", "date",
-"description", "type", "format", "language", "source",
-"publisher", "rights", "coverage", "isbn", "paper_url", "location"];
+	"description", "type", "format", "language", "source",
+	"publisher", "rights", "coverage", "isbn", "paper_url", "location"];
 
 export const metadata_categories = ["Title", "Author", "Contributor", "Relation", "Subject", "Date",
-"Description", "Type", "Format", "Language", "Source",
-"Publisher", "Rights", "Coverage", "ISBN", "URL", "Location"];
+	"Description", "Type", "Format", "Language", "Source",
+	"Publisher", "Rights", "Coverage", "ISBN", "URL", "Location"];
 
 export function addSpreadsheetPaper(dict) {
-	var response = {success:false, error:undefined};
+	var response = { success: false, error: undefined };
 
 	var metadata_dict = {};
 	var tagsList = [];
 
-	for(const key in dict) {
+	for (const key in dict) {
 		var new_key = key.toLowerCase();
-		if(new_key == "url") new_key = "paper_url";
-		if(dict[key].trim().length == 0) continue;
+		if (new_key == "url") new_key = "paper_url";
+		if (dict[key].trim().length == 0) continue;
 
-		if(new_key == "manual tags") {
+		if (new_key == "manual tags") {
 			tagsList = dict[key].split(";");
-			for(let idx = 0; idx < tagsList.length; idx++) {
+			for (let idx = 0; idx < tagsList.length; idx++) {
 				tagsList[idx] = tagsList[idx].trim();
 			}
 		}
@@ -43,15 +55,15 @@ export function addSpreadsheetPaper(dict) {
 		}
 	}
 
-	if(!("title" in metadata_dict)) {
+	if (!("title" in metadata_dict)) {
 		response.error = "Missing title";
 		return response;
 	}
 
 	//check for duplicate (title,author) pair?
-	if(("author" in metadata_dict)) {
+	if (("author" in metadata_dict)) {
 		var doesExist = paperExists(metadata_dict["title"], metadata_dict["author"]);
-		if(doesExist.exists == true) {
+		if (doesExist.exists == true) {
 			response.error = "Duplicate paper being inserted.";
 			return response;
 		}
@@ -61,86 +73,86 @@ export function addSpreadsheetPaper(dict) {
 
 	var addPaperData = addPaper(metadata_dict);
 	var paper_id = addPaperData.id;
-	
+
 	// //figure out existence of all tags
 	var tagsToPass = [];
-	for(const idx in tagsList) {
-		tagsToPass.push({text: tagsList[idx]});
+	for (const idx in tagsList) {
+		tagsToPass.push({ text: tagsList[idx] });
 	}
-	for(const key in metadata_dict) {
-		if(key == "url") continue;
+	for (const key in metadata_dict) {
+		if (key == "url") continue;
 		tagsToPass.push({ text: metadata_dict[key] });
 	}
-	
+
 	//assumptions made because we're in 'add spreadsheet paper'
-	var jsonDict = { tagsArray:tagsToPass, userID:0, language:"eng" };
+	var jsonDict = { tagsArray: tagsToPass, userID: 0, language: "eng" };
 	var data = tagExistsBatch(jsonDict);
-	
+
 	//find any missing tags and add them to the database
 	var tagsToAdd = [];
-	
-	for(const idx in tagsList) {
-		if(data.tags[ tagsList[idx] ] == "-1") {
+
+	for (const idx in tagsList) {
+		if (data.tags[tagsList[idx]] == "-1") {
 			var category = "General";
 			var eng = tagsList[idx];
 			var ger = tagsList[idx] + " - needs German translation";
-			tagsToAdd.push({ category:category, eng:eng, ger:ger });
+			tagsToAdd.push({ category: category, eng: eng, ger: ger });
 		}
 	}
-	
-	for(const key in metadata_dict) {
-		if(key == "url") continue;
-		if(data.tags[ metadata_dict[key] ] == "-1") {
+
+	for (const key in metadata_dict) {
+		if (key == "url") continue;
+		if (data.tags[metadata_dict[key]] == "-1") {
 			var category = "";
-			if(key == "paper_url") category = "URL";
-			else if(key == "isbn") category = "ISBN";
+			if (key == "paper_url") category = "URL";
+			else if (key == "isbn") category = "ISBN";
 			else category = key.charAt(0).toUpperCase() + key.slice(1);
-			
+
 			var met = metadata_dict[key];
-			
-			tagsToAdd.push({ category:category, met:met });
+
+			tagsToAdd.push({ category: category, met: met });
 		}
 	}
-	
-	console.log("Tags to add: " + JSON.stringify(tagsToAdd));
-	
-	if(tagsToAdd.length > 0) {
-		jsonDict = {userID: 0, language: "eng", tagsArray:tagsToAdd};
-		console.log("dict passed: " + JSON.stringify(jsonDict));
+
+	// console.log("Tags to add: " + JSON.stringify(tagsToAdd));
+
+	if (tagsToAdd.length > 0) {
+		jsonDict = { userID: 0, language: "eng", tagsArray: tagsToAdd };
+		// console.log("dict passed: " + JSON.stringify(jsonDict));
 		data = addTagBatch(jsonDict);
 	}
-	
+
 	//now all the tags exist. Get their IDs by recalling tagExists
-	jsonDict = { tagsArray:tagsToPass, userID:0, language:"eng" };
+	jsonDict = { tagsArray: tagsToPass, userID: 0, language: "eng" };
 	data = tagExistsBatch(jsonDict);
-	
-	console.log("Do all tags exist? " + JSON.stringify(data));
-	
+
+	// console.log("Do all tags exist? " + JSON.stringify(data));
+
 	//add all these existing tags to a paper
 	var tagToPaper = [];
-	for(const idx in tagsList) {
-		var tag_id = data.tags[ tagsList[idx] ];
-		if(tag_id == "-1") {
+	for (const idx in tagsList) {
+		var tag_id = data.tags[tagsList[idx]];
+		if (tag_id == "-1") {
 			response.error = "Tags not added properly";
 			return response;
 		}
 		tagToPaper.push({ tag_id: parseInt(tag_id, 10) });
 	}
-	
-	for(const key in metadata_dict) {
-		if(key == "url") continue;
-		var tag_id = data.tags[ metadata_dict[key] ];
-		if(tag_id == "-1") {
+
+	for (const key in metadata_dict) {
+		if (key == "url") continue;
+		var tag_id = data.tags[metadata_dict[key]];
+		if (tag_id == "-1") {
 			response.error = "Tags not added properly";
 			return response;
 		}
-		
+
 		tagToPaper.push({ tag_id: parseInt(tag_id, 10) });
 	}
-	
-	jsonDict = {paper_id:paper_id, userID:0, tagsArray:tagToPaper};
+
+	jsonDict = { paper_id: paper_id, userID: 0, tagsArray: tagToPaper };
 	data = addTagToPaperBatch(jsonDict);
-	
+
 	response.success = true;
 	return response;
 }
@@ -148,7 +160,7 @@ export function addSpreadsheetPaper(dict) {
 export const doAddPaper = async e => {
 	var title = document.getElementById("titleName").value;
 	if (title == "") {
-		document.getElementById("uploadStatus").innerHTML = "Paper must include a title";
+		document.getElementById("uploadStatus").innerHTML = dSettings(179, userLanguage);
 		return;
 	}
 	var filename = document.getElementById("filename").innerHTML;
@@ -175,7 +187,7 @@ export const doAddPaper = async e => {
 	var i;
 	for (i = 0; i < tagIDs.length; i++) {
 		data = addTagToPaper(id, tagIDs[i], 0);
-		document.getElementById("uploadStatus").innerHTML = data.status;
+		// document.getElementById("uploadStatus").innerHTML = data.status;
 	}
 
 	//add all metadata as tags
@@ -208,7 +220,6 @@ export const doAddPaper = async e => {
 		}
 
 		if (tag_id == -1 || tag_id == undefined) {
-			console.log("Error getting metadata tag " + value + " key = " + keyVal);
 			continue;
 		}
 
@@ -220,7 +231,7 @@ export const doAddPaper = async e => {
 	}
 	document.getElementById("filename").innerHTML = "";
 
-	document.getElementById("uploadStatus").innerHTML = "Uploaded Paper";
+	document.getElementById("uploadStatus").innerHTML = dSettings(180, userLanguage);
 }
 
 export default class UploadPaper extends React.Component {
@@ -230,13 +241,20 @@ export default class UploadPaper extends React.Component {
 		isFilePicked: false,
 		isIndividualMode: true,
 		selectedCSV: "",
-		isCSVPicked: false
+		isCSVPicked: false,
+		currentCounter: 0,
+		uploadSuccess: undefined,
+		openParseBox: false,
+		helpVideo: false
 	}
 
 	handleOnDrop = (data) => {
 		console.log(data);
-		this.setState({ selectedCSV: data });
-		this.setState({ isCSVPicked: true });
+		this.setState({ selectedCSV: data }, () => {
+			this.setState({ isCSVPicked: true }, () => {
+				this.setState({ currentCounter: 0 });
+			});
+		});
 	}
 
 	handleOnError = (err, file, inputElem, reason) => {
@@ -258,14 +276,13 @@ export default class UploadPaper extends React.Component {
 	};
 
 	changeMode = () => {
-		if (this.state.isIndividualMode)
-		{
+		if (this.state.isIndividualMode) {
 			this.setState({ isIndividualMode: false });
 		}
 		else {
 			this.setState({ isIndividualMode: true });
 		}
-		console.log( this.state.isIndividualMode );
+		console.log(this.state.isIndividualMode);
 	}
 
 	removeUpload = () => {
@@ -287,12 +304,12 @@ export default class UploadPaper extends React.Component {
 				method: 'POST',
 				body: formData
 			}).then(response => response.text())
-			  .then(data => jsonObject = JSON.parse(data))
-			  .then(json => {
-			  	document.getElementById("filename").innerHTML = json.url;
-				document.getElementById("uploadStatus").innerHTML = "Uploaded " + json.url + " with status " + json.status;
-				doAddPaper();
-			  });
+				.then(data => jsonObject = JSON.parse(data))
+				.then(json => {
+					document.getElementById("filename").innerHTML = json.url;
+					// document.getElementById("uploadStatus").innerHTML = "Uploaded " + json.url + " with status " + json.status;
+					doAddPaper();
+				});
 		} else if (window.confirm("Are you sure you want to upload the paper without a file?")) {
 			doAddPaper();
 		}
@@ -326,8 +343,7 @@ export default class UploadPaper extends React.Component {
 			console.log(csv[0]);
 			console.log(csv[0].data.length);
 			paper = csv[0].data;
-			for (let i = 0; i < csv[0].data.length; i++)
-			{
+			for (let i = 0; i < csv[0].data.length; i++) {
 				if (paper[i].toUpperCase() == "TITLE") title = i;
 				if (paper[i].toUpperCase() == "AUTHOR") author = i;
 				if (paper[i].toUpperCase() == "CONTRIBUTOR") contributor = i;
@@ -350,29 +366,30 @@ export default class UploadPaper extends React.Component {
 				if (paper[i].toUpperCase() == "MANUAL TAGS") manual = i;
 			}
 
+			var newUploadSuccess = [];
+
 			var papers_uploaded = 0;
-			for (let i = 1; i < csv.length-1; i++)
-			{
+			for (let i = 1; i < csv.length - 1; i++) {
 				paper = csv[i].data;
-				if (title == -1 || paper[title] == "")
-				{
+				if (title == -1 || paper[title] == "") {
 					document.getElementById("uploadStatus").innerHTML = "Not all papers have titles.";
+					newUploadSuccess.push(false);
 					continue;
 				}
-				if (author == -1 || paper[author] == "")
-				{
+				if (author == -1 || paper[author] == "") {
 					document.getElementById("uploadStatus").innerHTML = "Not all papers have authors.";
+					newUploadSuccess.push(false);
 					continue;
 				}
 
-				var pass = {title: paper[title]};
+				var pass = { title: paper[title] };
 				pass["Author"] = paper[author];
 				let finalContrib = "";
 				if (contributor > -1 && paper[contributor] != "") {
-				 finalContrib = paper[contributor];
-				 if (editor > -1 && paper[editor] != "") finalContrib = finalContrib + ", " + paper[editor] + " - Editor";
-				 if (translator > -1 && paper[translator != ""]) finalContrib = finalContrib + ", " + paper[translator] + " - Translator";
-				 pass["Contributor"] = finalContrib;
+					finalContrib = paper[contributor];
+					if (editor > -1 && paper[editor] != "") finalContrib = finalContrib + ", " + paper[editor] + " - Editor";
+					if (translator > -1 && paper[translator != ""]) finalContrib = finalContrib + ", " + paper[translator] + " - Translator";
+					pass["Contributor"] = finalContrib;
 				}
 				else if (editor > -1 && paper[editor] != "") {
 					finalContrib = csv[i][editor] + " - Editor";
@@ -397,30 +414,74 @@ export default class UploadPaper extends React.Component {
 				if (manual > -1) pass["Manual Tags"] = paper[manual];
 
 				var result = addSpreadsheetPaper(pass);
-				console.log(JSON.stringify(result));
-				document.getElementById("uploadStatus").innerHTML = result.error;
+				// console.log(JSON.stringify(result));
+				// document.getElementById("uploadStatus").innerHTML = result.error;
 				if (result.error == undefined) {
 					papers_uploaded++;
-					document.getElementById("uploadStatus").innerHTML = "All paper successfully uploaded.";
+					newUploadSuccess.push(true);
+					// document.getElementById("uploadStatus").innerHTML = "All paper successfully uploaded.";
 				}
+				else {
+					newUploadSuccess.push(false);
+				}
+
+				this.setState((prevState) => ({ currentCounter: prevState.currentCounter + 1 }));
 			}
 
+			this.setState({ uploadSuccess: newUploadSuccess });
+			document.getElementById("uploadPaperCounter").innerHTML = "Successfully uploaded " + papers_uploaded + " / " + (csv.length - 2);
 			console.log("We uploaded " + papers_uploaded);
 		}
 	}
 
 	renderRedirect = () => {
-		if (cookies.get('UserID') == null || cookies.get('PermLvl') < 1) {
+		if (!cookies.get('UserID') || userPermLvl < 1) {
 			return <Redirect to='/' />
 		}
+	}
+
+	viewCSVData = () => {
+		if (!this.state.isCSVPicked) return [];
+		var csv = this.state.selectedCSV;
+
+		var listItems = [];
+		for (let i = 1; i < csv.length - 1; i++) {
+			let paper = csv[i].data;
+			var items = [];
+			for (let j = 0; j < paper.length; j++) {
+				if (paper[j].trim().length > 0) {
+					items.push(paper[j]);
+				}
+			}
+
+			var statusColor = "black";
+			if (this.state.uploadSuccess != undefined && i - 1 >= 0 && i - 1 < this.state.uploadSuccess.length) {
+				var status = this.state.uploadSuccess[i - 1];
+				if (status == true) statusColor = "green";
+				else statusColor = "red";
+			}
+
+			listItems.push(<li style={{ color: statusColor }} >{items.join(", ")}</li>)
+		}
+
+		return <ol>
+			{listItems}
+		</ol>;
+	}
+
+	toggleParsedBox = () => {
+		this.setState((prevState) => ({ openParseBox: !prevState.openParseBox }));
+	}
+
+	openHelpVideo = () => {
+		this.setState((prevState) => ({ helpVideo: !prevState.helpVideo }));
 	}
 
 	render() {
 		const doAddTag = async e => {
 			var tag = document.getElementById("tagsearch").value;
 
-			var data = tagExists(tag, cookies.get('PrefLang'), 0);
-			console.log(data);
+			var data = tagExists(tag, userLanguage, 0);
 
 			if (data.tag_id >= 0) {
 				tagsList.push(tag);
@@ -430,7 +491,6 @@ export default class UploadPaper extends React.Component {
 			else {
 				document.getElementById("uploadStatus").innerHTML = "Tag Not Found";
 			}
-			console.log(tagsList);
 
 			document.getElementById("tagsearch").value = '';
 			document.getElementById("tags").value = tagsList.join(", ");
@@ -441,8 +501,7 @@ export default class UploadPaper extends React.Component {
 		const doDeleteTag = async e => {
 			var tag = document.getElementById("tagsearch").value;
 
-			var data = tagExists(tag, cookies.get('PrefLang'), 0);
-			console.log(data);
+			var data = tagExists(tag, userLanguage, 0);
 
 			if (data.tag_id >= 0) {
 				let index = tagsList.indexOf(tag);
@@ -459,7 +518,6 @@ export default class UploadPaper extends React.Component {
 			else {
 				document.getElementById("uploadStatus").innerHTML = "Tag Not Found";
 			}
-			console.log(tagsList);
 
 			document.getElementById("tagsearch").value = '';
 			document.getElementById("tags").value = tagsList.join(", ");
@@ -469,169 +527,209 @@ export default class UploadPaper extends React.Component {
 
 		return <div className="container" ref={el => (this.div = el)}>
 			<div className="header">
-				<h1 id="title">Upload Paper</h1>
+				<h1 id="title">{dSettings(105, this.props.userLang)}</h1>
+				<div id="iconWrapper" onClick={this.openHelpVideo}>
+					<FontAwesomeIcon icon={faQuestionCircle} id="HomeQuestionCircle" size='2x' />
+				</div>
 			</div>
 			{this.renderRedirect()}
 			<body>
 				<div className="PaperBox">
 					<div className="PaperFields">
 						<div id="MetadataFields">
-							<h2 id="leftTitle">Title</h2>
+							<h2 id="leftTitle">{dSettings(106, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="titleName"
 							/>
-							<h2 id="leftAuthor">Author</h2>
+							<h2 id="leftAuthor">{dSettings(107, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="authorBox"
-								placeholder="Optional Author"
+								placeholder={"Optional " + dSettings(107, this.props.userLang)}
 							/>
-							<h2 id="leftContributor">Contributor</h2>
+							<h2 id="leftContributor">{dSettings(108, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="contributor"
-								placeholder="Optional Contributor"
+								placeholder={"Optional " + dSettings(108, this.props.userLang)}
 							/>
-							<h2 id="leftRelations">Relation</h2>
+							<h2 id="leftRelations">{dSettings(109, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="relation"
-								placeholder="Optional Relations"
+								placeholder={"Optional " + dSettings(109, this.props.userLang)}
 							/>
-							<h2 id="leftSubject">Subject</h2>
+							<h2 id="leftSubject">{dSettings(110, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="subject"
-								placeholder="Optional Subject"
+								placeholder={"Optional " + dSettings(110, this.props.userLang)}
 							/>
-							<h2 id="leftDate">Dates</h2>
+							<h2 id="leftDate">{dSettings(111, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="date"
-								placeholder="Optional Date"
+								placeholder={"Optional " + dSettings(111, this.props.userLang)}
 							/>
-							<h2 id="leftDescription">Description</h2>
+							<h2 id="leftDescription">{dSettings(112, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="description"
-								placeholder="Optional Description"
+								placeholder={"Optional " + dSettings(112, this.props.userLang)}
 							/>
-							<h2 id="leftType">Type</h2>
+							<h2 id="leftType">{dSettings(113, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="type"
-								placeholder="Optional Type"
+								placeholder={"Optional " + dSettings(113, this.props.userLang)}
 							/>
-							<h2 id="leftFormat">Format</h2>
+							<h2 id="leftFormat">{dSettings(114, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="format"
-								placeholder="Optional Format"
+								placeholder={"Optional " + dSettings(114, this.props.userLang)}
 							/>
-							<h2 id="leftLanguage">Language</h2>
+							<h2 id="leftLanguage">{dSettings(115, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="languageBox"
-								placeholder="Optional Language"
+								placeholder={"Optional " + dSettings(115, this.props.userLang)}
 							/>
-							<h2 id="leftSource">Source</h2>
+							<h2 id="leftSource">{dSettings(116, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="sourceBox"
-								placeholder="Optional Source"
+								placeholder={"Optional " + dSettings(116, this.props.userLang)}
 							/>
-							<h2 id="leftPublisher">Publisher</h2>
+							<h2 id="leftPublisher">{dSettings(117, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="publisher"
-								placeholder="Optional Publisher"
+								placeholder={"Optional " + dSettings(117, this.props.userLang)}
 							/>
-							<h2 id="leftRights">Rights</h2>
+							<h2 id="leftRights">{dSettings(118, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="rights"
-								placeholder="Optional Rights"
+								placeholder={"Optional " + dSettings(118, this.props.userLang)}
 							/>
-							<h2 id="leftCoverage">Coverage</h2>
+							<h2 id="leftCoverage">{dSettings(119, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="coverage"
-								placeholder="Optional Coverage"
+								placeholder={"Optional " + dSettings(119, this.props.userLang)}
 							/>
-							<h2 id="leftISBN">ISBN</h2>
+							<h2 id="leftISBN">{dSettings(120, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="isbn"
-								placeholder="Optional ISBN"
+								placeholder={"Optional " + dSettings(120, this.props.userLang)}
 							/>
-							<h2 id="leftURL">URL</h2>
+							<h2 id="leftURL">{dSettings(122, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="urlBox"
-								placeholder="Optional URL"
+								placeholder={"Optional " + dSettings(122, this.props.userLang)}
 							/>
-							<h2 id="leftLocation">Location</h2>
+							<h2 id="leftLocation">{dSettings(121, this.props.userLang)}</h2>
 							<input type="text"
 								className="PaperBoxes"
 								id="location"
-								placeholder="Optional Location"
+								placeholder={"Optional " + dSettings(121, this.props.userLang)}
 							/>
 
 						</div>
 						<hr id="paper_line"></hr>
 
-						{this.state.isIndividualMode? (
-						<div id="OtherFields">
-							<h2 id="leftTags">Tags</h2>
-							<input type="text" className="PaperBoxes" id="tags" disabled /><br />
-							<button type="button"
-								className="PaperBoxes"
-								id="addTag"
-								onClick={doAddTag}><div id="addTagBtnTxt">+</div></button>
-							<button type="button"
-								className="PaperBoxes"
-								id="addTag"
-								onClick={doDeleteTag}><div id="addTagBtnTxt">-</div></button>
-							<input type="text" className="PaperBoxes" id="tagsearch" /><br />
-
-								<div>
-									<div id="fileUploadDiv">
-										<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
-										<input type="hidden" id="filename" />
-										{this.state.isFilePicked ? (
-											// <></>
-											<div>
-												<p>Size: {this.state.selectedFile.size}</p>
-											</div>
-											) : (
-											<p>Select a file to show details</p>
-										)}
-										<button type="button" id="clearUploadButton" onClick={this.removeUpload}>Remove Upload</button>
-									</div>
-									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">Upload</div></button>
-									<div id="uploadStatus"></div>
-									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">Upload CSV</div></button>
-								</div>
-							</div>
-							) : (
+						{this.state.isIndividualMode ? (
+							<>
 								<div id="OtherFields">
-									<div id="fileUploadDiv">
-										<CSVReader
-										 onDrop={this.handleOnDrop}
-										 onError={this.handleOnError}
-										 addRemoveButton
-										 removeButtonColor='#659cef'
-										 onRemoveFile={this.handleOnRemoveFile}
-										>
-											<span>Drop CSV file here or click to upload.</span>
-										</CSVReader>
+									<h2 id="leftTags">{dSettings(123, this.props.userLang)}</h2>
+									<input type="text" className="PaperBoxes" id="tags" disabled /><br />
+									<button type="button"
+										className="PaperBoxes"
+										id="addTag"
+										onClick={doAddTag}><div id="addTagBtnTxt">+</div></button>
+									<button type="button"
+										className="PaperBoxes"
+										id="addTag"
+										onClick={doDeleteTag}><div id="addTagBtnTxt">-</div></button>
+									<input type="text" className="PaperBoxes" id="tagsearch" /><br />
+
+									<div>
+										<div id="fileUploadDiv">
+											<input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
+											<input type="hidden" id="filename" />
+											{this.state.isFilePicked ? (
+												// <></>
+												<div>
+													<p>Size: {this.state.selectedFile.size}</p>
+												</div>
+											) : (
+												<p>{dSettings(126, this.props.userLang)}</p>
+											)}
+											<button type="button" id="clearUploadButton" onClick={this.removeUpload}>{dSettings(127, this.props.userLang)}</button>
+										</div>
+										<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleSubmission}><div id="uploadBtnTxt">{dSettings(128, this.props.userLang)}</div></button>
+										<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">{dSettings(128, this.props.userLang)} CSV</div></button>
 									</div>
-									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleBatchSubmission}><div id="uploadBtnTxt">Upload</div></button>
-									<div id="uploadStatus"></div>
-									<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">Upload Individual File</div></button>
 								</div>
-							)}
+								<div id="uploadStatus"></div>
+							</>
+						) : (
+							<div id="OtherFields">
+								<div id="fileUploadDiv">
+									<Button id="viewParsedPapersButton" variant="outlined" color="primary" disabled={!this.state.isCSVPicked}
+										onClick={this.toggleParsedBox}>
+										{dSettings(175, this.props.userLang)}
+									</Button>
+									<CSVReader
+										onDrop={this.handleOnDrop}
+										onError={this.handleOnError}
+										addRemoveButton
+										removeButtonColor='#659cef'
+										onRemoveFile={this.handleOnRemoveFile}
+									>
+										<span>{dSettings(174, this.props.userLang)}</span>
+									</CSVReader>
+								</div>
+								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.handleBatchSubmission}><div id="uploadBtnTxt">{dSettings(128, this.props.userLang)}</div></button>
+								<div id="uploadStatus"></div>
+								<button type="button" className="PaperBoxes" id="uploadButtonUploadPaper" onClick={this.changeMode}><div id="uploadBtnTxt">{dSettings(183, this.props.userLang)}</div></button>
+								<div id="uploadPaperCounter">{dSettings(173, this.props.userLang)} {this.state.currentCounter}/{
+									this.state.isCSVPicked ? this.state.selectedCSV.length - 2 : 0}</div>
+								<Dialog open={this.state.openParseBox} onClose={this.toggleParsedBox}>
+									<DialogTitle>{dSettings(175, this.props.userLang)}</DialogTitle>
+									<DialogContent>
+										{this.viewCSVData()}
+									</DialogContent>
+									<DialogActions>
+										<Button onClick={this.toggleParsedBox}
+											color="primary" autoFocus>
+											Close
+										</Button>
+									</DialogActions>
+								</Dialog>
+							</div>
+						)}
+					</div>
+					<div id="extrDiv">
+						<Dialog open={this.state.helpVideo} onClose={this.openHelpVideo}>
+							<DialogContent>
+								{this.state.isIndividualMode ? 
+									<iframe width="560" height="315" src={HelpVideoURLS[5]} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+									:
+									<iframe width="560" height="315" src={HelpVideoURLS[6]} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+								}
+							</DialogContent>
+							<DialogActions>
+								<Button onClick={this.openHelpVideo}
+									color="primary" autoFocus>
+									Close
+								</Button>
+							</DialogActions>
+						</Dialog>
 					</div>
 				</div>
 			</body>

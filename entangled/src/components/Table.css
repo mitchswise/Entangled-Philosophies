@@ -157,8 +157,8 @@ table th {
 .pageNumbers {
     margin:5px;
     height:30px;
-  position:relative;
-  top:10px;
+    right:12px;
+    position:relative;
 }
 
 /* Style The Dropdown Button */
@@ -227,3 +227,48 @@ background-color: #ddd;
   border-top:none;
 }
 
+
+@media screen and (max-width: 1300px) {
+
+  .dropbtnSearch {
+   
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #rightButtons {
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #searchSearchBarChrome{
+    font-size: 12px;
+  }
+
+  .pageNumbers {
+    right:5px;
+    font-size: 12px;
+
+}
+
+.rightButton2{
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+  
+
+}
+
+@media screen and (max-width: 900px) {
+
+
+
+  .pageNumbers {
+    right:0px;
+}
+  
+
+}

@@ -12,7 +12,7 @@
     $inData = json_decode(file_get_contents('php://input'), true);
     $userID = $inData["userID"];
     $language = $inData["language"];
-    $cat_name = $inData["name"];
+    $cat_name = addslashes($inData["name"]);
 
     //does the category exist?
     $query = "SELECT category_id FROM category_translation WHERE owner = " . $userID . " AND language = '" . $language . "' AND text = '" . $cat_name . "';";

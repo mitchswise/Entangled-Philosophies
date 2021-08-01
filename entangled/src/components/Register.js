@@ -1,16 +1,26 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { addUser, sendActivation, cookies } from '../api.js';
+import { getGlobalLanguage } from "../api.js";
+import { dSettings, wordLookup } from '../dictionary.js';
 import './Register.css';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Button from "@material-ui/core/Button";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+
+var userLanguage = getGlobalLanguage();
 
 function validateEmail(mail) {
     var regexPattern = /\S+@\S+\.\S+/;
     return regexPattern.test(mail);
 }
 
-function doAddUser(preferredLanguage) {
-    if(!preferredLanguage) {
-        document.getElementById("registerUserStatus").innerHTML = ("Please set your preferred language.");    
+function doAddUser(preferredLanguage, userLang) {
+    if (!preferredLanguage) {
+        document.getElementById("registerUserStatus").innerHTML = dSettings(157, userLang);
         return;
     }
     document.getElementById("registerUserStatus").innerHTML = ("");
@@ -19,68 +29,68 @@ function doAddUser(preferredLanguage) {
     var username = document.getElementById("username").value;
     var email = document.getElementById("email").value;
     var language = preferredLanguage;
-	
-	var passLetter = /[abcdefghijklmnopqrstuvwxyz]/;
-	var passUpper = /[ABCDEFGHIJKLMNOPWRSTUVWXYZ]/;
-	var passNum = /[1234567890]/;
-	var passSpecial = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+
+    var passLetter = /[abcdefghijklmnopqrstuvwxyz]/;
+    var passUpper = /[ABCDEFGHIJKLMNOPWRSTUVWXYZ]/;
+    var passNum = /[1234567890]/;
+    var passSpecial = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
 
     if (!username) {
-        document.getElementById("registerUserStatus").innerHTML = ("Enter a username.");
+        document.getElementById("registerUserStatus").innerHTML = dSettings(154, userLang);
         return;
     }
     if (!firstPass) {
-        document.getElementById("registerUserStatus").innerHTML = ("Enter a password.");
+        document.getElementById("registerUserStatus").innerHTML = dSettings(153, userLang);
         return;
     }
     if (!secondPass) {
-        document.getElementById("registerUserStatus").innerHTML = ("Confirm your password.");
+        document.getElementById("registerUserStatus").innerHTML = dSettings(76, userLang);
         return;
     }
 
     if (firstPass != secondPass) {
-        document.getElementById("registerUserStatus").innerHTML = ("Passwords do not match");
+        document.getElementById("registerUserStatus").innerHTML = dSettings(99, userLang);
         return;
     }
 
-	if (firstPass.length < 8) {
-		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 8 characters.");
-		return;
-	}
+    if (firstPass.length < 8) {
+        document.getElementById("registerUserStatus").innerHTML = dSettings(100, userLang);
+        return;
+    }
 
-	if (!passLetter.test(firstPass) || !passUpper.test(firstPass)) {
-		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 1 lowercase and uppercase letter.");
-		return;
-	}
+    if (!passLetter.test(firstPass) || !passUpper.test(firstPass)) {
+        document.getElementById("registerUserStatus").innerHTML = dSettings(101, userLang);
+        return;
+    }
 
-	if (!passNum.test(firstPass)) {	
-		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 1 number.");
-		return;
-	}
+    if (!passNum.test(firstPass)) {
+        document.getElementById("registerUserStatus").innerHTML = dSettings(102, userLang);
+        return;
+    }
 
-	if (!passSpecial.test(firstPass)) {
-		document.getElementById("registerUserStatus").innerHTML = ("Password must contain at least 1 special character.");
-		return;
-	}
+    if (!passSpecial.test(firstPass)) {
+        document.getElementById("registerUserStatus").innerHTML = dSettings(103, userLang);
+        return;
+    }
 
-	if (firstPass.includes(" ")) {
-		document.getElementById("registerUserStatus").innerHTML = ("Password must not contain spaces.");
-	}
+    if (firstPass.includes(" ")) {
+        document.getElementById("registerUserStatus").innerHTML = dSettings(104, userLang);
+    }
 
     if (!validateEmail(email)) {
-        document.getElementById("registerUserStatus").innerHTML = ("Invalid email");
+        document.getElementById("registerUserStatus").innerHTML = dSettings(158, userLang);
         return;
     }
 
     var response = addUser(username, email, firstPass, language);
     if (response.status != "success") {
-        document.getElementById("registerUserStatus").innerHTML = ("Error: " + response.status);
+        document.getElementById("registerUserStatus").innerHTML = (dSettings(147, userLang) + ": " + wordLookup(response.status, userLang));
         return;
     }
 
     sendActivation(username);
 
-    document.getElementById("registerUserStatus").innerHTML = ("Account created! Check your email for verification before logging in.");
+    document.getElementById("registerUserStatus").innerHTML = dSettings(159, userLang);
     document.getElementById("password").value = "";
     document.getElementById("password2").value = "";
     document.getElementById("username").value = "";
@@ -90,7 +100,8 @@ function doAddUser(preferredLanguage) {
 export default class Register extends React.Component {
 
     state = {
-        preferredLanguage: undefined
+        preferredLanguage: this.props.userLang,
+        helpVideo: false
     }
 
     setLanguage = (newLang) => {
@@ -103,56 +114,83 @@ export default class Register extends React.Component {
         }
     }
 
+    openHelpVideo = () => {
+        this.setState((prevState) => ({ helpVideo: !prevState.helpVideo }));
+    }
+
     render() {
         const { preferredLanguage } = this.state;
+        let userLang = this.props.userLang;
         const element = (
             <>
-            <div className="container" id="outer-container">
-                <div className="header">
-                    <h1 id="title">Account Registration</h1>
-                </div>
-                {this.renderRedirect()}
-                <div className="RegisterBox">
-                    <div className="RegisterFields">
-                        <h2 id="leftUsername">Username</h2>
-                        <input type="text" className="inputBoxes" id="username" /><br />
-                        <h2 id="leftPassword">Password</h2>
-                        <input type="password" className="inputBoxes" id="password" /><br />
-                        <h2 id="leftConfirmPassword">Confirm Password</h2>
-                        <input type="password" className="inputBoxes" id="password2" /><br />
-                        <h2 id="leftEmail">Email</h2>
-                        <input type="text" className="inputBoxes" id="email" /><br />
+                <div className="container" id="outer-container">
+                    <div className="header">
+                        <h1 id="title">{dSettings(14, userLang)}</h1>
+                        <div id="iconWrapper" onClick={this.openHelpVideo}>
+                            <FontAwesomeIcon icon={faQuestionCircle} id="HomeQuestionCircle" size='2x' />
+                        </div>
+                    </div>
+                    {this.renderRedirect()}
+                    <div className="RegisterBox">
+                        <div className="RegisterFields">
+                            <h2 id="leftUsername">{dSettings(60, userLang)}</h2>
+                            <input type="text" className="inputBoxes" id="username" /><br />
+                            <h2 id="leftPassword">{dSettings(62, userLang)}</h2>
+                            <input type="password" className="inputBoxes" id="password" /><br />
+                            <h2 id="leftConfirmPassword">{dSettings(76, userLang)}</h2>
+                            <input type="password" className="inputBoxes" id="password2" /><br />
+                            <h2 id="leftEmail">{dSettings(77, userLang)}</h2>
+                            <input type="text" className="inputBoxes" id="email" /><br />
 
-                        <div id="registerDownContainer">
-                            <div class="dropdown" id="test">
-                                <button class="dropbtn" id="chooseRegisterLangBtn">Choose Language</button>
-                                <div class="dropdown-content" id="dropdownRegister">
-                                    <button onClick={() => this.setLanguage("eng")} 
-                                        style={ 
-                                            preferredLanguage === "eng" ? {color: 'green'} :
-                                            { color: 'black' }
-                                        } type="submit" id="englishButton">English</button>
-                                    <button onClick={() => this.setLanguage("ger")} 
-                                        style={ 
-                                            preferredLanguage === "ger" ? {color: 'green'} :
-                                            { color: 'black' }
-                                        } type="submit" id="germanButton">German</button>
+                            <div id="registerDownContainer">
+                                <div class="dropdown" id="test">
+                                    <button class="dropbtn" id="chooseRegisterLangBtn">{dSettings(82, userLang)}</button>
+                                    <div class="dropdown-content" id="dropdownRegister">
+                                        <button onClick={() => this.setLanguage("eng")}
+                                            style={
+                                                preferredLanguage === "eng" ? { color: 'green' } :
+                                                    { color: 'black' }
+                                            } type="submit" id="englishButton">{dSettings(130, userLang)}</button>
+                                        <button onClick={() => this.setLanguage("ger")}
+                                            style={
+                                                preferredLanguage === "ger" ? { color: 'green' } :
+                                                    { color: 'black' }
+                                            } type="submit" id="germanButton">{dSettings(131, userLang)}</button>
+                                    </div>
                                 </div>
                             </div>
+                            <button type="button" className="inputBoxes" id="login" onClick={() => doAddUser(this.state.preferredLanguage, this.props.userLang)}>
+                                <div id="loginBtnTxt">{dSettings(78, userLang)}</div>
+                            </button>
+
+
+                            <hr id="hr"></hr>
+
+                            <Link to="/login" id="alreadyRegisteredLoginText">{dSettings(79, userLang)} {dSettings(13, userLang)}</Link>
                         </div>
-                        <button type="button" className="inputBoxes" id="login" onClick={() => doAddUser(this.state.preferredLanguage)}>
-                            <div id="loginBtnTxt">Create</div>
-                        </button>
-
-
-                        <hr id="hr"></hr>
-
-                        <Link to="/login" id="alreadyRegisteredLoginText">Already Registered? Login</Link>
                     </div>
-                </div>
 
-            </div>
-            <br /><div id="registerUserStatus"></div>
+                </div>
+                <br /><div id="registerUserStatus"></div>
+                <div id="extrDiv">
+                    <Dialog open={this.state.helpVideo} onClose={this.openHelpVideo}>
+                        <DialogContent>
+                            <ol>
+                                <li>{dSettings(100, this.props.userLang)}</li>
+                                <li>{dSettings(101, this.props.userLang)}</li>
+                                <li>{dSettings(102, this.props.userLang)}</li>
+                                <li>{dSettings(103, this.props.userLang)}</li>
+                                <li>{dSettings(104, this.props.userLang)}</li>
+                            </ol>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.openHelpVideo}
+                                color="primary" autoFocus>
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
             </>
         );
         return element;

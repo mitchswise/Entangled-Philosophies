@@ -14,7 +14,7 @@
 	$inData = json_decode(file_get_contents('php://input'), true);
 
 	//validate the username/email provided
-	$sql = "SELECT email, username, id FROM users WHERE username = '" . $inData["username"] . "' AND email = '" . $inData["email"] . "';";
+	$sql = "SELECT email, username, id FROM users WHERE username = '" . addslashes($inData["username"]) . "' AND email = '" . addslashes($inData["email"]) . "';";
 	$result = $conn->query($sql);
 
 	

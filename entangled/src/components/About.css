@@ -1,0 +1,25 @@
+body {
+    height: 100%;
+    width: 100%;
+}
+
+#CreditsText {
+    border: 1px solid black;
+    margin: auto;
+    position: relative;
+    text-align: center;
+    top: 50%;
+    width: 20%;
+}
+ul {
+    display: inline-block;
+    text-align: left;
+}
+#cookiesConsent {
+    position: absolute;
+    margin-left: 37%;
+}
+
+#cookiesOptStatus {
+    position: absolute;
+}

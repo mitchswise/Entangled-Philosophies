@@ -3,14 +3,17 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { slide as Menu } from 'react-burger-menu';
 import './Sidebar.css';
-import { cookies } from '../api';
+import { cookies, setGlobalLanguage } from '../api';
+import { getPermLvl, getGlobalLanguage } from '../api.js';
+import { dSettings } from '../dictionary.js';
 
 function logout() {
   cookies.remove('UserID', { path: '/' });
-  cookies.remove('PermLvl', { path: '/' });
-  cookies.remove('PrefLang', { path: '/' });
+  setGlobalLanguage(undefined);
   window.location.reload();
 }
+
+var userPermLvl = getPermLvl();
 
 export default class Sidebar extends React.Component {
 
@@ -19,80 +22,80 @@ export default class Sidebar extends React.Component {
       return (
         <Menu>
           <a className="menu-item">
-            <Link to="/">Home</Link>
+            <Link to="/">{dSettings(4,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/about">About</Link>
+            <Link to="/about">{dSettings(5,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-          <Link to={{pathname: "/search", state:{}}}>Search</Link>
+            <Link to={{ pathname: "/search", state: {} }}>{dSettings(7,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/login">Login</Link>
+            <Link to="/login">{dSettings(13,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/register">Register</Link>
+            <Link to="/register">{dSettings(14,this.props.userLang)}</Link>
           </a>
 
         </Menu>
       );
     }
-    else if (cookies.get('PermLvl') == 0) { //regular user
+    else if (userPermLvl == 0) { //regular user
       return (
         <Menu>
           <a className="menu-item">
-            <Link to="/">Home</Link>
+            <Link to="/">{dSettings(4,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/about">About</Link>
+            <Link to="/about">{dSettings(5,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to={{pathname: "/search", state:{}}}>Search</Link>
+            <Link to={{ pathname: "/search", state: {} }}>{dSettings(7,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/tags">Tags</Link>
+            <Link to="/tags">{dSettings(123,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/queries">Saved Queries</Link>
+            <Link to="/queries">{dSettings(15,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/settings">Settings</Link>
+            <Link to="/settings">{dSettings(10,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to={{pathname: "/", state:{}}} onClick={logout}>Logout</Link>
+            <Link to={{ pathname: "/", state: {} }} onClick={logout}>{dSettings(11,this.props.userLang)}</Link>
           </a>
         </Menu>
       );
     }
-    else if (cookies.get('PermLvl') > 0) { //some administrator
+    else if (userPermLvl > 0) { //some administrator
       return (
         <Menu>
           <a className="menu-item">
-            <Link to="/">Home</Link>
+            <Link to="/">{dSettings(4,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/about">About</Link>
+            <Link to="/about">{dSettings(5,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/admin">Admin</Link>
+            <Link to="/admin">{dSettings(6,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to={{pathname: "/search", state:{}}}>Search</Link>
+            <Link to={{ pathname: "/search", state: {} }}>{dSettings(7,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/tags">Tags</Link>
+            <Link to="/tags">{dSettings(123,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/queries">Saved Queries</Link>
+            <Link to="/queries">{dSettings(15,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/uploadpaper">Upload Paper</Link>
+            <Link to="/uploadpaper">{dSettings(9,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to="/settings">Settings</Link>
+            <Link to="/settings">{dSettings(10,this.props.userLang)}</Link>
           </a>
           <a className="menu-item">
-            <Link to={{pathname: "/", state:{}}} onClick={logout}>Logout</Link>
+            <Link to={{ pathname: "/", state: {} }} onClick={logout}>{dSettings(11,this.props.userLang)}</Link>
           </a>
         </Menu>
       );

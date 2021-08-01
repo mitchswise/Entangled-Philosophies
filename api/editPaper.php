@@ -25,7 +25,7 @@
     if($row["url"] != $inData["url"]) {
         //need to unlink this file if it exists
         if($row["url"] != "none") {
-            $full_URL = $paperurl . $row["url"];
+            $full_URL = $paperurl . addslashes($row["url"]);
             unlink($full_URL);
         }
     }
@@ -41,7 +41,7 @@
             $query = $query . $arr_key . " = NULL";
         }
         else {
-            $query = $query . $arr_key . " = '" . $arr_value . "'";
+            $query = $query . $arr_key . " = '" . addslashes($arr_value) . "'";
         }
         $metadata_appended++;
     }

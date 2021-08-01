@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import './EditPaper.css';
+import { dSettings, wordLookup } from '../dictionary.js';
 import trashCan from '../images/trash.png';
 
 import {
     cookies, editPaper, tagExists, addTagToPaper,
     addMetadataTag, removeTagFromPaper, getPapersTag, fileURLBase,
-    removePaper, removeFile
+    removePaper, removeFile, HelpVideoURLS
 } from '../api.js';
-
 import { field_ids, metadata_ids, metadata_categories } from './UploadPaper';
+import { getGlobalLanguage, getPermLvl } from '../api.js';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Button from "@material-ui/core/Button";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-var tagsList = [];
-var tagIDs = [];
 var url = 'http://chdr.cs.ucf.edu/~entangledPhilosophy/Entangled-Philosophies/api/uploadPaper.php';
 var userID = cookies.get('UserID');
-if (cookies.get('PermLvl') > 0) userID = 0;
+var userLanguage = getGlobalLanguage();
+var userPermLvl = getPermLvl();
+if (userPermLvl > 0) userID = 0;
 
 let header_ids = ["leftTitle", "leftAuthor", "leftContributor", "leftRelations", "leftSubject", "leftDate",
     "leftDescription", "leftType", "leftFormat", "leftLanguage", "leftSource",
@@ -34,14 +41,7 @@ function makeMetadataValues(paperInformation) {
 }
 
 export function loadTags(paperInformation) {
-    var userID = 0, prefLang = "eng", paperID = paperInformation.id;
-    if (cookies.get('UserID') && cookies.get('PermLvl') == 0) {
-        userID = cookies.get('UserID');
-    }
-    if (cookies.get('PrefLang')) {
-        prefLang = cookies.get('PrefLang');
-    }
-
+    var userID = cookies.get('UserID') ? cookies.get('UserID') : 0, prefLang = getGlobalLanguage(), paperID = paperInformation.id;
     var dict = { userID: userID, language: prefLang, paperID: paperID };
     var data = getPapersTag(dict);
 
@@ -56,7 +56,7 @@ function doRemoveFile(id, url) {
 const doAddPaper = async (paperInformation, currentTags, curMetadataText) => {
     var title = document.getElementById("titleName").value;
     if (title == "") {
-        document.getElementById("paperStatus").innerHTML = "Paper must include a title";
+        document.getElementById("paperStatus").innerHTML =  dSettings(179, this.props.userLang);
         return;
     }
     var filename = document.getElementById("filename").innerHTML;
@@ -136,19 +136,15 @@ const doAddPaper = async (paperInformation, currentTags, curMetadataText) => {
 
                 if (found_index != -1) {
                     var curCategory = metadata_categories[found_index];
-                    var result = addMetadataTag(curCategory, "eng", value, -1);
+                    var result = addMetadataTag(curCategory, userLanguage, value, -1);
 
                     tag_data = tagExists(value, "met", 0);
                     tag_id = tag_data.tag_id;
-                }
-                else {
-                    console.log("error?");
                 }
 
             }
 
             if (tag_id == -1 || tag_id == undefined) {
-                console.log("Error getting metadata tag " + value + " key = " + keyVal);
                 continue;
             }
 
@@ -172,11 +168,12 @@ export default class EditPaper extends React.Component {
         currentTags: loadTags(this.props.paperInformation),
         selectedFile: "",
         isFilePicked: false,
+        helpVideo: false
     }
 
     changeHandler = (event) => {
         if (event.target.files[0].type != "application/pdf") {
-            document.getElementById("uploadStatus").innerHTML = "Only PDFs can be uploaded.";
+            document.getElementById("uploadStatus").innerHTML =  dSettings(181, this.props.userLang);
         } else {
             this.setState({ selectedFile: event.target.files[0] });
             this.setState({ isFilePicked: true });
@@ -209,7 +206,7 @@ export default class EditPaper extends React.Component {
                     doAddPaper(this.state.paperInformation, this.state.currentTags, this.state.curMetadataText);
                     this.props.closeEdit(false, true);
                 });
-        } else if (window.confirm("Are you sure you want to upload the paper without a file?")) {
+        } else if (window.confirm(dSettings(178, this.props.userLang))) {
             doAddPaper(this.state.paperInformation, this.state.currentTags, this.state.curMetadataText);
             this.props.closeEdit(false, true);
         }
@@ -254,11 +251,16 @@ export default class EditPaper extends React.Component {
         }
     }
 
+    openHelpVideo = () => {
+        this.setState((prevState) => ({ helpVideo: !prevState.helpVideo }));
+    }
+
+
     render() {
         const doAddTag = async e => {
             var tag = document.getElementById("tagsearch").value;
 
-            var data = tagExists(tag, cookies.get('PrefLang'), userID);
+            var data = tagExists(tag, userLanguage, userID);
 
             if (data.tag_id >= 0) {
                 var obj = { text: tag, tag_id: data.tag_id, owner: userID };
@@ -269,7 +271,7 @@ export default class EditPaper extends React.Component {
                 document.getElementById("paperStatus").innerHTML = "";
             }
             else {
-                document.getElementById("paperStatus").innerHTML = "Tag Not Found";
+                document.getElementById("paperStatus").innerHTML = dSettings(182, this.props.userLang);
             }
 
             document.getElementById("tagsearch").value = '';
@@ -280,7 +282,7 @@ export default class EditPaper extends React.Component {
         const doDeleteTag = async e => {
             var tag = document.getElementById("tagsearch").value;
 
-            var data = tagExists(tag, cookies.get('PrefLang'), userID);
+            var data = tagExists(tag, userLanguage, userID);
 
             if (data.tag_id >= 0) {
                 var obj = { text: tag, tag_id: data.tag_id, owner: userID };
@@ -310,15 +312,14 @@ export default class EditPaper extends React.Component {
         }
 
         for (let index in field_ids) {
-            var curHeader = metadata_categories[index];
+            var curHeader = wordLookup(metadata_categories[index], this.props.userLang);
             var header = <h2 id={header_ids[index]}>{curHeader}</h2>
-            var placeholderValue = "Optional " + metadata_categories[index];
+            var placeholderValue = dSettings(176, this.props.userLang) + " " + curHeader;
             var input = <input
                 className="editPaperBoxes"
                 id={field_ids[index]}
                 value={this.state.curMetadataText[index]}
                 placeholder={placeholderValue}
-                disabled={cookies.get('PermLvl') < 1}
                 onChange={doUpdateArr.bind(this, index)} />
 
             metadata.push(header);
@@ -327,7 +328,10 @@ export default class EditPaper extends React.Component {
 
         return <div className="container" ref={el => (this.div = el)}>
             <div className="header">
-                <h1 id="title">Edit Paper</h1>
+                <h1 id="title">{dSettings(46,this.props.userLang)}</h1>
+                <div id="iconWrapper" onClick={this.openHelpVideo}>
+                    <FontAwesomeIcon icon={faQuestionCircle} id="HomeQuestionCircle" size='2x' />
+                </div>
             </div>
             {this.renderRedirect()}
             <body>
@@ -356,17 +360,17 @@ export default class EditPaper extends React.Component {
                                 <br /><br /><br />
 
                                 <div id="fileEditDiv">
-                                    <input type="file" name="file" id="fileUpload" disabled={cookies.get('PermLvl') < 1} onChange={this.changeHandler} />
+                                    <input type="file" name="file" id="fileUpload" onChange={this.changeHandler} />
                                     <input type="hidden" id="filename" />
                                     {this.state.isFilePicked ? (
                                         <div>
                                             <p>Size: {this.state.selectedFile.size}</p>
                                         </div>
                                     ) : (
-                                        <p>Select a file to show details</p>
+                                        <p>{dSettings(126,this.props.userLang)}</p>
                                     )}
-                                    <button type="button" id="clearUploadButton" disabled={cookies.get('PermLvl') < 1}
-                                        onClick={this.removeUpload}>Remove Upload</button>
+                                    <button type="button" id="clearUploadButton"
+                                        onClick={this.removeUpload}>{dSettings(127,this.props.userLang)}</button>
                                 </div>
 
 
@@ -378,33 +382,43 @@ export default class EditPaper extends React.Component {
                                     <div>
                                         <br />
                                         <a id="currentFile" href={fileURLBase + this.state.paperInformation.url}
-                                            target="_blank" >Current File: {this.state.paperInformation.url}</a>
+                                            target="_blank" >{dSettings(197, this.props.userLang)}: {this.state.paperInformation.url}</a>
                                         <br /><button type="button" id="removeCurrentFile" onClick={this.remFile}>Remove Current File</button>
                                     </div>
                                     : <div>
                                         <br />
-                                        <a id="currentFile" >Current File: None</a>
+                                        <a id="currentFile" >{dSettings(197, this.props.userLang)}: {dSettings(42, this.props.userLang)}</a>
                                     </div>
                             }
 
                         </div>
                     </div>
                     <div id="bottomRowButtons">
-                        <button type="button" className="editSaveButtons" id="editSaveButton" onClick={this.handleSubmission}>Save</button>
+                        <button type="button" className="editSaveButtons" id="editSaveButton" onClick={this.handleSubmission}>{dSettings(27, this.props.userLang)}</button>
                         <button type="button" className="editSaveButtons" id="editCancelButton"
-                            onClick={() => this.props.closeEdit(false, false)}>Cancel</button>
+                            onClick={() => this.props.closeEdit(false, false)}>{dSettings(44, this.props.userLang)}</button>
                         <img src={trashCan} id="deletePaperButton" onClick={() => {
-                            if (cookies.get('PermLvl') < 1) {
-                                window.alert("Regular users can't delete papers.")
-                            }
-                            else if (window.confirm("Are you sure you want to delete this paper? This action is irreversible!")) {
-                                console.log("Deleting...");
+                            var phrase = dSettings(198, this.props.userLang)
+                            if (window.confirm(phrase)) {
                                 removePaper(this.state.paperInformation.id);
                                 this.props.closeEdit(true, false);
                             }
                         }} />
                     </div>
                     <div id="paperStatus"></div>
+                </div>
+                <div id="extrDiv">
+                    <Dialog open={this.state.helpVideo} onClose={this.openHelpVideo}>
+                        <DialogContent>
+                            <iframe width="560" height="315" src={HelpVideoURLS[0]} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.openHelpVideo}
+                                color="primary" autoFocus>
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </div>
             </body>
         </div>

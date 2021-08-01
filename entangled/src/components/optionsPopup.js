@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import './optionsPopup.css';
 import { metadata_categories, metadata_ids } from "./UploadPaper";
+import { dSettings, wordLookup } from '../dictionary.js';
 
 export default class OptionsPopup extends React.Component {
 
@@ -18,8 +19,8 @@ export default class OptionsPopup extends React.Component {
         const { currentOptions } = this.state;
         var result = [];
         for(const idx in metadata_categories) {
-            var name = metadata_categories[idx];
-            var id = "options_"+name;
+            var name = wordLookup(metadata_categories[idx], this.props.userLang);
+            var id = "options_"+metadata_categories[idx];
             result.push(
                 <>
                 <label class="label" >
@@ -64,8 +65,8 @@ export default class OptionsPopup extends React.Component {
                         {this.makeMetadataBoxes()}
                     </div>
                     <div id="optionButtons">
-                        <button id="metaDataCancelButton" onClick={this.saveOptions} >Save</button>
-                        <button id="metaDataCancelButton" onClick={this.props.loadOptions} >Cancel</button>
+                        <button id="metaDataCancelButton" onClick={this.saveOptions} >{dSettings(27,this.props.userLang)}</button>
+                        <button id="metaDataCancelButton" onClick={this.props.loadOptions} >{dSettings(44,this.props.userLang)}</button>
                     </div>
                 </div>
             </div>

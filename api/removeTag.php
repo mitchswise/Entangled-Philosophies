@@ -12,7 +12,7 @@
     $inData = json_decode(file_get_contents('php://input'), true);
     $userID = $inData["userID"];
     $language = $inData["language"];
-    $tag_name = $inData["name"];
+    $tag_name = addslashes($inData["name"]);
 
     //does the tag exist?
     $query = "SELECT tag_id FROM tags_translation WHERE owner = " . $userID . " AND language = '" . $language . "' AND text = '" . $tag_name . "';";

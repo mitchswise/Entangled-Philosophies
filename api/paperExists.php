@@ -10,8 +10,8 @@
 	}
 
     $inData = json_decode(file_get_contents('php://input'), true);
-    $title = $inData["title"];
-    $author = $inData["author"];
+    $title = addslashes($inData["title"]);
+    $author = addslashes($inData["author"]);
 
     $query = "SELECT id FROM papers WHERE title = '" . $title . "' AND author = '" . $author . "';";
     $result = $conn->query($query);

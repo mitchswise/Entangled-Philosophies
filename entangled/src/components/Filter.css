@@ -24,7 +24,35 @@
 }
 
 .filterButtons {
+    margin: 2px;
+    padding: 2px 6px;
+    background: #f0f0f0;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 10.5px;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid #ccc;
     float: left;
+    font-family: Arial,sans-serif;
+    line-height: 1.42857143;
+    color: #333
+}
+
+.filterTopRows {
+    margin: 2px;
+    padding: 2px 3px;
+    background: #f0f0f0;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 12.5px;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid #ccc;
+    float: left;
+    font-family: Arial,sans-serif;
+    line-height: 1.42857143;
+    color: #333
 }
 
 #filterSearchBar {
@@ -123,7 +151,7 @@
     width: 40%;
     height: 100%;
     margin: auto;
-    margin-left: 0%;
+    margin-left: 5%;
     position: relative;
     left: 10%;
     float: left;

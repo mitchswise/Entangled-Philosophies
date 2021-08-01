@@ -21,7 +21,7 @@
 
     for($i = 0; $i < $arr_len; $i++) {
         if($i > 0) $query = $query . " OR ";
-        $query = $query . "(text='" . $arr[$i]["category"] . "' AND language='" . $language . "')";
+        $query = $query . "(text='" . addslashes($arr[$i]["category"]) . "' AND language='" . $language . "')";
     }
 
     $result = $conn->query($query);
@@ -37,7 +37,7 @@
     }
 
     for($i = 0; $i < $arr_len; $i++) {
-        $cur_category = $category_to_id[$arr[$i]["category"]];
+        $cur_category = $category_to_id[ addslashes($arr[$i]["category"]) ];
         $query = "INSERT INTO tags (owner_id, category_id) VALUES (" . $userID . ", " . $cur_category . ");";
         $result = $conn->query($query);
         if(!$result) {
@@ -57,7 +57,7 @@
                 $query = $query . ", ";
             }
 
-            $query = $query . "(" . $tag_id . ", '" . $_key . "', '" . $_value . "', " . $userID . ")";
+            $query = $query . "(" . $tag_id . ", '" . $_key . "', '" . addslashes($_value) . "', " . $userID . ")";
             $inserted++;
         }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactWordcloud from 'react-wordcloud';
+import { dSettings } from '../dictionary.js';
 import { cookies, getWordCloudTags } from '../api';
 
 const options = {
@@ -28,8 +29,7 @@ export default class WordCloud extends React.Component {
 
             var userID = 0;
             if (cookies.get('UserID')) userID = cookies.get('UserID');
-            var prefLang = "eng";
-            if (cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
+            var prefLang = this.props.userLang;
 
             var paperIDs = [];
             for (const idx in paperData) {
@@ -76,6 +76,10 @@ export default class WordCloud extends React.Component {
         this.setState({ wordLimit: value })
     }
 
+    resetNumber = () => {
+        this.setState({ wordLimit: this.state.words.length });
+    }
+
     getWordLimit = () => {
         if(!this.state.wordLimit) return this.state.words.length;
         return this.state.wordLimit;
@@ -85,6 +89,7 @@ export default class WordCloud extends React.Component {
         let wordLimit = this.getWordLimit();
         const words = this.state.words.slice(0, wordLimit);
 
+
         return (
             <>
             <div id="wordCloudWrapper" style={{height: "100%"}} >
@@ -93,12 +98,13 @@ export default class WordCloud extends React.Component {
                 </div>
                 <div id="wordCloudOptions" style={{paddingLeft:"30%", display:"flex"}}>
                     <select id="selectSort" onChange={this.changeSort} >
-                        <option value="Descending">Most frequent</option>
-                        <option value="Ascending">Least frequent</option>
+                        <option value="Descending">{dSettings(199, this.props.userLang)}</option>
+                        <option value="Ascending">{dSettings(200, this.props.userLang)}</option>
                     </select>
                     <input type="number" id="quantity" name="quantity" min="0" 
                         max={this.state.words.length} />
-                    <button onClick={this.changeNumber}>Update</button>
+                    <button onClick={this.changeNumber}>{dSettings(201, this.props.userLang)}</button>
+                    <button onClick={this.resetNumber}>{dSettings(37, this.props.userLang)}</button>
                 </div>
             </div>
             </>

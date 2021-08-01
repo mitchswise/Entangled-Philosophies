@@ -3,9 +3,19 @@ import { Redirect } from 'react-router-dom';
 import { useTable, useFilters, useSortBy, usePagination, useGlobalFilter, useRowSelect } from "react-table";
 import { cookies, getQueries, removeQueries, getTags } from '../api.js'
 import { Checkbox } from './Checkbox.js';
+import { getGlobalLanguage } from "../api.js";
+import { dSettings } from '../dictionary.js';
 import './Queries.css';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Button from "@material-ui/core/Button";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries }) {
+var userLanguage = getGlobalLanguage();
+
+function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries, userLang }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -59,18 +69,20 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
 
     return (
         <>
+        <div id="queriesBox">
         <div id = "queryTopBar">
         <input
             value={filterInput}
             id="queriesSearchBar"
             onChange={handleFilterChange}
-            placeholder={"Search"}
+            placeholder={dSettings(67,userLang)}
         />
-        <button id="queriesToggle" onClick={toggleView} >Toggle</button>
-        <button id="queriesDelete" onClick={() => deleteQueries(selectedFlatRows.map((row) => row.original))} >Delete</button>
+        <button id="queriesToggle" onClick={toggleView} >{dSettings(68,userLang)}</button>
+        <button id="queriesDelete" onClick={() => deleteQueries(selectedFlatRows.map((row) => row.original))} >{dSettings(69,userLang)}</button>
         
         </div>
-        <table {...getTableProps()}>
+        <div id="queriesTableWrapper">
+        <table id="queriesTable" {...getTableProps()}>
             <thead>
             {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
@@ -109,15 +121,18 @@ function QueriesTable({ columns, data, toggleView, setSearchFlag, deleteQueries 
             })}
             </tbody>
         </table>
+        </div>
         <div id="queriesBottom">
-        <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >Previous</button>
+        <button id="pageNumbers" onClick={() => previousPage()} disabled={!canPreviousPage} >{dSettings(73,userLang)}</button>
         <span id = "pageNumbers">
-            Page{' '}
+            {dSettings(74,userLang)}{' '}
             {pageIndex + 1} / {pageOptions.length}
             {' '}
         </span>
-        <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >Next</button>
+        <button id="pageNumbers" onClick={() => nextPage()} disabled={!canNextPage} >{dSettings(75,userLang)}</button>
         </div>
+        </div>
+
     </>
     );
 }
@@ -126,8 +141,7 @@ function getQueryData() {
     if(!cookies.get('UserID')) return [];
     var data = getQueries(cookies.get('UserID'));
 
-    var prefLang = "eng";
-    if(cookies.get('PrefLang')) prefLang = cookies.get('PrefLang');
+    var prefLang = userLanguage;
     var allTags = getTags(cookies.get('UserID'), prefLang);
     var tagDict = {};
     for(const index in allTags.tags) {
@@ -195,26 +209,26 @@ function getSavedHistory() {
 
 const columnsSavedQuery = [
     {
-        Header: "Name",
+        Header: dSettings(48, userLanguage),
         accessor: "name"
     },
     {
-        Header: "Date",
+        Header: dSettings(71, userLanguage),
         accessor: "date"
     },
     {
-        Header: "Query",
+        Header: dSettings(72, userLanguage),
         accessor: "display_query"
     }
 ];
 
 const columnsHistoryQuery = [
     {
-        Header: "Date",
+        Header: dSettings(71, userLanguage),
         accessor: "date"
     },
     {
-        Header: "Query",
+        Header: dSettings(72, userLanguage),
         accessor: "display_query"
     }
 ];
@@ -228,7 +242,8 @@ export default class Queries extends React.Component {
         toggleState: false,
         redirectToSearch: false,
         redirectFilter: undefined,
-        redirectCustomQuery: undefined
+        redirectCustomQuery: undefined,
+        helpVideo: false
     }
 
     renderRedirect = () => {
@@ -264,8 +279,6 @@ export default class Queries extends React.Component {
             sendState = { customQuery: this.state.redirectCustomQuery };
         }
 
-        console.log("Redirect? " + JSON.stringify(sendState));
-
         return <Redirect
             to={{
                 pathname: "/search",
@@ -284,31 +297,38 @@ export default class Queries extends React.Component {
         window.location.reload();
     }
 
+    openHelpVideo = () => {
+        this.setState((prevState) => ({ helpVideo: !prevState.helpVideo }));
+    }
+
     render() {
         const { toggleState, savedQueries, savedHistory, redirectToSearch } = this.state;
         return (<div id="searchContainer">
             <div className="header">
                 {
-                    toggleState === false ? <h1 id="title">Saved Queries</h1>
+                    toggleState === false ? <h1 id="title">{dSettings(15,this.props.userLang)}</h1>
                     : <h1 id="title">Search History</h1>
                 }
+                <div id="iconWrapper" onClick={this.openHelpVideo}>
+                    <FontAwesomeIcon icon={faQuestionCircle} id="HomeQuestionCircle" size='2x' />
+                </div>
             </div>
             {this.renderRedirect()}
             {redirectToSearch ? this.loadSearch() : <></>}
             <body>
-                <div id="queryWrapper">
                     {
                         toggleState === false ? 
                             <QueriesTable columns={columnsSavedQuery} data={savedQueries}
                                 toggleView={this.toggleView} setSearchFlag={this.setSearchFlag}
-                                deleteQueries={this.handleQueryDelete} />
+                                deleteQueries={this.handleQueryDelete} userLang={this.props.userLang} />
                         : <QueriesTable columns={columnsHistoryQuery} data={savedHistory}
                                 toggleView={this.toggleView} setSearchFlag={this.setSearchFlag} 
-                                deleteQueries={this.handleQueryDelete} />
+                                deleteQueries={this.handleQueryDelete} userLang={this.props.userLang} />
                     }
-                </div>
+
             </body>
-            
-        </div>);
+
+        </div>
+        );
     }
 }

@@ -15,7 +15,7 @@
     $edit_tag = $inData["edit_tag"]; //-1 if we're inserting, not 0 means it's the tag id
 
     //check for invalid category
-    $category_name = $inData["category"];
+    $category_name = addslashes($inData["category"]);
     $category_id = -1;
 
     //admins can only use admin-made categories but users can
@@ -35,7 +35,7 @@
         $query = "SELECT category_id FROM category_translation WHERE language = '" . $language . "' AND text = '" . 
                     $category_name . "' AND owner = 0;";
         $result = $conn->query($query);
-    
+
         if($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             $category_id = $row["category_id"];
@@ -43,7 +43,7 @@
     }
 
     if($category_id == -1) {
-        $message = '{"status":"category does not exist."}';
+        $message = '{"status":"category does not exist"}';
         echo $message;
         return;
     }
@@ -61,7 +61,7 @@
         for($idx = 0; $idx < $lang_len; $idx++) {
             if($idx > 0) $query = $query . " OR ";
             $cur_lang = supported_languages[$idx];
-            $query = $query . "(text = '" . $inData[$cur_lang] . "' AND language = '" . 
+            $query = $query . "(text = '" . addslashes($inData[$cur_lang]) . "' AND language = '" . 
 		        $cur_lang . "' AND owner = 0 AND tag_id != " . $edit_tag . ")";
         }
         $query = $query . ";";
@@ -72,7 +72,7 @@
         }
     }
     else { //User tag
-        $tag_name = $inData["def"];
+        $tag_name = addslashes($inData["def"]);
 
         //users cant have overlap with any of their own tags
         $query = "SELECT * FROM tags_translation WHERE text = '" . $tag_name . "' AND owner = " . $userID . " AND tag_id != " . $edit_tag . ";";
@@ -84,7 +84,7 @@
     }
 
     if($duplicate_tag == TRUE) {
-        echo '{"status":"duplicate tag name."}';
+        echo '{"status":"duplicate tag name"}';
         return;
     }
 
@@ -100,14 +100,14 @@
             for($idx = 0; $idx < $lang_len; $idx++) {
                 if($idx > 0) $query = $query . ", ";
                 $cur_lang = supported_languages[$idx];
-                $add_to_query = "(" . $tag_id . ", '" . $cur_lang . "', '" . $inData[$cur_lang] . "', " . $userID . ")";
+                $add_to_query = "(" . $tag_id . ", '" . $cur_lang . "', '" . addslashes($inData[$cur_lang]) . "', " . $userID . ")";
                 $query = $query . $add_to_query;
             }
             $query = $query . ";";
         }
         else { //User inserts just one entry whose langauge is "def".
             $query = "INSERT INTO tags_translation (tag_id, language, text, owner) VALUES 
-            (" . $tag_id . ", 'def', '" . $inData["def"] . "', " . $userID . ");";
+            (" . $tag_id . ", 'def', '" . addslashes($inData["def"]) . "', " . $userID . ");";
         }
     
         $result = $conn->query($query);
@@ -117,7 +117,7 @@
             return;
         }
         
-        $message = '{"status":"Successfully added tag"}';
+        $message = '{"status":"Successfully updated tag"}';
         echo $message;
     }
     else { //okay editing a tag
@@ -127,7 +127,7 @@
         if($userID == 0) {
             for($idx = 0; $idx < $lang_len; $idx++) {
                 $cur_lang = supported_languages[$idx];
-                $query = "UPDATE tags_translation SET text = '" . $inData[$cur_lang] . "' WHERE tag_id = " . 
+                $query = "UPDATE tags_translation SET text = '" . addslashes($inData[$cur_lang]) . "' WHERE tag_id = " . 
                     $edit_tag . " AND language = '" . $cur_lang . "';";
                 
                 $conn->query($query);
@@ -139,7 +139,7 @@
             }
         }
         else {
-            $query = "UPDATE tags_translation SET text = '" . $inData["def"] . "' WHERE tag_id = " . $edit_tag . ";";
+            $query = "UPDATE tags_translation SET text = '" . addslashes($inData["def"]) . "' WHERE tag_id = " . $edit_tag . ";";
             $conn->query($query);
             if(!$result) {
                 $message = '{"status":"' . $conn->error . '"}';
